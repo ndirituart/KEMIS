@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "eD+aR44mo48=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Pashie\\KEMIS\\.history\\backend\\TestApp_20260806124457.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Pashie\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.29\\microsoft.netcore.app.ref.8.0.29.nupkg.sha512",
+    "C:\\Users\\Pashie\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.29\\microsoft.windowsdesktop.app.ref.8.0.29.nupkg.sha512",
+    "C:\\Users\\Pashie\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.29\\microsoft.aspnetcore.app.ref.8.0.29.nupkg.sha512",
+    "C:\\Users\\Pashie\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.29\\microsoft.netcore.app.host.win-x64.8.0.29.nupkg.sha512"
+  ],
+  "logs": []
+}
