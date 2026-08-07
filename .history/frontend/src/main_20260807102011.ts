@@ -104,7 +104,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
                 <option value="">-- Select Option --</option>
                 <option value="Foundation">Foundation</option>
                 <option value="Intermediate">Intermediate</option>
-                <option value="Pre-Vocational">Pre-Vocational</option>
+                <option value="Pre-Vocational">False Intermediate</option>
                 <option value="Vocational">Vocational</option>
               </select>
             </div>
@@ -123,7 +123,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
                 <option value="Junior School">Junior School</option>
                 <option value="Foundational">Foundational</option>
                 <option value="Intermediate">Intermediate</option>
-                <option value="Pre-Vocational">Pre-Vocational</option>
+                <option value="Pre-Vocational">False Intermediate</option>
                 <option value="Vocational">Vocational</option>
               </select>
             </div>

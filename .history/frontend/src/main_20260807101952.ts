@@ -103,8 +103,8 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
               <select formControlName="subSubCategory" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background-color: white;">
                 <option value="">-- Select Option --</option>
                 <option value="Foundation">Foundation</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Pre-Vocational">Pre-Vocational</option>
+                <option value="Intermediate">Horn Plantain</option>
+                <option value="Pre-Vocational">False Horn Plantain</option>
                 <option value="Vocational">Vocational</option>
               </select>
             </div>
@@ -122,8 +122,8 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
                 <option value="Primary">Primary</option>
                 <option value="Junior School">Junior School</option>
                 <option value="Foundational">Foundational</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Pre-Vocational">Pre-Vocational</option>
+                <option value="Intermediate">Horn Plantain</option>
+                <option value="Pre-Vocational">False Horn Plantain</option>
                 <option value="Vocational">Vocational</option>
               </select>
             </div>

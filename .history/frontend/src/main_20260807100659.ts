@@ -90,7 +90,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
               <select formControlName="subSubCategory" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background-color: white;">
                 <option value="">-- Select Option --</option>
                 <option value="Pre-Primary">Pre-Primary</option>
-                <option value="Primary">Primary</option>
+                <option value="Primary">Grand Naine</option>
                 <option value="Junior School">Junior School</option>
                 <option value="formosa">Formosa</option>
               </select>

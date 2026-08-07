@@ -102,9 +102,9 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
               <label style="display: block; font-weight: 600; color: #334155; margin-bottom: 6px;">Stage-Based Classification</label>
               <select formControlName="subSubCategory" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background-color: white;">
                 <option value="">-- Select Option --</option>
-                <option value="Foundation">Foundation</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Pre-Vocational">Pre-Vocational</option>
+                <option value="Foundation">French Plantain</option>
+                <option value="Intermediate">Horn Plantain</option>
+                <option value="Pre-Vocational">False Horn Plantain</option>
                 <option value="Vocational">Vocational</option>
               </select>
             </div>
@@ -122,8 +122,8 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
                 <option value="Primary">Primary</option>
                 <option value="Junior School">Junior School</option>
                 <option value="Foundational">Foundational</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Pre-Vocational">Pre-Vocational</option>
+                <option value="Intermediate">Horn Plantain</option>
+                <option value="Pre-Vocational">False Horn Plantain</option>
                 <option value="Vocational">Vocational</option>
               </select>
             </div>
