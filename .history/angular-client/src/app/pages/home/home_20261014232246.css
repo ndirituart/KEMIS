@@ -1,0 +1,293 @@
+:root {
+    --kemis-red: #dc143c;
+    --kemis-black: #1a1a1a;
+    --kemis-green: #006b3c;
+    --kemis-dark-green: #004d2a; /* Text in dark green*/
+    --kemis-blue: #1e40af;  /*Main KEMIS blue*/
+    --kemis-dark-blue: #1e3a8a; /*Darker version of blue*/
+    --kemis-light-blue: #3b82f6; /*Light version of blue*/
+    --kemis-sky-blue: #0ea5e9; /*Links color*/
+    --kemis-white: #ffffff;
+    --kemis-primary: #3fbeeb;
+    --kemis-primary-dark: #2da5d1;
+    --kemis-primary-light: #e6f7ff;
+    --kemis-secondary: #6c757d;
+    --kemis-success: #28a745;
+    --kemis-danger: #dc3545;
+    --kemis-warning: #ffc107;
+    --kemis-info: #17a2b8;
+    --kemis-light: #f8f9fa;
+    --kemis-dark: #343a40;
+    --kemis-border: #dee2e6;
+    --kemis-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
+    --kemis-shadow-lg: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    --kemis-gradient-bg: linear-gradient(135deg, #e6f7ff 0%, #ffffff 50%, #e0f7fa 100%);
+    --kemis-section-bg: linear-gradient(to right, rgba(63, 190, 235, .08), rgba(224, 247, 250, .4));
+    --kemis-bank-bg: linear-gradient(to right, rgba(63, 190, 235, .1), rgba(224, 247, 250, .8));
+    --bs-font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    --border-radius: 8px;
+}
+/* Header Base Container */
+.main-header {
+  width: 100%;
+  --kemis-white: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Row 1: Top Contact Bar */
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 12px 40px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.logo img {
+  height: 60px;
+  width: auto;
+  display: block;
+}
+
+.contact-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 0.85rem;
+  --kemis-secondary: #6c757d;
+}
+
+.contact-info span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.contact-info i {
+  --kemis-blue: #1e40af;  /*Main KEMIS blue*/
+}
+
+/* Row 2: Navigation Links Bar */
+.bottom-row {
+  display: flex;
+  justify-content: center; /* Center links, or use flex-start to align left */
+  align-items: center;
+  --kemis-white: #ffffff;
+  padding: 8px 40px;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  pointer-events: auto !important; /* Force enable click events */
+}
+
+.nav-links a {
+  cursor: pointer !important; /*Ensure the cursor is a pointer for links*/
+  text-decoration: none;
+  --kemis-dark-blue: #1e3a8a; /*Darker version of blue*/
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-links a:hover {
+  --kemis-light-blue: #3b82f6;
+}
+
+.nav-links a.active {
+ --kemis-primary-light: #e6f7ff;
+  background: var(---kemis-dark-blue) /*Darker version of blue*/
+}
+
+/* 4. Search Icon Button */
+.search-btn {
+  --kemis-white: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --kemis-dark: #343a40;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-btn:hover {
+  --kemis-white: #ffffff;
+}
+
+  .hero-banner {
+  width: 100vw;
+  height: 200px;
+  /* Adjust image path to your asset location */
+  /* background-image: url('../assets/karura-forest.jpg'); */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Semi-transparent dark overlay for text contrast */
+.hero-overlay {
+  width: 100%;
+  height: 80%;
+  background-color:  var(--kemis-dark-blue); /*Darker version of blue*/;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-overlay h1 {
+  color: var(--kemis-primary-light);
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.content-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+ --kemis-dark: #343a40;
+  line-height: 1.6;
+}
+
+/* ===== Content Container ===== */
+.content-container {
+  padding: 2rem 1.5rem;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--kemis-black);
+}
+
+.content-container p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--kemis-black);
+  margin-bottom: 1.5rem;
+  max-width: 900px;
+}
+
+/* ===== Button Row (was d-flex flex-wrap justify-content-between) ===== */
+.content-container .button-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== Hero Button ===== */
+.kemis-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--kemis-blue);
+  color: var(--kemis-white);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+  box-shadow: var(--kemis-shadow);
+  margin-bottom: 0.5rem;
+}
+
+.kemis-hero-btn:hover {
+  background-color: var(--kemis-dark-blue);
+  box-shadow: var(--kemis-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.kemis-hero-btn:active {
+  transform: translateY(0);
+  background-color: var(--kemis-dark-blue);
+}
+
+.kemis-hero-btn i {
+  transition: transform 0.25s ease;
+}
+
+.kemis-hero-btn:hover i {
+  transform: translateX(4px);
+}
+
+/* Remove bottom margin on larger screens eg Tablet */
+@media (min-width: 1200px) {
+  .kemis-hero-btn {
+    margin-bottom: 0;
+  }
+}
+
+/* ===== Contact Card ===== */
+.kemis-contact-card {
+  background: var(--kemis-section-bg);
+  border: 1px solid var(--kemis-border);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--kemis-shadow);
+  margin-top: 1rem;
+}
+
+.kemis-contact-card h5 {
+  text-align: center;
+  color: var(--kemis-dark-green);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+/* ===== Row (was row + col-md-6) ===== */
+.kemis-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -0.75rem;
+  row-gap: 0.75rem;
+}
+
+.kemis-col {
+  flex: 0 0 50%;
+  max-width: 50%;
+  padding: 0 0.75rem;
+  box-sizing: border-box;
+}
+
+/* Stack on smaller screens */
+@media (max-width: 767.98px) {
+  .kemis-col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* ===== Contact Item ===== */
+.kemis-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+  color: var(--kemis-black);
+  word-break: break-word;
+}
+
+.kemis-contact-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}

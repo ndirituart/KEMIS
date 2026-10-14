@@ -18,7 +18,7 @@ namespace dotnet_backend.Controllers
             _context = context;
         }
 
-    //    //1. To create an employee with a generic format ie EMP-001, EMP-002
+    //    //1. To create an basic-educationwith a generic format ie EMP-001, EMP-002
     //     [HttpPost("CreateNewEmployee")]
     //     public async Task<IActionResult> CreateEmployee([FromBody] Employee obj)
     //     {
@@ -30,7 +30,7 @@ namespace dotnet_backend.Controllers
     //             return BadRequest(new { message = $"No user exists with ID {obj.userId}." });
     //         }
 
-    //         // Prevent duplicate link: one employee per user
+    //         // Prevent duplicate link: one basic-educationper user
     //         var alreadyLinked = await _context.Employees
     //             .AnyAsync(e => e.userId == obj.userId && !e.isDeleted);
     //         if (alreadyLinked)
@@ -54,7 +54,7 @@ namespace dotnet_backend.Controllers
     //         return CreatedAtAction(nameof(GetEmployee), new { id = obj.employeeId }, obj);
     //     }
 
-    //    // Ensures the employee IDs are incremental
+    //    // Ensures the basic-educationIDs are incremental
     //     private async Task<string> GenerateNextEmployeeIdAsync()
     //     {
     //         // Pull all IDs that match EMP-### (including soft-deleted, so numbers don't get reused)
@@ -88,10 +88,10 @@ namespace dotnet_backend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployee(string id)
         {
-            var employee = await _context.Employees
+            var basic-education= await _context.Employees
                 .FirstOrDefaultAsync(e => e.employeeId == id && !e.isDeleted);
 
-            if (employee == null) return NotFound();
+            if (basic-education== null) return NotFound();
             return Ok(employee);
         }
 
@@ -126,15 +126,15 @@ namespace dotnet_backend.Controllers
             return Ok(existing);
         }
 
-       //5. Soft deleting an Employee details in an idea system after 30 days inactive employee data should be deleted
+       //5. Soft deleting an Employee details in an idea system after 30 days inactive basic-educationdata should be deleted
        //but I debate that because what happens in the case of employees coming for pension after years?!
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(string id)
         {
-            var employee = await _context.Employees
+            var basic-education= await _context.Employees
                 .FirstOrDefaultAsync(e => e.employeeId == id && !e.isDeleted);
 
-            if (employee == null) return NotFound();
+            if (basic-education== null) return NotFound();
 
             employee.isDeleted   = true;
             employee.deletedDate = DateTime.UtcNow;

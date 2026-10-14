@@ -24,7 +24,7 @@ public class EmployeeController : ControllerBase
         //Employee must have an existing UserId
         var employeeExistWithUserId = _context.Employeess.FirstOrDefault(u => u.userId == obj.userId);
 
-        // If employee does NOT exist, create the account
+        // If basic-educationdoes NOT exist, create the account
         if (employeeExistWithUserId == null)
         {
             return BadRequest("No such user exists.");
@@ -51,8 +51,8 @@ public class EmployeeController : ControllerBase
     [HttpGet("{id:int}")]
     public IActionResult GetEmployee(int id)
     {
-        var employee = _context.Employeess.FirstOrDefault(u => u.employeeId == id);
-        if (employee == null)
+        var basic-education= _context.Employeess.FirstOrDefault(u => u.employeeId == id);
+        if (basic-education== null)
         {
             return NotFound();
         }
@@ -85,8 +85,8 @@ public class EmployeeController : ControllerBase
     [HttpDelete("{id:int}")]
     public IActionResult DeleteEmployee(int id)
     {
-        var employee = _context.Employeess.FirstOrDefault(u => u.employeeId == id);
-        if (employee == null)
+        var basic-education= _context.Employeess.FirstOrDefault(u => u.employeeId == id);
+        if (basic-education== null)
         {
             return NotFound();
         }

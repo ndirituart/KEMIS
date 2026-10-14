@@ -5,19 +5,21 @@
 :root {
   --primary-color: #29742f;
   --primary-dark:  #1b5e20;
-  --secondary-color: #2e7d32;
-  --background-color: #f4f6f4;
-  --card-background: #ffffff;
+  --secondary---kemis-dark-blue: #1e3a8a; /*Darker version of blue*/
+  --kemis-light: #f8f9fa;
+  --kemis-primary-light: #e6f7ff; /*Card background */
   --text-color-dark:  #1b381e;
   --text-color-light: #4f6e52;
-  --border-color: #e0e6e0;
+  --kemis-border: #dee2e6;
   --error-color: #dc3545;
-  --success-color: #28a745;
-  --warning-color: #ffc107;
-  --info-color: #17a2b8;
+  --kemis-success: #28a745;
+  --kemis-warning: #ffc107;
+ --kemis-info: #17a2b8;
 
-  --font-family: 'Poppins', 'Segoe UI', sans-serif;
-  --shadow: 0 8px 25px rgba(41, 116, 47, 0.12);
+  --bs-font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+   
+ --kemis-shadow-lg: 0 .5rem 1rem rgba(0, 0, 0, .15);
   --border-radius: 8px;
 }
 
@@ -143,7 +145,7 @@
 
 .btn-primary {
   background: var(--primary-color);
-  color: #ffffff;
+ --kemis-primary-light: #e6f7ff;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -164,7 +166,7 @@
 
 .btn-danger {
   background: var(--error-color);
-  color: #ffffff;
+ --kemis-primary-light: #e6f7ff;
 }
 
 .btn-danger:hover:not(:disabled) {

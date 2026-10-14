@@ -39,13 +39,13 @@ import { NotificationService } from '../../services/notifications.service';
       gap: 12px;
       padding: 14px 20px;
       border-radius: 8px;
-      color: #ffffff;
+     --kemis-primary-light: #e6f7ff;
       font-weight: 500;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       animation: slideIn 0.3s ease;
     }
     .blue { background-color: #0288d1; }  /* Loading is Blue */
-    .green { background-color: #2e7d32; } /* Success is Green */
+    .green { background---kemis-dark-blue: #1e3a8a; /*Darker version of blue*/ } /* Success is Green */
     .red { background-color: #d32f2f; }   /* Error is Red */
 
     .close-btn {

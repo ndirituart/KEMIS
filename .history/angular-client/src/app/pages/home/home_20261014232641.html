@@ -1,0 +1,77 @@
+<!--No header because it is in app.html-->
+
+  <section class="hero-banner">
+  <div class="hero-overlay">
+    <h1>KEMIS</h1>
+  </div>
+</section>
+
+<section class="content-container">
+  <p>
+    Welcome to the Kenya Education Management Information System (KEMIS), your comprehensive platform for education data management. From early childhood development to university excellence, KEMIS provides the insights and tools necessary to drive informed decision-making and enhance learning outcomes across the nation.
+  </p>
+
+  <div class="button-row">
+    <button class="kemis-hero-btn"  routerLink="/" routerLinkActive="active">Home >
+      Onboard your institution
+      <i class="bi bi-arrow-right"></i>
+    </button>
+  </div>
+
+  <div class="kemis-contact-card">
+    <h5>Get in Touch With Us</h5>
+    <div class="kemis-row">
+      <div class="kemis-col">
+        <div class="kemis-contact-item">
+          <i class="bi bi-envelope-fill kemis-contact-icon" style="color: orange;"></i>
+          helpdesk@kemis.go.ke
+        </div>
+        <div class="kemis-contact-item">
+          <i class="bi bi-geo-alt-fill kemis-contact-icon" style="color: red;"></i>
+          Jogoo House B, Taifa road Nairobi
+        </div>
+      </div>
+      <div class="kemis-col">
+        <div class="kemis-contact-item">
+          <i class="bi bi-whatsapp kemis-contact-icon" style="color: green;"></i>
+          +254203318581
+        </div>
+        <div class="kemis-contact-item">
+          <i class="bi bi-globe kemis-contact-icon" style="color: blue;"></i>
+          www.kemis.go.ke
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<main>
+  <app-notification-banner></app-notification-banner> <!--Had to be wrapped in a component to avoid errors-->
+  <div class="auth-container">
+<router-outlet></router-outlet>   <!-- <-- must exist -->
+  </div>
+</main>
+
+<script>
+  //In modern Angular (v17+), simply import RouterLink and RouterLinkActive directly into your component. RouterLinkActiveOptions should not be in the imports array.
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { NotificationBannerComponent } from '../../../angular-client/src/app/components/notification-banner';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    NotificationBannerComponent
+  ],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class AppComponent {}
+</script>
+
+

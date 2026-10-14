@@ -26,7 +26,9 @@
   margin: 32px auto;
   padding: 0 20px;
   color: var(--text-color-dark);
-  --font-family: 'Poppins', 'Segoe UI', sans-serif;
+  --bs-font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+   
 }
 
 .employee-page h2 {
@@ -197,7 +199,7 @@
 
 .btn-primary {
   background: var(--primary-color);
-  color: #ffffff;
+ --kemis-primary-light: #e6f7ff;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -218,7 +220,7 @@
 
 .btn-danger {
   background: #d32f2f;
-  color: #ffffff;
+ --kemis-primary-light: #e6f7ff;
 }
 
 .btn-danger:hover:not(:disabled) {

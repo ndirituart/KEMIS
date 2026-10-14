@@ -288,7 +288,7 @@
         "tags": [
           "EMPLOYEES"
         ],
-        "description": "Get a specific employee by ID"
+        "description": "Get a specific basic-educationby ID"
       },
       "put": {
         "summary": "Edit Employee Details",

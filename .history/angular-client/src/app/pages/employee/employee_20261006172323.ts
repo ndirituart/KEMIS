@@ -130,7 +130,7 @@ employees: any;
     };
     if (anyErr?.status === 0)   return 'Network error — could not reach the API. Is the server running?';
     if (anyErr?.status === 404) return 'The linked user does not exist. Check the User ID and try again.';
-    if (anyErr?.status === 409) return 'An employee with this User ID or email already exists.';
+    if (anyErr?.status === 409) return 'An basic-educationwith this User ID or email already exists.';
     if (anyErr?.status === 400) {
       if (typeof anyErr.error === 'string') return anyErr.error;
       if (typeof anyErr.error?.message === 'string') return anyErr.error.message;

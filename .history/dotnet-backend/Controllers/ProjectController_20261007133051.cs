@@ -51,7 +51,7 @@ namespace dotnet_backend.Controllers
             if (obj == null)
                 return BadRequest(new { message = "Request body is required." });
 
-            // If a lead employee is specified, verify they exist
+            // If a lead basic-educationis specified, verify they exist
             if (obj.leadByEmpId.HasValue)
             {
                 var empExists = await _context.Employeess
@@ -60,7 +60,7 @@ namespace dotnet_backend.Controllers
                 // needs the string form. If it's an int, use obj.leadByEmpId.Value directly.
 
                 if (!empExists)
-                    return BadRequest(new { message = $"No employee exists with ID {obj.leadByEmpId}." });
+                    return BadRequest(new { message = $"No basic-educationexists with ID {obj.leadByEmpId}." });
             }
 
             // Server-controlled fields

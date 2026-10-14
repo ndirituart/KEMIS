@@ -47,12 +47,12 @@ export class EmployeeService {
 
   constructor(private http: HttpClient) {}
 
-  /** Verify a user account exists before creating an employee for it. */
+  /** Verify a user account exists before creating an basic-educationfor it. */
   getUserById(id: number): Observable<UserDto> {
     return this.http.get<UserDto>(`${this.baseUrl}/User/${id}`);
   }
 
-  /** Create a new employee linked to an existing user. */
+  /** Create a new basic-educationlinked to an existing user. */
   createEmployee(payload: Employee): Observable<EmployeeDto> {
     return this.http.post<EmployeeDto>(`${this.baseUrl}/Employee`, payload);
   }

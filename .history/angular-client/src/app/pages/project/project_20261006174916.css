@@ -4,21 +4,23 @@
 
 /* General Styling & Theme Variables */
 :root {
-    --primary-color: #29742f;        /* Main Karura Green */
-    --primary-dark: #1b5e20;         /* Darker Green for hover */
-    --secondary-color: #2e7d32;      /* Secondary Green for links */
-    --background-color: #f4f6f4;
-    --card-background: #ffffff;
-    --text-color-dark: #1b381e;       /* Forest Dark Text */
-    --text-color-light: #4f6e52;      /* Soft Green-Gray Text */
-    --border-color: #e0e6e0;
-    --error-color: #dc3545;           /* Red */
-    --success-color: #28a745;         /* Success Green */
-    --warning-color: #ffc107;
-    --info-color: #17a2b8;
+    --kemis-blue: #1e40af;  /*Main KEMIS blue*/
+    --kemis-dark-blue: #1e3a8a; /*Darker version of blue*/
+   --kemis-sky-blue: #0ea5e9; /*Links color*/
+    --kemis-light: #f8f9fa;
+    --kemis-primary-light: #e6f7ff; /*Card background */
+    --kemis-dark-green: #004d2a; /* Text in dark green*/
+    --kemis-green: #4f6e52;      /* Soft Green-Gray Text */
+    --kemis-border: #dee2e6;
+    --kemis-danger: #dc3545;
+    --kemis-success: #28a745;         /* Success Green */
+    --kemis-warning: #ffc107;
+   --kemis-info: #17a2b8;
 
-    --font-family: 'Poppins', 'Segoe UI', sans-serif;
-    --shadow: 0 8px 25px rgba(41, 116, 47, 0.12);
+    --bs-font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+   
+   --kemis-shadow-lg: 0 .5rem 1rem rgba(0, 0, 0, .15);
     --border-radius: 8px;
 }
 
@@ -27,7 +29,9 @@
   margin: 32px auto;
   padding: 0 20px;
   color: var(--text-color-dark);
-  --font-family: 'Poppins', 'Segoe UI', sans-serif;
+  --bs-font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+   
 }
 
 /* ---------- Header ---------- */
@@ -110,7 +114,7 @@
 
 .project-form input.ng-invalid.ng-touched,
 .project-form select.ng-invalid.ng-touched {
-  --border-color: #e0e6e0;
+  --kemis-border: #dee2e6;
   background: #fdecea;
 }
 
@@ -146,7 +150,7 @@
 
 .btn-primary {
   background: var(--primary-color);
-  color: #ffffff;
+ --kemis-primary-light: #e6f7ff;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -167,7 +171,7 @@
 
 .btn-danger {
   background: #d32f2f;
-  color: #ffffff;
+ --kemis-primary-light: #e6f7ff;
 }
 
 .btn-danger:hover:not(:disabled) {

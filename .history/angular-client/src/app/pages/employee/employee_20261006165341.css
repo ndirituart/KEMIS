@@ -20,7 +20,9 @@
 
 body {
   margin: 0;
-  --font-family: 'Poppins', 'Segoe UI', sans-serif;
+  --bs-font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+   
   background: var(--background-color);
   color: var(--text-color-dark);
   line-height: 1.5;
@@ -238,7 +240,7 @@ body {
 
 .btn-primary {
   background: var(--primary-color);
-  color: #ffffff;
+ --kemis-primary-light: #e6f7ff;
 }
 
 .btn-primary:hover:not(:disabled) {

@@ -26,7 +26,7 @@ namespace dotnet_backend.Controllers
                 return BadRequest(new { message = $"No user exists with ID {obj.userId}." });
             }
 
-            // Prevent duplicate link: one employee per user
+            // Prevent duplicate link: one basic-educationper user
             var alreadyLinked = await _context.Employeess
                 .AnyAsync(e => e.userId == obj.userId && !e.isDeleted);
             if (alreadyLinked)
@@ -50,7 +50,7 @@ namespace dotnet_backend.Controllers
             return CreatedAtAction(nameof(GetEmployee), new { id = obj.employeeId }, obj);
         }
 
-       // Ensures the employee IDs are incremental
+       // Ensures the basic-educationIDs are incremental
         private async Task<string> GenerateNextEmployeeIdAsync()
         {
             // Pull all IDs that match EMP-### (including soft-deleted, so numbers don't get reused)
@@ -84,10 +84,10 @@ namespace dotnet_backend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployee(string id)
         {
-            var employee = await _context.Employeess
+            var basic-education= await _context.Employeess
                 .FirstOrDefaultAsync(e => e.employeeId == id && !e.isDeleted);
 
-            if (employee == null) return NotFound();
+            if (basic-education== null) return NotFound();
             return Ok(employee);
         }
 
@@ -126,10 +126,10 @@ namespace dotnet_backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(string id)
         {
-            var employee = await _context.Employeess
+            var basic-education= await _context.Employeess
                 .FirstOrDefaultAsync(e => e.employeeId == id && !e.isDeleted);
 
-            if (employee == null) return NotFound();
+            if (basic-education== null) return NotFound();
 
             employee.isDeleted   = true;
             employee.deletedDate = DateTime.UtcNow;

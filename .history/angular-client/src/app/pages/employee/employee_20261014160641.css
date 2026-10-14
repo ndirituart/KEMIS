@@ -1,0 +1,278 @@
+/* ============================================================
+   Employee page — Karura green theme
+   (mirrors project.css exactly for uniformity)
+   ============================================================ */
+
+/* General Styling & Theme Variables */
+:root {
+    --kemis-blue: #1e40af;  /*Main KEMIS blue*/
+    --kemis-dark-blue: #1e3a8a; /*Darker version of blue*/
+   --kemis-sky-blue: #0ea5e9; /*Links color*/
+    --kemis-light: #f8f9fa;
+    --kemis-primary-light: #e6f7ff; /*Card background */
+    --kemis-dark-green: #004d2a; /* Text in dark green*/
+    --kemis-green: #4f6e52;      /* Soft Green-Gray Text */
+    --kemis-border: #dee2e6;
+    --kemis-danger: #dc3545;
+    --kemis-success: #28a745;         /* Success Green */
+    --kemis-warning: #ffc107;
+   --kemis-info: #17a2b8;
+
+    --bs-font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+   
+   --kemis-shadow-lg: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    --border-radius: 8px;
+}
+
+.employee-page {
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 0 20px;
+  color: var(--text-color-dark);
+  --bs-font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+   
+}
+
+/* ---------- Header ---------- */
+
+.employee-page h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin: 0 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--card-background);
+}
+
+.employee-page h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-color-dark);
+  margin: 32px 0 12px;
+}
+
+/* ---------- Form card ---------- */
+
+.employee-form {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 24px 28px;
+  margin-bottom: 28px;
+}
+
+.employee-form .row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .employee-form .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.employee-form .field {
+  display: flex;
+  flex-direction: column;
+}
+
+.employee-form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--kf-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.employee-form input,
+.employee-form select,
+.employee-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: var(--text-color-dark);
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.employee-form input:focus,
+.employee-form select:focus,
+.employee-form textarea:focus {
+  background: #ffffff;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+.employee-form input.ng-invalid.ng-touched,
+.employee-form select.ng-invalid.ng-touched {
+  --kemis-border: #dee2e6;
+  background: #fdecea;
+}
+
+.field-error {
+  color: #d32f2f;
+  font-size: 0.78rem;
+  margin-top: 4px;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.05s, box-shadow 0.15s;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+ --kemis-primary-light: #e6f7ff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+  box-shadow: 0 4px 10px rgba(46, 125, 50, 0.25);
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: var(--text-color-dark);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--card-background);
+  border-color: var(--primary-color);
+}
+
+.btn-danger {
+  background: #d32f2f;
+ --kemis-primary-light: #e6f7ff;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #b71c1c;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* ---------- Table ---------- */
+
+.employee-table-wrapper {
+  overflow-x: auto;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.employee-table thead {
+  background: var(--card-background);
+}
+
+.employee-table th {
+  text-align: left;
+  padding: 12px 14px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.employee-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color-dark);
+  vertical-align: middle;
+}
+
+.employee-table tbody tr:hover {
+  background: #f4faf4;
+}
+
+.employee-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.employee-table .actions {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--kf-muted);
+  font-style: italic;
+}
+
+/* ---------- Misc ---------- */
+
+.loading {
+  padding: 20px;
+  text-align: center;
+  color: var(--kf-muted);
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.alert-error {
+  background: #fdecea;
+  color: var(--error-color);
+  border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+  background: var(--card-background);
+  color: var(--success-color);
+  border: 1px solid #c8e6c9;
+}

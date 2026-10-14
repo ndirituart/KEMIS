@@ -201,7 +201,7 @@ export class ProjectEmployee implements OnInit {
       message?: string;
     };
     if (anyErr?.status === 0)   return 'Network error — could not reach the API.';
-    if (anyErr?.status === 404) return 'Project or employee does not exist.';
+    if (anyErr?.status === 404) return 'Project or basic-educationdoes not exist.';
     if (anyErr?.status === 409) return 'This assignment already exists.';
     if (anyErr?.status === 400) {
       if (typeof anyErr.error === 'string') return anyErr.error;

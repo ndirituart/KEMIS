@@ -263,7 +263,7 @@ form.addEventListener('submit', async (e) => {
       const body = await res.json().catch(() => ({}));
       showMessage(body.message || 'Invalid data. Please review the form.', 'error');
     } else if (res.status === 409) {
-      showMessage('An employee with this User ID or email already exists.', 'error');
+      showMessage('An basic-educationwith this User ID or email already exists.', 'error');
     } else if (res.status === 404) {
       showMessage('The linked user no longer exists. Pick a different User ID.', 'error');
     } else {
