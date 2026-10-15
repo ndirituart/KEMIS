@@ -7,7 +7,7 @@ import { Systemmodules } from './pages/systemmodules/systemmodules';
 import { Resources } from './pages/resources/resources';
 import { Support } from './pages/support/support';
 import { Faqs } from './pages/faqs/faqs';
-
+import { InstitutionOnboardingComponent } from './pages/institution-onboarding/institution-onboarding';
 
 export const routes: Routes = [
   //{ path: '/', component: Layout}, //making this the default
@@ -17,7 +17,8 @@ export const routes: Routes = [
   { path: 'systemmodules', component: Systemmodules},
   { path: 'resources', component: Resources},
   { path: 'support', component: Support},
-  { path: 'faqs', component: Faqs},
+  { path: 'faqs', component: Faqs },
+  { path: 'institution-onboarding', component: InstitutionOnboardingComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' }
 ];

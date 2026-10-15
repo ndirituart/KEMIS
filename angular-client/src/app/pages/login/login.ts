@@ -185,7 +185,8 @@ export class Login {
 
     this.isLoading = false;
     this.notification.showSuccess(`Welcome! Redirecting...`);
-    this.router.navigate(['/dashboard']);
+    //navigate to the page for institution onboarding after successful login or registration
+    this.router.navigate(['institution-onboarding']);
   }
 
   switchTab(tab: 'login' | 'register'): void {
