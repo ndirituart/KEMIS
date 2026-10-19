@@ -55,7 +55,11 @@ export class Login {
     password: '',
     confirmPassword: '',
     mobileNo: '',
-    role: ''
+    role: '',
+    nationalId: '',
+    county: '',
+    subCounty: '',
+    constituency: '',
   };
 
   twoFaModel = {
@@ -122,13 +126,18 @@ export class Login {
     this.notification.showLoading('Creating your account...');
 
     //this is the object that registers the user(s)
-    const payload = {
+    const payload =
+    {
       userId: 0,
       fullName: this.registerModel.fullName,
       emailId: this.registerModel.emailId,
       password: this.registerModel.password,
       mobileNo: this.registerModel.mobileNo,
       role: this.registerModel.role || 'User',
+      nationalId: this.registerModel.nationalId,
+      county:   this.registerModel.county,
+      subCounty: this.registerModel.subCounty,
+      constituency: this.registerModel.constituency,
       createdDate: new Date().toISOString(),
     };
 

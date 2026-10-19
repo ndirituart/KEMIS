@@ -1,0 +1,83 @@
+<!--No header because it is in app.html-->
+<!-- HERO SECTION -->
+<section class="hero-section">
+
+  <!-- LEFT: image -->
+  <div class="hero-image">
+    <img src="assets/hero-students.jpg" alt="KEMIS" />
+  </div>
+
+  <!-- RIGHT: text -->
+  <div class="hero-content">
+    <h1>Training System</h1>
+    <p>
+      Welcome to the Kenya Education Management Information System (KEMIS), your
+      comprehensive platform for education data management. From early childhood
+      development to university excellence, KEMIS provides the insights and tools
+      necessary to drive informed decision-making and enhance learning outcomes
+      across the nation.
+    </p>
+
+    <div class="hero-actions">
+      <button class="kemis-btn kemis-btn-primary" routerLink="/institution-onboarding">
+        Onboard Your Institution <i class="bi bi-arrow-right"></i>
+      </button>
+      <button class="kemis-btn kemis-btn-secondary">
+        Explore KEMIS <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+</section>
+
+<!-- CONTACT CARD -->
+<div class="contact-wrapper">
+  <div class="kemis-contact-card">
+    <h5>Get in Touch With Us</h5>
+    <div class="kemis-row">
+      <div class="kemis-col">
+        <div class="kemis-contact-item">
+          <i class="bi bi-envelope-fill kemis-contact-icon" style="color:#f59e0b;"></i>
+          helpdesk&#64;kemis.go.ke
+        </div>
+        <div class="kemis-contact-item">
+          <i class="bi bi-geo-alt-fill kemis-contact-icon" style="color:#dc143c;"></i>
+          Jogoo House B, Taifa road Nairobi
+        </div>
+      </div>
+      <div class="kemis-col">
+        <div class="kemis-contact-item">
+          <i class="bi bi-whatsapp kemis-contact-icon" style="color:#25d366;"></i>
+          +254203318581
+        </div>
+        <div class="kemis-contact-item">
+          <i class="bi bi-globe kemis-contact-icon" style="color:#1e40af;"></i>
+          www.kemis.go.ke
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  //In modern Angular (v17+), simply import RouterLink and RouterLinkActive directly into your component. RouterLinkActiveOptions should not be in the imports array.
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { NotificationBannerComponent } from '../../../angular-client/src/app/components/notification-banner';
+
+@Component({
+  selector: 'app-home',
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    NotificationBannerComponent
+  ],
+  templateUrl: './home.html',
+  styleUrl: './home.css'
+})
+export class AppComponent {}
+</script>
+
+

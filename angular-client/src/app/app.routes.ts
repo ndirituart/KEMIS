@@ -8,6 +8,9 @@ import { Resources } from './pages/resources/resources';
 import { Support } from './pages/support/support';
 import { Faqs } from './pages/faqs/faqs';
 import { InstitutionOnboardingComponent } from './pages/institution-onboarding/institution-onboarding';
+import { BasicEducation } from './pages/basic-education/basic-education';
+import { Tvet } from './pages/tvet/tvet';
+import { HigherEducation } from './pages/higher-education/higher-education';
 
 export const routes: Routes = [
   //{ path: '/', component: Layout}, //making this the default
@@ -19,6 +22,9 @@ export const routes: Routes = [
   { path: 'support', component: Support},
   { path: 'faqs', component: Faqs },
   { path: 'institution-onboarding', component: InstitutionOnboardingComponent},
+  { path: 'basic-education', component: BasicEducation},
+  { path: 'tvet', component: Tvet},
+  { path: 'higher-education', component: HigherEducation},
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' }
 ];

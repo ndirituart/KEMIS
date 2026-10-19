@@ -17,6 +17,12 @@ public class UserController : ControllerBase
         _context = context;
     }
 
+//to handle date ISO
+    private static string NowIso()
+    {
+        return DateTime.UtcNow.ToString("o");
+    }
+    
     // 1. Create User Endpoint
     [HttpPost("CreateNewUser")]
     public IActionResult CreateUser([FromBody] User obj)
@@ -58,7 +64,7 @@ public class UserController : ControllerBase
         return Ok(list);
     }
 
-    // 4. Get User by ID Endpoint
+    // 4 (a). Get User by ID Endpoint
     [HttpGet("{id:int}")]
     public IActionResult GetUser(int id)
     {
@@ -70,7 +76,17 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    // 5. Update User Endpoint
+    // // 4(b). Get Users by Role Endpoint
+    // [HttpGet("role/{role}")]
+    // public IActionResult GetByRole(string role)
+    // {
+    //     return Ok(_context.Users
+    //         .Where(u => u.role == role && u.status == "active" && u.deletedAt == null)
+    //         .Select(u => new User(u))
+    //         .ToList());
+    // }
+
+    // 5(a). Update User Endpoint
     [HttpPut("{id:int}")]
     public IActionResult UpdateUser(int id, [FromBody] User user)
     {
@@ -80,17 +96,58 @@ public class UserController : ControllerBase
             return NotFound();
         }
 
+        //everything but UNCHANGEABLE userId and nationalID
         existingUser.fullName = user.fullName;
         existingUser.emailId = user.emailId;
         existingUser.mobileNo = user.mobileNo;
         existingUser.role = user.role;
+        existingUser.county = user.county;
+        existingUser.subCounty = user.subCounty;
+        existingUser.constituency = user.constituency;
+        existingUser.updatedAt    = NowIso();       // ⬅️ stamp it
 
         _context.SaveChanges();
         return Ok(existingUser);
     }
 
-    // 6. Delete User Endpoint
+//    //5(b). Update user password 
+//TODO: Learn how to learn Passwords
+//    // PUT: api/users/5/password
+//     [HttpPut("{id:int}/password")]
+//     public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordDto dto)
+//     {
+//         var user = await _context.Users.FindAsync(id);
+//         if (user is null) return NotFound();
+//         if (!_hasher.Verify(dto.currentPassword, user.password))
+//             return Unauthorized(new { message = "Current password is incorrect." });
+
+//         user.password  = _hasher.Hash(dto.newPassword);
+//         user.updatedAt = NowIso();
+//         await _context.SaveChangesAsync();
+//         return NoContent();
+//     }
+
+
+    // 6(a). Soft delete User Endpoint
     [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user is null) return NotFound();
+        if (user.deletedAt != null)
+            return NoContent();              // already deleted, idempotent
+
+        user.updatedAt = DateTime.UtcNow.ToString("o");
+        user.deletedAt = DateTime.UtcNow.ToString("o");
+        user.status    = "inactive";
+
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    // 6(b).Delete User Endpoint
+
+    [HttpDelete("{id:int/permanent}")]
     public IActionResult DeleteUser(int id)
     {
         var user = _context.Users.FirstOrDefault(u => u.userId == id);

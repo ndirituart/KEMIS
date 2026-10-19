@@ -151,7 +151,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: var(--kemis-white, #ffffff);
-  background-color: var(--kemis-primary, #3fbeeb);
+  background-color: var(--kemis-light-blue, #3b82f6);
   border: none;
   border-radius: var(--border-radius, 8px);
   cursor: pointer;
@@ -160,7 +160,7 @@
 }
 
 .onboarding-proceed-btn:hover:not(:disabled) {
-  background-color: var(--kemis-primary-dark, #2da5d1);
+  background-color: var(--kemis-dark-blue, #1e3a8a);
   box-shadow: var(--kemis-shadow-lg, 0 .5rem 1rem rgba(0,0,0,.15));
   transform: translateY(-1px);
 }

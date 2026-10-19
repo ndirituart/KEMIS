@@ -1,0 +1,147 @@
+/* ============================================
+   KEMIS FORM STYLING
+   ============================================ */
+
+/* Form wrapper to give it breathing room on the page */
+.kemis-form-wrapper {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: var(--kemis-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--kemis-shadow-lg);
+  border-top: 4px solid var(--kemis-primary);
+}
+
+/* ============================================
+   FIELDSETS (Sections)
+   ============================================ */
+.kemis-form fieldset {
+  background: var(--kemis-section-bg);
+  border: 1px solid var(--kemis-border) !important;
+  border-radius: var(--border-radius);
+  padding: 1.5rem !important;
+  margin-bottom: 2rem !important;
+  transition: box-shadow 0.3s ease;
+}
+
+.kemis-form fieldset:hover {
+  box-shadow: var(--kemis-shadow);
+}
+
+/* The Section Title (Legend) */
+.kemis-form legend {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--kemis-dark-blue);
+  background: var(--kemis-white);
+  padding: 0.25rem 1rem;
+  border-radius: 50px;
+  border: 1px solid var(--kemis-border);
+  box-shadow: var(--kemis-shadow);
+  margin-bottom: 0;
+}
+
+/* ============================================
+   LABELS & INPUTS
+   ============================================ */
+.kemis-form .form-label {
+  color: var(--kemis-dark);
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+}
+
+.kemis-form .form-control,
+.kemis-form .form-select {
+  border: 1px solid var(--kemis-border);
+  border-radius: var(--border-radius);
+  padding: 0.6rem 0.85rem;
+  font-size: 0.95rem;
+  color: var(--kemis-black);
+  background-color: var(--kemis-white);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus State */
+.kemis-form .form-control:focus,
+.kemis-form .form-select:focus {
+  border-color: var(--kemis-primary);
+  box-shadow: 0 0 0 0.25rem rgba(63, 190, 235, 0.25); /* --kemis-primary with opacity */
+  outline: none;
+}
+
+/* Placeholder text */
+.kemis-form .form-control::placeholder {
+  color: var(--kemis-secondary);
+  opacity: 0.7;
+}
+
+/* ============================================
+   BOOLEAN TOGGLES (Switches)
+   ============================================ */
+.kemis-form .form-check-input {
+  cursor: pointer;
+  border-color: var(--kemis-secondary);
+  width: 2.5em;
+  height: 1.25em;
+}
+
+.kemis-form .form-check-input:checked {
+  background-color: var(--kemis-primary);
+  border-color: var(--kemis-primary);
+}
+
+.kemis-form .form-check-input:focus {
+  border-color: var(--kemis-primary);
+  box-shadow: 0 0 0 0.25rem rgba(63, 190, 235, 0.25);
+  outline: none;
+}
+
+.kemis-form .form-check-label {
+  cursor: pointer;
+  color: var(--kemis-dark);
+  margin-top: 0.15rem;
+}
+
+/* ============================================
+   SUBMIT BUTTON
+   ============================================ */
+.kemis-form .btn-primary {
+  background: linear-gradient(135deg, var(--kemis-primary) 0%, var(--kemis-blue) 100%);
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 0.8rem 2rem;
+  color: var(--kemis-white);
+  box-shadow: var(--kemis-shadow);
+  transition: all 0.25s ease;
+}
+
+.kemis-form .btn-primary:hover {
+  background: linear-gradient(135deg, var(--kemis-primary-dark) 0%, var(--kemis-dark-blue) 100%);
+  box-shadow: var(--kemis-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.kemis-form .btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 767.98px) {
+  .kemis-form-wrapper {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .kemis-form fieldset {
+    padding: 1rem !important;
+  }
+
+  .kemis-form legend {
+    font-size: 1rem;
+  }
+}

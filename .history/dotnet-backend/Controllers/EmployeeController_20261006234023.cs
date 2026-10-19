@@ -92,7 +92,7 @@ namespace dotnet_backend.Controllers
         }
 
        //3. To update an employee's details, some details, role is unchangeable 
-       // because logically a ranger can't be a biologist unless they went to school or a major event happens to change ca
+       // because logically a County Director of Education (CDE) can't be a biologist unless they went to school or a major event happens to change ca
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEmployee(string id, [FromBody] Employee employee)
         {

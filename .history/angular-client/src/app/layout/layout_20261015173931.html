@@ -1,0 +1,123 @@
+<header class="main-header">
+
+  <!-- ROW 1: Top colored bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span><i class="bi bi-whatsapp"></i> +254 203318581</span>
+      <span><i class="bi bi-envelope-fill"></i> helpdesk&#64;kemis.go.ke</span>
+    </div>
+    <div class="top-bar-right">
+      <a class="login-btn" routerLink="/login">Login</a>
+      <a class="social-icon" href="#"><i class="bi bi-facebook"></i></a>
+      <a class="social-icon" href="#"><i class="bi bi-twitter-x"></i></a>
+      <a class="social-icon" href="#"><i class="bi bi-linkedin"></i></a>
+    </div>
+  </div>
+
+  <!-- ROW 2: Navbar with logo, links, KEMIS logo -->
+  <nav class="nav-bar">
+    <div class="nav-logo-left">
+      <img src="assets/ministry-logo.png" alt="Ministry of Education" />
+    </div>
+
+    <ul class="nav-links">
+      <a routerLink="/" routerLinkActive="active">Home</a>
+      <a routerLink="/aboutus" routerLinkActive="active">About KEMIS</a>
+      <a routerLink="/systemmodules" routerLinkActive="active">System Modules</a>
+      <a routerLink="/resources" routerLinkActive="active">Resources</a>
+      <a routerLink="/support" routerLinkActive="active">Support</a>
+      <a routerLink="/faqs" routerLinkActive="active">FAQ's</a>
+    </ul>
+
+    <div class="nav-logo-right">
+      <img src="." alt="KEMIS" />
+    </div>
+  </nav>
+
+</header>
+
+  <div class="hero-content">
+    <h1>Training System</h1>
+    <p>
+      Welcome to the Kenya Education Management Information System (KEMIS), your
+      comprehensive platform for education data management. From early childhood
+      development to university excellence, KEMIS provides the insights and tools
+      necessary to drive informed decision-making and enhance learning outcomes
+      across the nation.
+    </p>
+
+    <div class="hero-actions">
+      <button class="kemis-btn kemis-btn-primary" routerLink="/institution-onboarding">
+        Onboard Your Institution <i class="bi bi-arrow-right"></i>
+      </button>
+      <button class="kemis-btn kemis-btn-secondary">
+        Explore KEMIS <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+
+  <!-- LEFT: image / illustration panel -->
+  <div class="hero-image">
+    <img src="assets/hero-students.jpg" alt="KEMIS" />
+  </div>
+
+  <!-- RIGHT: text content -->
+</section>
+
+
+<!-- CONTACT CARD (overlapping the hero bottom) -->
+<div class="contact-wrapper">
+  <div class="kemis-contact-card">
+    <h5>Get in Touch With Us</h5>
+
+    <div class="kemis-row">
+      <div class="kemis-col">
+        <div class="kemis-contact-item">
+          <i class="bi bi-envelope-fill kemis-contact-icon" style="color:#f59e0b;"></i>
+          helpdesk&#64;kemis.go.ke
+        </div>
+        <div class="kemis-contact-item">
+          <i class="bi bi-geo-alt-fill kemis-contact-icon" style="color:#dc143c;"></i>
+          Jogoo House B, Taifa road Nairobi
+        </div>
+      </div>
+      <div class="kemis-col">
+        <div class="kemis-contact-item">
+          <i class="bi bi-whatsapp kemis-contact-icon" style="color:#25d366;"></i>
+          +254203318581
+        </div>
+        <div class="kemis-contact-item">
+          <i class="bi bi-globe kemis-contact-icon" style="color:#1e40af;"></i>
+          www.kemis.go.ke
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  //In modern Angular (v17+), simply import RouterLink and RouterLinkActive directly into your component. RouterLinkActiveOptions should not be in the imports array.
+  import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { NotificationBannerComponent } from '../../../angular-client/src/laylout/components/notification-banner';
+
+@Component({
+  selector: 'laylout-root',
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    NotificationBannerComponent
+  ],
+  templateUrl: './laylout.html',
+  styleUrl: './laylout.css'
+})
+export class AppComponent {}
+</script>
+
+

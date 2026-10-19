@@ -1,0 +1,77 @@
+<!--No header because it is in app.html-->
+
+
+
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+
+  <!-- LEFT: image / illustration panel -->
+  <div class="hero-image">
+    <img src="assets/hero-students.jpg" alt="KEMIS" />
+  </div>
+
+  <!-- RIGHT: text content -->
+</section>
+
+
+<!-- CONTACT CARD (overlapping the hero bottom) -->
+<div class="contact-wrapper">
+  <div class="kemis-contact-card">
+    <h5>Get in Touch With Us</h5>
+
+    <div class="kemis-row">
+      <div class="kemis-col">
+        <div class="kemis-contact-item">
+          <i class="bi bi-envelope-fill kemis-contact-icon" style="color:#f59e0b;"></i>
+          helpdesk&#64;kemis.go.ke
+        </div>
+        <div class="kemis-contact-item">
+          <i class="bi bi-geo-alt-fill kemis-contact-icon" style="color:#dc143c;"></i>
+          Jogoo House B, Taifa road Nairobi
+        </div>
+      </div>
+      <div class="kemis-col">
+        <div class="kemis-contact-item">
+          <i class="bi bi-whatsapp kemis-contact-icon" style="color:#25d366;"></i>
+          +254203318581
+        </div>
+        <div class="kemis-contact-item">
+          <i class="bi bi-globe kemis-contact-icon" style="color:#1e40af;"></i>
+          www.kemis.go.ke
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<main>
+  <app-notification-banner></app-notification-banner> <!--Had to be wrapped in a component to avoid errors-->
+  <div class="auth-container">
+<router-outlet></router-outlet>   <!-- <-- must exist -->
+  </div>
+</main>
+
+<script>
+  //In modern Angular (v17+), simply import RouterLink and RouterLinkActive directly into your component. RouterLinkActiveOptions should not be in the imports array.
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { NotificationBannerComponent } from '../../../angular-client/src/app/components/notification-banner';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    NotificationBannerComponent
+  ],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class AppComponent {}
+</script>
+
+

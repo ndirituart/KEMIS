@@ -1,2 +1,37 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
+:root {
+  --kemis-red: #dc143c;
+  --kemis-black: #1a1a1a;
+  --kemis-green: #006b3c;
+  --kemis-dark-green: #004d2a;
+  --kemis-blue: #1e40af;
+  --kemis-dark-blue: #1e3a8a;
+  --kemis-light-blue: #3b82f6;
+  --kemis-sky-blue: #0ea5e9;
+  --kemis-white: #ffffff;
+  --kemis-primary: #3fbeeb;
+  --kemis-primary-dark: #2da5d1;
+  --kemis-primary-light: #e6f7ff;
+  --kemis-secondary: #6c757d;
+  --kemis-success: #28a745;
+  --kemis-danger: #dc3545;
+  --kemis-warning: #ffc107;
+  --kemis-light: #f8f9fa;
+  --kemis-dark: #343a40;
+  --kemis-border: #dee2e6;
+  --kemis-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+  --kemis-shadow-lg: 0 .5rem 1rem rgba(0,0,0,.15);
+  --kemis-gradient-bg: linear-gradient(135deg, #e6f7ff 0%, #ffffff 50%, #e0f7fa 100%);
+  --kemis-section-bg: linear-gradient(to right, rgba(63,190,235,.08), rgba(224,247,250,.4));
+  --border-radius: 8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--kemis-white);
+  color: var(--kemis-black);
+}

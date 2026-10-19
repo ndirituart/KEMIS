@@ -1,0 +1,66 @@
+<header class="main-header">
+
+  <!-- ROW 1: Top colored bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span><i class="bi bi-whatsapp"></i> +254 203318581</span>
+      <span><i class="bi bi-envelope-fill"></i> helpdesk&#64;kemis.go.ke</span>
+    </div>
+    <div class="top-bar-right">
+      <a class="login-btn" routerLink="/login">Login</a>
+      <a class="social-icon" href="#"><i class="bi bi-facebook"></i></a>
+      <a class="social-icon" href="#"><i class="bi bi-twitter-x"></i></a>
+      <a class="social-icon" href="#"><i class="bi bi-linkedin"></i></a>
+    </div>
+  </div>
+
+  <!-- ROW 2: Navbar -->
+  <nav class="nav-bar">
+    <div class="nav-logo-left">
+      <img src="assets/ministry-logo.png" alt="Ministry of Education" />
+    </div>
+
+    <ul class="nav-links">
+      <a routerLink="/"          routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a>
+      <a routerLink="/aboutus"   routerLinkActive="active">About KEMIS</a>
+      <a routerLink="/systemmodules" routerLinkActive="active">System Modules</a>
+      <a routerLink="/resources" routerLinkActive="active">Resources</a>
+      <a routerLink="/support"   routerLinkActive="active">Support</a>
+      <a routerLink="/faqs"      routerLinkActive="active">FAQ's</a>
+    </ul>
+
+    <div class="nav-logo-right">
+      <img src="assets/kemis-logo.png" alt="KEMIS" />
+    </div>
+  </nav>
+
+</header>
+
+<!-- THIS is what swaps between pages -->
+<main class="app-main">
+  <app-notification-banner></app-notification-banner>
+  <router-outlet></router-outlet>
+</main>
+
+<script>
+  //In modern Angular (v17+), simply import RouterLink and RouterLinkActive directly into your component. RouterLinkActiveOptions should not be in the imports array.
+  import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { NotificationBannerComponent } from '../../../angular-client/src/app/components/notification-banner';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    NotificationBannerComponent
+  ],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class AppComponent {}
+</script>
+
+
