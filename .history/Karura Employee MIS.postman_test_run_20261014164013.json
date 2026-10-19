@@ -21,7 +21,7 @@
         "tags": [
           "USERS"
         ],
-        "description": "Updating user details upon request eg changing name or email or mobile number. Only admins can do so",
+        "description": "Updating user details upon request eg changing name or emailId or mobile number. Only admins can do so",
         "requestBody": {
           "content": {
             "application/json": {
@@ -33,7 +33,7 @@
                   },
                   "emailId": {
                     "type": "string",
-                    "format": "email"
+                    "format": "emailId"
                   },
                   "fullName": {
                     "type": "string"
@@ -93,7 +93,7 @@
                 "properties": {
                   "emailId": {
                     "type": "string",
-                    "format": "email"
+                    "format": "emailId"
                   },
                   "fullName": {
                     "type": "string"
@@ -166,7 +166,7 @@
                 "properties": {
                   "emailId": {
                     "type": "string",
-                    "format": "email"
+                    "format": "emailId"
                   },
                   "password": {
                     "type": "string"
@@ -206,7 +206,7 @@
                   },
                   "emailId": {
                     "type": "string",
-                    "format": "email"
+                    "format": "emailId"
                   },
                   "mobileNo": {
                     "type": "string",

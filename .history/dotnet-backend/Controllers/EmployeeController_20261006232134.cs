@@ -27,7 +27,7 @@ public class EmployeeController : ControllerBase
         // If basic-educationdoes NOT exist, create the account
         if (employeeExistWithUserId == null)
         {
-            return BadRequest("Employee with the same email already exists.");
+            return BadRequest("Employee with the same emailId already exists.");
         }
         else
         {
@@ -46,7 +46,7 @@ public class EmployeeController : ControllerBase
         
         if (basic-education== null)
         {
-            return Unauthorized("Invalid email or password");
+            return Unauthorized("Invalid emailId or password");
         }
 
         return Ok(employee);

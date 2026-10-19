@@ -32,7 +32,7 @@ public class EmployeeController : ControllerBase
         }
         else
         {
-            return BadRequest("Employee with the same email already exists.");
+            return BadRequest("Employee with the same emailId already exists.");
         }
     }
 
@@ -44,7 +44,7 @@ public class EmployeeController : ControllerBase
         
         if (user == null)
         {
-            return Unauthorized("Invalid email or password");
+            return Unauthorized("Invalid emailId or password");
         }
 
         return Ok(user);

@@ -38,7 +38,7 @@ public class UserController : ControllerBase
         }
         else
         {
-            return BadRequest("User with the same email already exists.");
+            return BadRequest("User with the same emailId already exists.");
         }
     }
 
@@ -50,7 +50,7 @@ public class UserController : ControllerBase
         
         if (user == null)
         {
-            return Unauthorized("Invalid email or password");
+            return Unauthorized("Invalid emailId or password");
         }
 
         return Ok(user);
@@ -76,56 +76,74 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    // // 4(b). Get Users by Role Endpoint
-    // [HttpGet("role/{role}")]
-    // public IActionResult GetByRole(string role)
-    // {
-    //     return Ok(_context.Users
-    //         .Where(u => u.role == role && u.status == "active" && u.deletedAt == null)
-    //         .Select(u => new User(u))
-    //         .ToList());
-    // }
+    // 4(b). Get Users by Role Endpoint
+    [HttpGet("role/{role}")]
+    public IActionResult GetByRole(string role)
+    {
+        var users = _context.Users
+            .Where(u => u.role == role && u.status == "active" && u.deletedAt == null)
+            .ToList();
+
+        return Ok(users);
+    }
 
     // 5(a). Update User Endpoint
     [HttpPut("{id:int}")]
     public IActionResult UpdateUser(int id, [FromBody] User user)
     {
-        var existingUser = _context.Users.FirstOrDefault(u => u.userId == id);
-        if (existingUser == null)
-        {
-            return NotFound();
-        }
+    var existingUser = _context.Users.FirstOrDefault(u => u.userId == id);
+    if (existingUser == null) return NotFound();
 
-        //everything but UNCHANGEABLE userId and nationalID
+    // Only update if the incoming value is provided
+    if (!string.IsNullOrWhiteSpace(user.fullName)) 
         existingUser.fullName = user.fullName;
+        
+    if (!string.IsNullOrWhiteSpace(user.emailId)) 
         existingUser.emailId = user.emailId;
-        existingUser.mobileNo = user.mobileNo;
-        existingUser.role = user.role;
-        existingUser.county = user.county;
-        existingUser.subCounty = user.subCounty;
-        existingUser.constituency = user.constituency;
-        existingUser.updatedAt    = NowIso();       // ⬅️ stamp it
 
-        _context.SaveChanges();
-        return Ok(existingUser);
+    if (!string.IsNullOrWhiteSpace(user.mobileNo)) 
+        existingUser.mobileNo = user.mobileNo;
+
+    if (!string.IsNullOrWhiteSpace(user.role)) 
+        existingUser.role = user.role;
+
+    if (!string.IsNullOrWhiteSpace(user.county)) 
+        existingUser.county = user.county;
+
+    if (!string.IsNullOrWhiteSpace(user.subCounty)) 
+        existingUser.subCounty = user.subCounty;
+
+    if (!string.IsNullOrWhiteSpace(user.constituency)) 
+        existingUser.constituency = user.constituency;
+
+    existingUser.updatedAt = DateTime.UtcNow.ToString("o");
+
+    _context.SaveChanges();
+    return Ok(existingUser);
     }
 
 //    //5(b). Update user password 
-//TODO: Learn how to learn Passwords
-//    // PUT: api/users/5/password
-//     [HttpPut("{id:int}/password")]
-//     public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordDto dto)
-//     {
-//         var user = await _context.Users.FindAsync(id);
-//         if (user is null) return NotFound();
-//         if (!_hasher.Verify(dto.currentPassword, user.password))
-//             return Unauthorized(new { message = "Current password is incorrect." });
+    [HttpPut("{id:int}/password")]
+    public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePassword payload)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user is null) return NotFound("User not found.");
 
-//         user.password  = _hasher.Hash(dto.newPassword);
-//         user.updatedAt = NowIso();
-//         await _context.SaveChangesAsync();
-//         return NoContent();
-//     }
+        // ⚠️ TEMPORARY PLAIN TEXT CHECK (Since you aren't hashing yet)
+        if (user.password != payload.currentPassword)
+        {
+            return Unauthorized(new { message = "Current password is incorrect." });
+        }
+
+        // Update to the new password
+        user.password = payload.newPassword; 
+        
+        // Stamp the time
+        user.updatedAt = DateTime.UtcNow.ToString("o");
+
+        await _context.SaveChangesAsync();
+        return NoContent(); // 204 Success
+    }
 
 
     // 6(a). Soft delete User Endpoint
@@ -147,7 +165,7 @@ public class UserController : ControllerBase
 
     // 6(b).Delete User Endpoint
 
-    [HttpDelete("{id:int/permanent}")]
+   [HttpDelete("{id:int}/permanent")]
     public IActionResult DeleteUser(int id)
     {
         var user = _context.Users.FirstOrDefault(u => u.userId == id);

@@ -31,7 +31,8 @@ app.UseRouting();
 app.UseCors("allowCors");
 app.UseCors("dev");
 app.UseAuthorization();
-
+//see API errors
+app.UseDeveloperExceptionPage();
 app.MapControllers();
 
 app.Run();

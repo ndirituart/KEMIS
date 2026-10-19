@@ -32,7 +32,7 @@
 //         }
 //         else
 //         {
-//             return BadRequest("Project with the same email already exists.");
+//             return BadRequest("Project with the same emailId already exists.");
 //         }
 //     }
 
@@ -44,7 +44,7 @@
         
 //         if (project == null)
 //         {
-//             return Unauthorized("Invalid email or password");
+//             return Unauthorized("Invalid emailId or password");
 //         }
 
 //         return Ok(project);

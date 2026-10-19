@@ -28,14 +28,14 @@ export class Login {
 
   // --- Data Models ---
   loginModel = {
-    email: '',
+    emailId: '',
     password: '',
     rememberMe: false,
   };
 
   registerModel = {
     username: '',
-    email: '',
+    emailId: '',
     password: '',
     confirmPassword: '',
   };
@@ -68,20 +68,20 @@ export class Login {
 
     await this.simulateDelay(1000);
 
-    const user = this.users.get(this.loginModel.email);
+    const user = this.users.get(this.loginModel.emailId);
 
     if (user && user.passwordHash === this.loginModel.password) {
       if (user.twofaEnabled) {
-        this.userPending2FA = this.loginModel.email;
+        this.userPending2FA = this.loginModel.emailId;
         this.show2FA = true;
         this.isLoading = false;
         this.notification.showSuccess('Password verified. Please enter 2FA code.');
       } else {
-        this.completeLogin(this.loginModel.email, user.username);
+        this.completeLogin(this.loginModel.emailId, user.username);
       }
     } else {
       this.isLoading = false;
-      this.notification.showError('Invalid email or password. Please try again.');
+      this.notification.showError('Invalid emailId or password. Please try again.');
     }
   }
 
@@ -92,8 +92,8 @@ export class Login {
       return;
     }
 
-    if (this.users.has(this.registerModel.email)) {
-      this.notification.showError('This email is already registered.');
+    if (this.users.has(this.registerModel.emailId)) {
+      this.notification.showError('This emailId is already registered.');
       return;
     }
 
@@ -103,7 +103,7 @@ export class Login {
     await this.simulateDelay(1000);
 
     const has2FA = Math.random() < 0.5;
-    this.users.set(this.registerModel.email, {
+    this.users.set(this.registerModel.emailId, {
       username: this.registerModel.username,
       passwordHash: this.registerModel.password,
       twofaEnabled: has2FA
@@ -111,7 +111,7 @@ export class Login {
 
     this.isLoading = false;
     this.notification.showSuccess('Registration successful! Logging you in...');
-    this.completeLogin(this.registerModel.email, this.registerModel.username);
+    this.completeLogin(this.registerModel.emailId, this.registerModel.username);
   }
 
   async onVerify2FA(): Promise<void> {
@@ -134,11 +134,11 @@ export class Login {
     }
   }
 
-  private completeLogin(email: string, username: string): void {
+  private completeLogin(emailId: string, username: string): void {
     if (this.loginModel.rememberMe) {
-      localStorage.setItem('rememberedUserEmail', email);
+      localStorage.setItem('rememberedUserEmail', emailId);
     } else {
-      sessionStorage.setItem('sessionUserEmail', email);
+      sessionStorage.setItem('sessionUserEmail', emailId);
     }
 
     this.isLoading = false;
@@ -149,7 +149,7 @@ export class Login {
   // --- Validation Logic ---
 
   private validateLogin(): string | null {
-    if (!this.loginModel.email) return 'Email is required.';
+    if (!this.loginModel.emailId) return 'Email is required.';
     if (!this.loginModel.password) return 'Password is required.';
     return null;
   }
@@ -158,8 +158,8 @@ export class Login {
     if (!this.registerModel.username || this.registerModel.username.length < 3) {
       return 'Username must be at least 3 characters.';
     }
-    if (!/\S+@\S+\.\S+/.test(this.registerModel.email)) {
-      return 'Please enter a valid email address.';
+    if (!/\S+@\S+\.\S+/.test(this.registerModel.emailId)) {
+      return 'Please enter a valid emailId address.';
     }
     if (this.registerModel.password.length < 8) {
       return 'Password must be at least 8 characters long.';

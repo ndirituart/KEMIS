@@ -18,7 +18,7 @@ public class UserController : ControllerBase
         {
             _context.Users.Add(obj);
             _context.SaveChanges();
-            return BadRequest("User with the same email already exists.");
+            return BadRequest("User with the same emailId already exists.");
         }
 
         _context.Users.Add(obj); //create

@@ -28,14 +28,14 @@ export class Login {
 
   // --- Form Models ---
   loginModel = {
-    email: '',
+    emailId: '',
     password: '',
     rememberMe: false,
   };
 
   registerModel = {
     username: '',
-    email: '',
+    emailId: '',
     password: '',
     confirmPassword: '',
     mobileNo: '', // Added field for registration payload
@@ -61,7 +61,7 @@ export class Login {
     this.notification.showLoading('Logging in...');
 
     const payload = {
-      emailId: this.loginModel.email,
+      emailId: this.loginModel.emailId,
       password: this.loginModel.password,
     };
 
@@ -71,7 +71,7 @@ export class Login {
 
         // Check if 2FA response requirement is returned by backend
         if (res?.twofaEnabled) {
-          this.userPending2FA = this.loginModel.email;
+          this.userPending2FA = this.loginModel.emailId;
           this.show2FA = true;
           this.notification.showSuccess('Password verified. Please enter 2FA code.');
           return;
@@ -82,7 +82,7 @@ export class Login {
       error: (err: any) => {
         this.isLoading = false;
         if (err.status === 401) {
-          this.notification.showError(err.error?.message || 'Invalid email or password.');
+          this.notification.showError(err.error?.message || 'Invalid emailId or password.');
         } else {
           this.notification.showError('An error occurred during login. Please try again.');
         }
@@ -104,7 +104,7 @@ export class Login {
     const payload = {
       userId: 0,
       fullName: this.registerModel.username,
-      emailId: this.registerModel.email,
+      emailId: this.registerModel.emailId,
       password: this.registerModel.password,
       mobileNumber: this.registerModel.mobileNo || '0000000000',
       createdDate: new Date().toISOString(),
@@ -138,7 +138,7 @@ export class Login {
     this.notification.showLoading('Verifying 2FA Code...');
 
     const payload = {
-      email: this.userPending2FA,
+      emailId: this.userPending2FA,
       code: this.twoFaModel.code,
     };
 
@@ -175,7 +175,7 @@ export class Login {
   }
 
   private validateLogin(): string | null {
-    if (!this.loginModel.email) return 'Email is required.';
+    if (!this.loginModel.emailId) return 'Email is required.';
     if (!this.loginModel.password) return 'Password is required.';
     return null;
   }
@@ -184,8 +184,8 @@ export class Login {
     if (!this.registerModel.username || this.registerModel.username.length < 3) {
       return 'Username must be at least 3 characters.';
     }
-    if (!/\S+@\S+\.\S+/.test(this.registerModel.email)) {
-      return 'Please enter a valid email address.';
+    if (!/\S+@\S+\.\S+/.test(this.registerModel.emailId)) {
+      return 'Please enter a valid emailId address.';
     }
     if (this.registerModel.password.length < 8) {
       return 'Password must be at least 8 characters long.';

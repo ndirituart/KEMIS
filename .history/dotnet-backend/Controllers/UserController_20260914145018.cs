@@ -19,7 +19,7 @@ public class UserController : ControllerBase
         _context.SaveChanges(); //saves
         return CreatedAtAction(nameof(GetUser), new { id = obj.userId }, "User " + obj.fullName + " created successfully"); //success message
   
-            return BadRequest("User with the same email already exists.");
+            return BadRequest("User with the same emailId already exists.");
         }
 
          }

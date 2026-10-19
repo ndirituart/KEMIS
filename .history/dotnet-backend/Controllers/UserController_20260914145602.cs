@@ -21,7 +21,7 @@ public class UserController : ControllerBase
             return CreatedAtAction(nameof(GetUser), new { id = obj.userId }, "User " + obj.fullName + " created successfully"); //success message
         }
         else{
-             return BadRequest("User with the same email already exists.");
+             return BadRequest("User with the same emailId already exists.");
         }
 
     }

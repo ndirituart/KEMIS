@@ -43,7 +43,7 @@ loading: any;
       role: ['', Validators.required],
       firstName: ['', [Validators.required, Validators.maxLength(80)]],
       lastName:  ['', [Validators.required, Validators.maxLength(80)]],
-      email:     ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
+      emailId:     ['', [Validators.required, Validators.emailId, Validators.maxLength(150)]],
       phoneNumber: ['', [Validators.maxLength(20)]],
       dateOfBirth: [null as string | null],
       gender:      [null as string | null],
@@ -94,7 +94,7 @@ loading: any;
       role: '',
       firstName: '',
       lastName: '',
-      email: '',
+      emailId: '',
       phoneNumber: '',
       dateOfBirth: null,
       gender: null,
@@ -129,7 +129,7 @@ loading: any;
     };
     if (anyErr?.status === 0)   return 'Network error — could not reach the API. Is the server running?';
     if (anyErr?.status === 404) return 'The linked user does not exist. Check the User ID and try again.';
-    if (anyErr?.status === 409) return 'An basic-educationwith this User ID or email already exists.';
+    if (anyErr?.status === 409) return 'An basic-educationwith this User ID or emailId already exists.';
     if (anyErr?.status === 400) {
       if (typeof anyErr.error === 'string') return anyErr.error;
       if (typeof anyErr.error?.message === 'string') return anyErr.error.message;

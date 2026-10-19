@@ -10,7 +10,7 @@ export interface CreateEmployeeDto {
 
   firstName: string;
   lastName: string;
-  email: string;
+  emailId: string;
   phoneNumber?: string | null;
   dateOfBirth?: string | null;
   gender?: string | null;

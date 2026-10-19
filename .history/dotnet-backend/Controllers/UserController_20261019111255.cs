@@ -36,7 +36,7 @@ private static string NowIso()
         }
         else
         {
-            return BadRequest("User with the same email already exists.");
+            return BadRequest("User with the same emailId already exists.");
         }
     }
 
@@ -48,7 +48,7 @@ private static string NowIso()
         
         if (user == null)
         {
-            return Unauthorized("Invalid email or password");
+            return Unauthorized("Invalid emailId or password");
         }
 
         return Ok(user);

@@ -21,7 +21,7 @@ public class UserController : ControllerBase
             return CreatedAtAction(nameof(GetUser), new { id = obj.userId }, "User " + obj.fullName + " created successfully"); //success message
         }
         else{
-             return BadRequest("User with the same email already exists.");
+             return BadRequest("User with the same emailId already exists.");
         }
 
     }
@@ -33,7 +33,7 @@ public class UserController : ControllerBase
         var user = _context.Users.FirstOrDefault(u => u.emailId == userLogin.emailId && u.password == userLogin.password);
         if (user == null)
         {
-            return StatusCode(401, "Invalid email or password")
+            return StatusCode(401, "Invalid emailId or password")
         }
         else{
             return StatusCode(200, "",user)

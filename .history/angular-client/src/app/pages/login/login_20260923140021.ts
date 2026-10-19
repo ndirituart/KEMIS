@@ -98,7 +98,7 @@ export class Login {
       error: (err: any) => {
         this.isLoading = false;
         if (err.status === 401) {
-          this.notification.showError(err.error?.message || 'Invalid email or password.');
+          this.notification.showError(err.error?.message || 'Invalid emailId or password.');
         } else {
           this.notification.showError('An error occurred during login. Please try again.');
         }
@@ -196,10 +196,10 @@ export class Login {
   // --- Enforce Strict Registration Validation ---
   private validateRegister(): string | null {
     if (!this.registerModel.fullName || this.registerModel.fullName.length < 3) {
-      return 'Full Name must be at least 3 characters.';
+      return 'Institution Name must be at least 3 characters.';
     }
     if (!/\S+@\S+\.\S+/.test(this.registerModel.emailId)) {
-      return 'Please enter a valid email address.';
+      return 'Please enter a valid emailId address.';
     }
     if (!this.registerModel.mobileNo) {
       return 'Mobile Number is required.';

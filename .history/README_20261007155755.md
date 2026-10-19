@@ -47,7 +47,7 @@ Styling install Bootstrap and Fontawesome. Add to package.lock.json and angular.
 This will handle secure login and sign up and use JWS Token Authentication. Tutorial being followed <https://www.youtube.com/watch?v=5oVFQU3Pb_g>
 
 Pages or rather major components:
-~ Login (email +password)
+~ Login (emailId +password)
 ~ Sign up/Create a new admin (Username + Full Name + Mobile Number + Email Address + Password)
 ~ Two-Factor Authentication (2FA)
 ~ Password recovery process when user forgets password

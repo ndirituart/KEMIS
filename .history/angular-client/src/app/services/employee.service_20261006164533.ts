@@ -24,7 +24,7 @@ const fields = {
   role:           { el: document.getElementById('role'),                    errorEl: document.getElementById('roleError') },
   firstName:      { el: document.getElementById('firstName'),               errorEl: document.getElementById('firstNameError') },
   lastName:       { el: document.getElementById('lastName'),                errorEl: document.getElementById('lastNameError') },
-  email:          { el: document.getElementById('email'),                   errorEl: document.getElementById('emailError') },
+  emailId:          { el: document.getElementById('emailId'),                   errorEl: document.getElementById('emailError') },
   phoneNumber:    { el: document.getElementById('phoneNumber'),             errorEl: document.getElementById('phoneNumberError') },
   department:     { el: document.getElementById('department'),              errorEl: document.getElementById('departmentError') },
   jobTitle:       { el: document.getElementById('jobTitle'),                errorEl: document.getElementById('jobTitleError') },
@@ -87,7 +87,7 @@ async function checkUserIdExists(id) {
 
     const user = await res.json();
     const displayName =
-      user.fullName || user.username || user.email || `#${id}`;
+      user.fullName || user.username || user.emailId || `#${id}`;
     return { ok: true, message: `Linked to ${displayName}.` };
   } catch (err) {
     return { ok: false, message: 'Cannot reach the server. Is the API running?' };
@@ -158,12 +158,12 @@ function validateForm() {
   }
 
   // Email (simple pattern; server re-validates)
-  const email = fields.email.el.value.trim();
-  if (!email) {
-    setFieldError('email', 'Email is required.');
+  const emailId = fields.emailId.el.value.trim();
+  if (!emailId) {
+    setFieldError('emailId', 'Email is required.');
     valid = false;
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    setFieldError('email', 'Enter a valid email address.');
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailId)) {
+    setFieldError('emailId', 'Enter a valid emailId address.');
     valid = false;
   }
 
@@ -194,7 +194,7 @@ function buildPayload() {
     role:           fields.role.el.value,
     firstName:      fields.firstName.el.value.trim(),
     lastName:       fields.lastName.el.value.trim(),
-    email:          fields.email.el.value.trim(),
+    emailId:          fields.emailId.el.value.trim(),
     phoneNumber:    fields.phoneNumber.el.value.trim() || null,
     dateOfBirth:    document.getElementById('dateOfBirth').value || null,
     gender:         document.getElementById('gender').value || null,
@@ -263,7 +263,7 @@ form.addEventListener('submit', async (e) => {
       const body = await res.json().catch(() => ({}));
       showMessage(body.message || 'Invalid data. Please review the form.', 'error');
     } else if (res.status === 409) {
-      showMessage('An basic-educationwith this User ID or email already exists.', 'error');
+      showMessage('An basic-educationwith this User ID or emailId already exists.', 'error');
     } else if (res.status === 404) {
       showMessage('The linked user no longer exists. Pick a different User ID.', 'error');
     } else {

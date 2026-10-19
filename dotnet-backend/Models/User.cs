@@ -24,3 +24,21 @@ public class User
     public string? deletedAt { get; set; }              
     public string status { get; set; } = "active";      // "active" | "inactive"
 }
+
+public class UpdateUser
+{
+    public string? fullName { get; set; }
+    public string? emailId { get; set; }
+    public string? mobileNo { get; set; }
+    public string? role { get; set; }
+    public string? county { get; set; }
+    public string? subCounty { get; set; }
+    public string? constituency { get; set; }
+}
+
+//future feature
+public class ChangePassword
+{
+    public string currentPassword { get; set; } = string.Empty;
+    public string newPassword { get; set; } = string.Empty;
+}

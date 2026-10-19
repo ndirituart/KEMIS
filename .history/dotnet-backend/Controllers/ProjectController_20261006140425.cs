@@ -32,7 +32,7 @@ public class ProjectController : ControllerBase
         }
         else
         {
-            return BadRequest("Project with the same email already exists.");
+            return BadRequest("Project with the same emailId already exists.");
         }
     }
 
@@ -44,7 +44,7 @@ public class ProjectController : ControllerBase
         
         if (project == null)
         {
-            return Unauthorized("Invalid email or password");
+            return Unauthorized("Invalid emailId or password");
         }
 
         return Ok(user);

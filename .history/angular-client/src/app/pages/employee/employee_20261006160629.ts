@@ -7,7 +7,7 @@ export interface UserDto {
   id: number;
   username?: string;
   fullName?: string;
-  email?: string;
+  emailId?: string;
 }
 
 /** Payload posted to POST /api/Employee. */
@@ -17,7 +17,7 @@ export interface CreateEmployeeDto {
 
   firstName: string;
   lastName: string;
-  email: string;
+  emailId: string;
   phoneNumber?: string | null;
   dateOfBirth?: string | null;   // ISO date "1990-05-14"
   gender?: string | null;

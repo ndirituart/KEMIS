@@ -41,8 +41,8 @@
     <form *ngIf="activeTab === 'login' && !show2FA" class="auth-form active" (ngSubmit)="onLogin()">
       <h2>Welcome Back!</h2>
       <div class="form-group">
-        <label for="login-email">Email:</label>
-        <input type="email" id="login-email" name="email" [(ngModel)]="loginModel.emailId" required autocomplete="email" />
+        <label for="login-emailId">Email:</label>
+        <input type="emailId" id="login-emailId" name="emailId" [(ngModel)]="loginModel.emailId" required autocomplete="emailId" />
       </div>
 
       <div class="form-group password-group">
@@ -72,16 +72,16 @@
     <form *ngIf="activeTab === 'register' && !show2FA" class="auth-form active" (ngSubmit)="onRegister()">
       <h2>Create Account</h2>
 
-      <!-- Full Name -->
+      <!-- Institution Name -->
       <div class="form-group">
-        <label for="register-fullName">Full Name:</label>
+        <label for="register-fullName">Institution Name:</label>
         <input type="text" id="register-fullName" name="fullName" [(ngModel)]="registerModel.fullName" required autocomplete="name" placeholder="John Doe" />
       </div>
 
       <!-- Email -->
       <div class="form-group">
-        <label for="register-email">Email:</label>
-        <input type="email" id="register-email" name="emailId" [(ngModel)]="registerModel.emailId" required autocomplete="email" placeholder="example@domain.com" />
+        <label for="register-emailId">Email:</label>
+        <input type="emailId" id="register-emailId" name="emailId" [(ngModel)]="registerModel.emailId" required autocomplete="emailId" placeholder="example@domain.com" />
       </div>
 
       <!-- Mobile Number -->
@@ -144,7 +144,7 @@
     <!-- 2FA Form -->
     <form *ngIf="show2FA" class="auth-form active" (ngSubmit)="onVerify2FA()">
       <h2>Two-Factor Authentication</h2>
-      <p class="twofa-info">A verification code has been sent to your registered device/email.</p>
+      <p class="twofa-info">A verification code has been sent to your registered device/emailId.</p>
       <div class="form-group">
         <label for="twofa-code">Verification Code:</label>
         <input type="text" id="twofa-code" name="twofaCode" [(ngModel)]="twoFaModel.code" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" />

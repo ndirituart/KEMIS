@@ -14,7 +14,7 @@ export class BasicEducation {
     gender: '',
     isActive: true,
     // Section 2
-    email: '',
+    emailId: '',
     county: '',
     receiveSms: false,
     // Section 3
