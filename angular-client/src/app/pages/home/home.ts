@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { NotificationBannerComponent } from '../../components/notification-banner/notification-banner.component';
+import { RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, NotificationBannerComponent],
+  imports: [RouterLink ],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

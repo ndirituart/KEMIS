@@ -1,0 +1,261 @@
+<div class="kemis-form-wrapper">
+<form class="kemis-form" (ngSubmit)="onSubmit()" #myForm="ngForm">
+<h1 class="text-center mb-4">Basic Education Institution Onboarding Form</h1>
+  <!-- ========================================== -->
+  <!-- Section 1: Institution Details                -->
+  <!-- ========================================== -->
+  <fieldset class="mb-4 p-3 border rounded">
+    <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 1: Institution Details</legend>
+
+    <div class="row g-3">
+      <!-- Institution Name -->
+      <div class="col-md-6">
+        <label for="fullName" class="form-label fw-semibold">Institution Name</label>
+        <input type="text" class="form-control" id="fullName" name="fullName" placeholder="e.g. John Doe" required>
+      </div>
+
+      <!-- Type of School based on Gender -->
+      <div class="col-md-6">
+        <label for="institution-type" class="form-label fw-semibold">Institution Type</label>
+        <select class="form-select" id="institution-type" name="institution-type" required>
+          <option value="" disabled selected>Select institution-type</option>
+          <option value="Boy's School">Boy's School</option>
+          <option value="Girl's School">Girl's School</option>
+          <option value="Mixed School">Mixed School</option>
+        </select>
+      </div>
+
+      <!-- Institution Email -->
+      <div class="col-md-6">
+        <label for="emailId" class="form-label fw-semibold">Institution Email</label>
+        <input type="email" class="form-control" id="emailId" name="emailId" placeholder="institution@example.com" required>
+      </div>
+
+      <!-- Institution Phone Number -->
+      <div class="col-md-6">
+        <label for="phoneNumber" class="form-label fw-semibold">Institution Phone Number</label>
+        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="+254 700 000 000" required>
+      </div>
+
+      <!-- Head of Institution -->
+      <div class="col-md-6">
+        <label for="headOfInstitution" class="form-label fw-semibold">Head of Institution</label>
+        <input type="text" class="form-control" id="headOfInstitution" name="headOfInstitution" placeholder="e.g. John Doe" required>
+      </div>
+
+      <!-- Postal Address of HOI -->
+      <div class="col-md-6">
+        <label for="postalAddressHoi" class="form-label fw-semibold">Postal Address of HOI</label>
+        <input type="text" class="form-control" id="postalAddressHoi" name="postalAddressHoi" placeholder="e.g. 00100" required>
+      </div>
+
+      <!--County List-->
+      <div class="col-md-6">
+        <label for="county" class="form-label fw-semibold">County</label>
+        <select class="form-select" id="county" name="county" required>
+          <option value="" disabled selected>Select county</option>
+      <option value="baringo">Baringo</option>
+      <option value="bomet">Bomet</option>
+      <option value="bungoma">Bungoma</option>
+      <option value="busia">Busia</option>
+      <option value="elgeyo marakwet">Elgeyo Marakwet</option>
+      <option value="embu">Embu</option>
+      <option value="garissa">Garissa</option>
+      <option value="homa bay">Homa Bay</option>
+      <option value="isiolo">Isiolo</option>
+      <option value="kajiado">Kajiado</option>
+      <option value="kakamega">Kakamega</option>
+      <option value="kericho">Kericho</option>
+      <option value="kiambu">Kiambu</option>
+      <option value="kilifi">Kilifi</option>
+      <option value="kirinyaga">Kirinyaga</option>
+      <option value="kisii">Kisii</option>
+      <option value="kisumu">Kisumu</option>
+      <option value="kitui">Kitui</option>
+      <option value="kwale">Kwale</option>
+      <option value="laikipia">Laikipia</option>
+      <option value="lamu">Lamu</option>
+      <option value="machakos">Machakos</option>
+      <option value="makueni">Makueni</option>
+      <option value="mandera">Mandera</option>
+      <option value="meru">Meru</option>
+      <option value="migori">Migori</option>
+      <option value="marsabit">Marsabit</option>
+      <option value="mombasa">Mombasa</option>
+      <option value="muranga">Muranga</option>
+      <option value="nairobi">Nairobi</option>
+      <option value="nakuru">Nakuru</option>
+      <option value="nandi">Nandi</option>
+      <option value="narok">Narok</option>
+      <option value="nyamira">Nyamira</option>
+      <option value="nyandarua">Nyandarua</option>
+      <option value="nyeri">Nyeri</option>
+      <option value="samburu">Samburu</option>
+      <option value="siaya">Siaya</option>
+      <option value="taita taveta">Taita Taveta</option>
+      <option value="tana river">Tana River</option>
+      <option value="tharaka nithi">Tharaka Nithi</option>
+      <option value="trans nzoia">Trans Nzoia</option>
+      <option value="turkana">Turkana</option>
+      <option value="uasin gishu">Uasin Gishu</option>
+      <option value="vihiga">Vihiga</option>
+      <option value="wajir">Wajir</option>
+      <option value="pokot">West Pokot</option>
+  </select>
+      </div>
+
+      <!--TO-DO: Nestsed array for Sub-County List dependent on county chosen-->
+      <div class="col-md-6">
+        <label for="subCounty" class="form-label fw-semibold">Sub-County</label>
+        <select class="form-select" id="subCounty" name="subCounty" required>
+          <option value="" disabled selected>Select sub-county</option>
+        </select>
+      </div>
+
+      <!--Constituency Name OPTIONAL-->
+      <div class="col-md-6">
+        <label for="constituency" class="form-label fw-semibold">Constituency (Optional)</label>
+        <input type="text" class="form-control" id="constituency" name="constituency" placeholder="e.g. Nairobi Central">
+      </div>
+
+      <!--Institution Postal Address-->
+      <div class="col-md-6">
+        <label for="postalAddressInstitution" class="form-label fw-semibold">Institution Postal Address</label>
+        <input type="text" class="form-control" id="postalAddressInstitution" name="postalAddressInstitution" placeholder="e.g. 00100" required>
+      </div>
+
+       <!-- Application Type -->
+      <div class="col-md-6">
+        <label for="application-type" class="form-label fw-semibold">Application Type</label>
+        <select class="form-select" id="application-type" name="application-type" required>
+          <option value="" disabled selected>Select Application Type</option>
+          <option value="Regular School">Regular School</option>
+          <option value="Regular School with Special Unit">Regular School with Special Unit</option>
+          <option value="Special School">Special School</option>
+        </select>
+      </div>
+
+       <!-- Institution Level -->
+      <div class="col-md-6">
+        <label for="institution-level" class="form-label fw-semibold">Institution Level</label>
+        <select class="form-select" id="institution-level" name="institution-level" required>
+          <option value="" disabled selected>Select Institution Level</option>
+          <option value="Pre-Primary">Pre-Primary</option>
+          <option value="Primary">Primary</option>
+          <option value="Secondary">Secondary</option>
+          <option value="High School">High School</option>
+        </select>
+      </div>
+
+      <!-- Boolean Toggle (Switch) -->
+      <div class="col-12 mt-3">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="isActive" name="isActive" checked>
+          <label class="form-check-label fw-semibold" for="isActive">Do you have a valid registration certificate?</label>
+        </div>
+      </div>
+
+      <!--Certificate Upload-->
+      <div class="upload">
+        <h1>Institution Certificate Upload</h1>
+        <p class="upload__description">Please upload the certificate for the institution. Only PDF format accepted less than 8MB </p>
+        <input class="upload__input" id="certificate_pdf" type="file" multiple />
+        <div class="upload__files">
+        </div>
+      </div>
+
+      <!--Institution Certificate Number-->
+      <div class="col-md-6">
+        <label for="certificateNumber" class="form-label fw-semibold">Institution Certificate Number</label>
+        <input type="text" class="form-control" id="certificateNumber" name="certificateNumber" placeholder="e.g. CERT-001" required>
+      </div>
+
+      <!--Total Number of Learners-->
+      <div class="col-md-6">
+        <label for="totalLearners" class="form-label fw-semibold">Total Number of Learners</label>
+        <input type="number" class="form-control" id="totalLearners" name="totalLearners" placeholder="e.g. 500" required>
+      </div>
+
+      <!--Institution Postal Address-->
+      <div class="col-md-6">
+        <label for="postalAddressInstitution" class="form-label fw-semibold">Institution Postal Address</label>
+        <input type="text" class="form-control" id="postalAddressInstitution" name="postalAddressInstitution" placeholder="e.g. 00100" required>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- ========================================== -->
+  <!-- SECTION 2: Coordinates            -->
+  <!-- ========================================== -->
+  <fieldset class="mb-4 p-3 border rounded">
+    <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 2: Contact Information</legend>
+
+    <div class="row g-3">
+      <!-- Text Input -->
+      <div class="col-md-6">
+        <label for="emailId" class="form-label fw-semibold">Email Address</label>
+        <input type="emailId" class="form-control" id="emailId" name="emailId" placeholder="name@example.com" required>
+      </div>
+
+      <!-- Dropdown -->
+      <div class="col-md-6">
+        <label for="county" class="form-label fw-semibold">County</label>
+        <select class="form-select" id="county" name="county" required>
+          <option value="" disabled selected>Select county</option>
+          <option value="Nairobi">Nairobi</option>
+          <option value="Mombasa">Mombasa</option>
+          <option value="Kisumu">Kisumu</option>
+        </select>
+      </div>
+
+      <!-- Boolean Toggle -->
+      <div class="col-12 mt-3">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="receiveSms" name="receiveSms">
+          <label class="form-check-label fw-semibold" for="receiveSms">Receive SMS Notifications</label>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- ========================================== -->
+  <!-- SECTION 3: Other Details                -->
+  <!-- ========================================== -->
+  <fieldset class="mb-4 p-3 border rounded">
+    <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 3: Other Details</legend>
+
+    <div class="row g-3">
+      <!-- Text Input -->
+      <div class="col-md-6">
+        <label for="username" class="form-label fw-semibold">Username</label>
+        <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
+      </div>
+
+      <!-- Dropdown -->
+      <div class="col-md-6">
+        <label for="role" class="form-label fw-semibold">Role</label>
+        <select class="form-select" id="role" name="role" required>
+          <option value="" disabled selected>Select role</option>
+          <option value="Admin">Admin</option>
+          <option value="IT Officer">IT Officer</option>
+          <option value="Head of Institution (HOI)">Head of Institution (HOI)</option>
+        </select>
+      </div>
+
+      <!-- Boolean Toggle -->
+      <div class="col-12 mt-3">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="isSuperAdmin" name="isSuperAdmin">
+          <label class="form-check-label fw-semibold" for="isSuperAdmin">Grant Super Admin Privileges</label>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Submit Button -->
+  <div class="d-grid gap-2 mt-4">
+    <button type="submit" class="btn btn-primary btn-lg">Save Record</button>
+  </div>
+
+</form>
+</div>
