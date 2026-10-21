@@ -107,7 +107,7 @@
           <label for="applicationType" class="form-label fw-semibold">Application Type</label>
           <select class="form-select" id="applicationType" name="applicationType" [(ngModel)]="formData.applicationType" (change)="onApplicationTypeChange()" required>
             <option value="" disabled selected>Select Application Type</option>
-            <option *ngFor="let type of applicationTypes" [value]="type.applicationType">{{ type.applicationType }}</option>
+            <option *ngFor="let type of schoolApplicationTypes" [value]="type.applicationType">{{ type.applicationType }}</option>
           </select>
         </div>
 

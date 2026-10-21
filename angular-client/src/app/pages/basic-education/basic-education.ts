@@ -12,8 +12,8 @@ import { NotificationService } from '../../services/notifications.service';
   templateUrl: './basic-education.html',
   styleUrl: './basic-education.css',
 })
-  
-  
+
+
 
 
 export class BasicEducation {
@@ -59,7 +59,7 @@ export class BasicEducation {
   };
 
   // 1. Dropdown Data
-  applicationTypes = [
+  schoolApplicationTypes = [
     {
       applicationType: 'Regular School',
       institutionLevels: ['Pre-Primary', 'Primary', 'Junior High', 'Senior High'],
@@ -86,7 +86,7 @@ export class BasicEducation {
   // 2. The logic to handle the dependency
   onApplicationTypeChange() {
     // Find the selected type in the array
-    const selected = this.applicationTypes.find(
+    const selected = this.schoolApplicationTypes.find(
       (item) => item.applicationType === this.formData.applicationType
     );
 
@@ -312,7 +312,7 @@ export class BasicEducation {
       capital: "Kisii",
       code: 45,
       subCounty: [
-            
+
       ]
     },
     {
@@ -749,7 +749,7 @@ export class BasicEducation {
     //To shrink PDF file size, we can use a library like pdf-lib or pdfkit before sending it to the server.
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
-    
+
     if (file) {
       // Validate Type
       if (file.type !== 'application/pdf') {
@@ -782,11 +782,11 @@ export class BasicEducation {
     if (!this.formData.institutionLevel) return 'Please select an Institution Level.';
     if (!this.formData.certificatePdf) return 'Please upload the Registration Certificate (PDF).';
     if (!this.formData.isActive) return 'You must accept the Terms & Conditions.';
-    return null; 
+    return null;
   }
 
   // ---School Registration Handler---
-  
+
   onSubmit(): void {
     const error = this.validate();
     if (error) {
@@ -799,7 +799,7 @@ export class BasicEducation {
 
     // 3. Use FormData to handle File Uploads
     const formPayload = new FormData();
-    
+
     // Append standard text fields
     formPayload.append('institutionName', this.formData.institutionName);
     formPayload.append('institutionType', this.formData.institutionType);
