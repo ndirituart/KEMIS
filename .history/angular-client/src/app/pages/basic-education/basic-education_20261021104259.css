@@ -1,0 +1,290 @@
+/* ============================================
+   KEMIS FORM GLOBAL LAYOUT & TYPOGRAPHY
+   ============================================ */
+.kemis-form-wrapper {
+  max-width: 950px;
+  margin: 3rem auto;
+  padding: 3rem 4rem;
+  background: var(--kemis-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--kemis-shadow-lg);
+  border-top: 6px solid var(--kemis-primary);
+  /* Heading Font */
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* Main Page Title */
+.kemis-form-wrapper .text-center.mb-4 h1,
+.kemis-form-wrapper .text-center.mb-4 h2,
+.kemis-form-wrapper .text-center.mb-4 h3 {
+  color: var(--kemis-dark-blue);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+/* Subtitle under main title */
+.kemis-form-wrapper .text-center.mb-0 {
+  color: var(--kemis-secondary);
+  font-size: 1.1rem;
+}
+
+/* ============================================
+   FIELDSETS (Sections)
+   ============================================ */
+.kemis-form fieldset {
+  background: var(--kemis-white);
+  border: 1px solid var(--kemis-border) !important;
+  border-radius: var(--border-radius);
+  padding: 2.5rem !important;
+  margin-bottom: 3rem !important;
+  box-shadow: var(--kemis-shadow);
+  position: relative;
+}
+
+.kemis-form legend {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--kemis-white);
+  background: var(--kemis-green); /* Changed to Green */
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  border: none;
+  box-shadow: var(--kemis-shadow);
+  margin-bottom: 0;
+  width: auto;
+}
+
+/* ============================================
+   FIXING THE SPACING (Labels vs Inputs)
+   ============================================ */
+.kemis-form .row.g-3 {
+  /* g-3 adds spacing, but we need to ensure rows have bottom margin */
+  margin-bottom: 1.5rem;
+}
+
+.kemis-form .col-md-6,
+.kemis-form .col-12 {
+  margin-bottom: 1.5rem; /* Forces space below every input block */
+}
+
+.kemis-form .form-label {
+  color: var(--kemis-dark);
+  font-size: 0.95rem;
+  font-weight: 700 !important; /* Force bold */
+  margin-bottom: 0.6rem !important; /* <--- FIXES THE GAP */
+  display: block;
+  letter-spacing: 0.3px;
+}
+
+/* Make labels colorful using nth-child (cycles red, blue, green) */
+.kemis-form .row > div:nth-child(3n+1) .form-label { color: var(--kemis-dark-blue); }
+.kemis-form .row > div:nth-child(3n+2) .form-label { color: var(--kemis-red); }
+.kemis-form .row > div:nth-child(3n+3) .form-label { color: var(--kemis-green); }
+
+/* ============================================
+   INPUTS & DROPDOWNS
+   ============================================ */
+.kemis-form .form-control,
+.kemis-form .form-select {
+  border: 2px solid var(--kemis-border);
+  border-radius: var(--border-radius);
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  color: var(--kemis-black);
+  background-color: var(--kemis-light);
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.kemis-form .form-control:focus,
+.kemis-form .form-select:focus {
+  border-color: var(--kemis-primary);
+  background-color: var(--kemis-white);
+  box-shadow: 0 0 0 0.25rem rgba(63, 190, 235, 0.25);
+  outline: none;
+}
+
+/* Placeholder */
+.kemis-form .form-control::placeholder {
+  color: var(--kemis-secondary);
+  opacity: 0.7;
+}
+
+/* Colorful Dropdowns */
+.kemis-form .form-select {
+  background-color: var(--kemis-primary-light);
+  color: var(--kemis-dark-blue);
+  font-weight: 600;
+  cursor: pointer;
+  /* Custom arrow in KEMIS blue */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%231e40af' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px 12px;
+  padding-right: 2.5rem;
+}
+
+/* ============================================
+   BOOLEAN SWITCHES (Toggles)
+   ============================================ */
+.kemis-form .col-12.mt-3 {
+  margin-top: 0 !important; /* Override inline class */
+  margin-bottom: 1.5rem;
+}
+
+.kemis-form .form-check.form-switch {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--kemis-white);
+  border: 2px dashed var(--kemis-border); /* Dashed border to separate it */
+  border-radius: var(--border-radius);
+}
+
+.kemis-form .form-check-input {
+  cursor: pointer;
+  border-color: var(--kemis-secondary);
+  width: 3em;
+  height: 1.5em;
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+/* Make the switch Yellow/Orange when checked */
+.kemis-form .form-check-input:checked {
+  background-color: var(--kemis-warning);
+  border-color: var(--kemis-warning);
+}
+
+.kemis-form .form-check-input:focus {
+  border-color: var(--kemis-warning);
+  box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+  outline: none;
+}
+
+.kemis-form .form-check-label {
+  cursor: pointer;
+  color: var(--kemis-dark);
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* ============================================
+   FILE UPLOAD
+   ============================================ */
+.kemis-form .upload {
+  background: var(--kemis-light);
+  border: 2px dashed var(--kemis-primary);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  transition: background 0.3s ease;
+}
+
+.kemis-form .upload:hover {
+  background: var(--kemis-primary-light);
+}
+
+.kemis-form .upload__description {
+  color: var(--kemis-dark-blue);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.kemis-form .upload__input {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 0.5rem;
+  background: var(--kemis-white);
+  border: 1px solid var(--kemis-border);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
+
+.kemis-form .upload__files {
+  margin-top: 1rem;
+  color: var(--kemis-green);
+  font-weight: 600;
+}
+
+/* ============================================
+   TERMS & CONDITIONS CHECKBOX
+   ============================================ */
+/* Specifically targets the last form-check in the form (Terms) */
+.kemis-form fieldset:last-of-type .form-check:not(.form-switch) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.kemis-form fieldset:last-of-type .form-check-input {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 4px;
+}
+
+.kemis-form fieldset:last-of-type .form-check-input:checked {
+  background-color: var(--kemis-green);
+  border-color: var(--kemis-green);
+}
+
+/* ============================================
+   SUBMIT BUTTON
+   ============================================ */
+.kemis-form .d-grid.gap-2.mt-4 {
+  margin-top: 2rem !important;
+}
+
+.kemis-form .btn-primary.btn-lg {
+  background: linear-gradient(135deg, var(--kemis-red) 0%, var(--kemis-dark-blue) 100%);
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  padding: 1.2rem 2rem;
+  color: var(--kemis-white);
+  box-shadow: var(--kemis-shadow-lg);
+  transition: all 0.25s ease;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  display: block;
+}
+
+.kemis-form .btn-primary.btn-lg:hover {
+  background: linear-gradient(135deg, var(--kemis-blue) 0%, var(--kemis-red) 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(220, 20, 60, 0.3); /* Red glow */
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 767.98px) {
+  .kemis-form-wrapper {
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .kemis-form fieldset {
+    padding: 1.5rem !important;
+  }
+
+  .kemis-form .form-check.form-switch {
+    padding: 1rem;
+  }
+
+  .kemis-form .btn-primary.btn-lg {
+    width: 100%;
+    max-width: 100%;
+  }
+}

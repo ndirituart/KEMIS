@@ -12,14 +12,14 @@
     <div class="row g-3">
       <!-- Institution Name -->
       <div class="col-md-6">
-        <label for="fullName" class="form-label fw-semibold">Institution Name</label>
-        <input type="text" class="form-control" id="fullName" name="fullName" placeholder="e.g. John Doe" required>
+        <label for="institutionName" class="form-label fw-semibold">Institution Name</label>
+        <input type="text" class="form-control" id="institutionName" name="institutionName" placeholder="e.g. John Doe" required>
       </div>
 
       <!-- Type of School based on Gender -->
       <div class="col-md-6">
-        <label for="institution-type" class="form-label fw-semibold">Institution Type</label>
-        <select class="form-select" id="institution-type" name="institution-type" required>
+        <label for="institutionType" class="form-label fw-semibold">Institution Type</label>
+        <select class="form-select" id="institutionType" name="institutionType" required>
           <option value="" disabled selected>Select institution-type</option>
           <option value="Boy's School">Boy's School</option>
           <option value="Girl's School">Girl's School</option>
@@ -35,8 +35,8 @@
 
       <!-- Institution Phone Number -->
       <div class="col-md-6">
-        <label for="phoneNumber" class="form-label fw-semibold">Institution Phone Number</label>
-        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="+254 700 000 000" required>
+        <label for="mobileNo" class="form-label fw-semibold">Institution Phone Number</label>
+        <input type="tel" class="form-control" id="mobileNo" name="mobileNo" placeholder="+254 700 000 000" required>
       </div>
 
       <!-- Head of Institution -->
@@ -51,69 +51,43 @@
         <input type="text" class="form-control" id="postalAddressHoi" name="postalAddressHoi" placeholder="e.g. 00100" required>
       </div>
 
-      <!--County List-->
+
+      <!--DONE: Nestsed array for Sub-County List dependent on county chosen-->
+      <div class="row g-3 mb-3">
       <div class="col-md-6">
         <label for="county" class="form-label fw-semibold">County</label>
-        <select class="form-select" id="county" name="county" required>
+        <select 
+          class="form-select" 
+          id="county" 
+          name="county" 
+          [(ngModel)]="formData.county" 
+          (change)="onCountyChange()" 
+          required>
           <option value="" disabled selected>Select county</option>
-      <option value="baringo">Baringo</option>
-      <option value="bomet">Bomet</option>
-      <option value="bungoma">Bungoma</option>
-      <option value="busia">Busia</option>
-      <option value="elgeyo marakwet">Elgeyo Marakwet</option>
-      <option value="embu">Embu</option>
-      <option value="garissa">Garissa</option>
-      <option value="homa bay">Homa Bay</option>
-      <option value="isiolo">Isiolo</option>
-      <option value="kajiado">Kajiado</option>
-      <option value="kakamega">Kakamega</option>
-      <option value="kericho">Kericho</option>
-      <option value="kiambu">Kiambu</option>
-      <option value="kilifi">Kilifi</option>
-      <option value="kirinyaga">Kirinyaga</option>
-      <option value="kisii">Kisii</option>
-      <option value="kisumu">Kisumu</option>
-      <option value="kitui">Kitui</option>
-      <option value="kwale">Kwale</option>
-      <option value="laikipia">Laikipia</option>
-      <option value="lamu">Lamu</option>
-      <option value="machakos">Machakos</option>
-      <option value="makueni">Makueni</option>
-      <option value="mandera">Mandera</option>
-      <option value="meru">Meru</option>
-      <option value="migori">Migori</option>
-      <option value="marsabit">Marsabit</option>
-      <option value="mombasa">Mombasa</option>
-      <option value="muranga">Muranga</option>
-      <option value="nairobi">Nairobi</option>
-      <option value="nakuru">Nakuru</option>
-      <option value="nandi">Nandi</option>
-      <option value="narok">Narok</option>
-      <option value="nyamira">Nyamira</option>
-      <option value="nyandarua">Nyandarua</option>
-      <option value="nyeri">Nyeri</option>
-      <option value="samburu">Samburu</option>
-      <option value="siaya">Siaya</option>
-      <option value="taita taveta">Taita Taveta</option>
-      <option value="tana river">Tana River</option>
-      <option value="tharaka nithi">Tharaka Nithi</option>
-      <option value="trans nzoia">Trans Nzoia</option>
-      <option value="turkana">Turkana</option>
-      <option value="uasin gishu">Uasin Gishu</option>
-      <option value="vihiga">Vihiga</option>
-      <option value="wajir">Wajir</option>
-      <option value="pokot">West Pokot</option>
-  </select>
-      </div>
-
-      <!--TO-DO: Nestsed array for Sub-County List dependent on county chosen-->
-      <div class="col-md-6">
-        <label for="subCounty" class="form-label fw-semibold">Sub-County</label>
-        <select class="form-select" id="subCounty" name="subCounty" required>
-          <option value="" disabled selected>Select sub-county</option>
+          <!-- Make sure your .ts file has countiesData array defined -->
+          <option *ngFor="let c of countiesData" [value]="c.county">
+            {{ c.county }}
+          </option>
         </select>
       </div>
 
+      <!-- Sub-County (Dependent) -->
+      <div class="col-md-6">
+        <label for="subCounty" class="form-label fw-semibold">Sub-County</label>
+        <select 
+          class="form-select" 
+          id="subCounty" 
+          name="subCounty" 
+          [(ngModel)]="formData.subCounty" 
+          [disabled]="!formData.county" 
+          required>
+          <option value="" disabled selected>Select Sub-County</option>
+          <option *ngFor="let sub of availableSubCounty" [value]="sub">
+            {{ sub }}
+          </option>
+        </select>
+      </div>
+    </div>
       <!--Constituency Name OPTIONAL-->
       <div class="col-md-6">
         <label for="constituency" class="form-label fw-semibold">Constituency (Optional)</label>
@@ -126,42 +100,53 @@
         <input type="text" class="form-control" id="postalAddressInstitution" name="postalAddressInstitution" placeholder="e.g. 00100" required>
       </div>
 
-       <!-- Application Type -->
+     <!--DONE: Replace statsic Application Type and Institution Level with dependent array-->
+     <div class="row g-3 mb-3">
+  
+      <!-- Application Type -->
       <div class="col-md-6">
-        <label for="application-type" class="form-label fw-semibold">Application Type</label>
-        <select class="form-select" id="application-type" name="application-type" required>
+        <label for="applicationType" class="form-label fw-semibold">Application Type</label>
+        <!-- (change) triggers the TS function. [(ngModel)] saves the value -->
+        <select 
+          class="form-select" 
+          id="applicationType" 
+          name="applicationType" 
+          [(ngModel)]="formData.applicationType" 
+          (change)="onApplicationTypeChange()" 
+          required>
           <option value="" disabled selected>Select Application Type</option>
-          <option value="Regular School">Regular School</option>
-          <option value="Regular School with Special Unit">Regular School with Special Unit</option>
-          <option value="Special School">Special School</option>
+          <!-- *ngFor loops through your array -->
+          <option *ngFor="let type of applicationTypes" [value]="type.applicationType">
+            {{ type.applicationType }}
+          </option>
         </select>
       </div>
 
-       <!-- Institution Level -->
+      <!-- Institution Level (Dependent) -->
       <div class="col-md-6">
-        <label for="institution-level" class="form-label fw-semibold">Institution Level</label>
-        <select class="form-select" id="institution-level" name="institution-level" required>
+        <label for="institutionLevel" class="form-label fw-semibold">Institution Level</label>
+        <!-- [disabled] prevents clicking if no Application Type is chosen -->
+        <select 
+          class="form-select" 
+          id="institutionLevel" 
+          name="institutionLevel" 
+          [(ngModel)]="formData.institutionLevel" 
+          [disabled]="!formData.applicationType" 
+          required>
           <option value="" disabled selected>Select Institution Level</option>
-          <option value="Pre-Primary">Pre-Primary</option>
-          <option value="Primary">Primary</option>
-          <option value="Secondary">Secondary</option>
-          <option value="High School">High School</option>
+          <option *ngFor="let level of availableInstitutionLevels" [value]="level">
+            {{ level }}
+          </option>
         </select>
       </div>
 
-      <!-- Boolean Toggle (Switch) -->
-      <div class="col-12 mt-3">
-        <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" role="switch" id="isActive" name="isActive" checked>
-          <label class="form-check-label fw-semibold" for="isActive">Do you have a valid registration certificate?</label>
-        </div>
-      </div>
+    </div>
 
       <!--Certificate Upload-->
       <div class="upload">
         <h3>Institution Certificate Upload</h3>
         <p class="upload__description">Please upload the certificate for the institution. Only PDF format accepted less than 8MB </p>
-        <input class="upload__input" id="certificate_pdf" type="file" multiple />
+        <input class="upload__input" id="certificatePdf" type="file" multiple />
         <div class="upload__files">
         </div>
       </div>
@@ -200,7 +185,7 @@
         <input type="number" class="form-control" id="longitude" name="longitude" placeholder="e.g. 36.821944" required>
       </div>
 
-      
+
     </div>
   </fieldset>
 
@@ -211,11 +196,11 @@
     <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 3: Other Details</legend>
 
     <div class="row g-3">
-    
+
       <!-- Accomodation Type -->
       <div class="col-md-6">
-        <label for="accomodation-type" class="form-label fw-semibold">Accomodation Type</label>
-        <select class="form-select" id="accomodation-type" name="accomodation-type" required>
+        <label for="accomodationType" class="form-label fw-semibold">Accomodation Type</label>
+        <select class="form-select" id="accomodationType" name="accomodationType" required>
           <option value="" disabled selected>Select accomodation type</option>
           <option value="Day">Day</option>
           <option value="Boarding">Boarding</option>
@@ -225,20 +210,32 @@
 
       <!-- School Category -->
       <div class="col-md-6">
-        <label for="school-category" class="form-label fw-semibold">School Category</label>
-        <select class="form-select" id="school-category" name="school-category" required>
+        <label for="schoolCategory" class="form-label fw-semibold">School Category</label>
+        <select class="form-select" id="schoolCategory" name="schoolCategory" required>
           <option value="" disabled selected>Select school category</option>
           <option value="Private">Private</option>
           <option value="Public">Public</option>
           <option value="Refugee Camp-based School">Refugee Camp-based School</option>
         </select>
       </div>
+
+      <!--Terms & Conditions-->
+      <div class="col-12 mt-3">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="acceptTerms" name="acceptTerms" checked>
+          <label class="form-check-label fw-semibold" for="acceptTerms">All data and information submitted to the Kenya Education
+             Management Information System (KEMIS) is protected by the Data Protection Act, 2019 and other relevant regulations.
+              Users are personally responsible for the accuracy and authenticity of information entered. Submission of erroneous
+              or falsified data is an offence and may lead to sanctions or prosecution. By proceeding, you confirm that all submitted
+               data is accurate and compliant with the Data Protection Act.</label>
+        </div>
+      </div>
     </div>
   </fieldset>
 
   <!-- Submit Button -->
   <div class="d-grid gap-2 mt-4">
-    <button type="submit" class="btn btn-primary btn-lg">Save Record</button>
+    <button type="submit" class="submit-btn">Save Record</button>
   </div>
 
 </form>

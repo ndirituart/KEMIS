@@ -1,0 +1,181 @@
+<div class="kemis-form-wrapper">
+<form class="kemis-form" (ngSubmit)="onSubmit()" #myForm="ngForm">
+<h1 class="text-center mb-4">Basic Education Institution Onboarding Form</h1>
+<p class="text-center mb-0">Please fill in the details below to onboard your pre-primary, primary and secondary school.</p>
+<span></span>
+  <!-- ========================================== -->
+  <!-- Section 1: Institution Details                -->
+  <!-- ========================================== -->
+  <fieldset class="mb-4 p-3 border rounded">
+    <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 1: Institution Details</legend>
+
+    <div class="row g-3">
+      <!-- Institution Name -->
+      <div class="col-md-6">
+        <label for="institutionName" class="form-label fw-semibold">Institution Name</label>
+        <input type="text" class="form-control" id="institutionName" name="institutionName" placeholder="e.g. John Doe" required>
+      </div>
+
+      <!-- Type of School based on Gender -->
+      <div class="col-md-6">
+        <label for="institutionType" class="form-label fw-semibold">Institution Type</label>
+        <select class="form-select" id="institutionType" name="institutionType" required>
+          <option value="" disabled selected>Select institution-type</option>
+          <option value="Boy's School">Boy's School</option>
+          <option value="Girl's School">Girl's School</option>
+          <option value="Mixed School">Mixed School</option>
+        </select>
+      </div>
+
+      <!-- Institution Email -->
+      <div class="col-md-6">
+        <label for="emailId" class="form-label fw-semibold">Institution Email</label>
+        <input type="email" class="form-control" id="emailId" name="emailId" placeholder="institution@example.com" required>
+      </div>
+
+      <!-- Institution Phone Number -->
+      <div class="col-md-6">
+        <label for="mobileNo" class="form-label fw-semibold">Institution Phone Number</label>
+        <input type="tel" class="form-control" id="mobileNo" name="mobileNo" placeholder="+254 700 000 000" required>
+      </div>
+
+      <!-- Head of Institution -->
+      <div class="col-md-6">
+        <label for="headOfInstitution" class="form-label fw-semibold">Head of Institution</label>
+        <input type="text" class="form-control" id="headOfInstitution" name="headOfInstitution" placeholder="e.g. John Doe" required>
+      </div>
+
+      <!-- Postal Address of HOI -->
+      <div class="col-md-6">
+        <label for="postalAddressHoi" class="form-label fw-semibold">Postal Address of HOI</label>
+        <input type="text" class="form-control" id="postalAddressHoi" name="postalAddressHoi" placeholder="e.g. 00100" required>
+      </div>
+
+      <!--County List-->
+      <div class="col-md-6">
+        <label for="county" class="form-label fw-semibold">County</label>
+        <select class="form-select" id="county" name="county" required>
+          <option value="" disabled selected>Select county</option>
+  </select>
+      </div>
+
+      <!--TO-DO: Nestsed array for Sub-County List dependent on county chosen-->
+      <div class="col-md-6">
+        <label for="subCounty" class="form-label fw-semibold">Sub-County</label>
+        <select class="form-select" id="subCounty" name="subCounty" required>
+          <option value="" disabled selected>Select sub-county</option>
+        </select>
+      </div>
+
+      <!--Constituency Name OPTIONAL-->
+      <div class="col-md-6">
+        <label for="constituency" class="form-label fw-semibold">Constituency (Optional)</label>
+        <input type="text" class="form-control" id="constituency" name="constituency" placeholder="e.g. Nairobi Central">
+      </div>
+
+      <!--Institution Postal Address-->
+      <div class="col-md-6">
+        <label for="postalAddressInstitution" class="form-label fw-semibold">Institution Postal Address</label>
+        <input type="text" class="form-control" id="postalAddressInstitution" name="postalAddressInstitution" placeholder="e.g. 00100" required>
+      </div>
+
+     <
+
+      <!--Certificate Upload-->
+      <div class="upload">
+        <h3>Institution Certificate Upload</h3>
+        <p class="upload__description">Please upload the certificate for the institution. Only PDF format accepted less than 8MB </p>
+        <input class="upload__input" id="certificatePdf" type="file" multiple />
+        <div class="upload__files">
+        </div>
+      </div>
+
+      <!--Institution Certificate Number-->
+      <div class="col-md-6">
+        <label for="certificateNumber" class="form-label fw-semibold">Institution Certificate Number</label>
+        <input type="text" class="form-control" id="certificateNumber" name="certificateNumber" placeholder="e.g. CERT-001" required>
+      </div>
+
+      <!--Total Number of Learners-->
+      <div class="col-md-6">
+        <label for="totalLearners" class="form-label fw-semibold">Total Number of Learners</label>
+        <input type="number" class="form-control" id="totalLearners" name="totalLearners" placeholder="e.g. 500" required>
+      </div>
+
+    </div>
+  </fieldset>
+
+  <!-- ========================================== -->
+  <!-- SECTION 2: Coordinates            -->
+  <!-- ========================================== -->
+  <fieldset class="mb-4 p-3 border rounded">
+    <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 2: Coordinates</legend>
+
+    <div class="row g-3">
+      <!-- Latitude -->
+      <div class="col-md-6">
+        <label for="latitude" class="form-label fw-semibold">Latitude</label>
+        <input type="number" class="form-control" id="latitude" name="latitude" placeholder="e.g. -1.286389" required>
+      </div>
+
+      <!-- Longitude -->
+      <div class="col-md-6">
+        <label for="longitude" class="form-label fw-semibold">Longitude</label>
+        <input type="number" class="form-control" id="longitude" name="longitude" placeholder="e.g. 36.821944" required>
+      </div>
+
+
+    </div>
+  </fieldset>
+
+  <!-- ========================================== -->
+  <!-- SECTION 3: Other Details                -->
+  <!-- ========================================== -->
+  <fieldset class="mb-4 p-3 border rounded">
+    <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 3: Other Details</legend>
+
+    <div class="row g-3">
+
+      <!-- Accomodation Type -->
+      <div class="col-md-6">
+        <label for="accomodationType" class="form-label fw-semibold">Accomodation Type</label>
+        <select class="form-select" id="accomodationType" name="accomodationType" required>
+          <option value="" disabled selected>Select accomodation type</option>
+          <option value="Day">Day</option>
+          <option value="Boarding">Boarding</option>
+          <option value="Hybrid">Hybrid</option>
+        </select>
+      </div>
+
+      <!-- School Category -->
+      <div class="col-md-6">
+        <label for="schoolCategory" class="form-label fw-semibold">School Category</label>
+        <select class="form-select" id="schoolCategory" name="schoolCategory" required>
+          <option value="" disabled selected>Select school category</option>
+          <option value="Private">Private</option>
+          <option value="Public">Public</option>
+          <option value="Refugee Camp-based School">Refugee Camp-based School</option>
+        </select>
+      </div>
+
+      <!--Terms & Conditions-->
+      <div class="col-12 mt-3">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="acceptTerms" name="acceptTerms" checked>
+          <label class="form-check-label fw-semibold" for="acceptTerms">All data and information submitted to the Kenya Education
+             Management Information System (KEMIS) is protected by the Data Protection Act, 2019 and other relevant regulations.
+              Users are personally responsible for the accuracy and authenticity of information entered. Submission of erroneous
+              or falsified data is an offence and may lead to sanctions or prosecution. By proceeding, you confirm that all submitted
+               data is accurate and compliant with the Data Protection Act.</label>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Submit Button -->
+  <div class="d-grid gap-2 mt-4">
+    <button type="submit" class="submit-btn">Save Record</button>
+  </div>
+
+</form>
+</div>

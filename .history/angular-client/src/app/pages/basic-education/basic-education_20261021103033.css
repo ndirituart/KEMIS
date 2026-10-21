@@ -1,0 +1,199 @@
+/* Typography Setup */
+.kemis-form-wrapper {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 3rem; /* More breathing room inside the card */
+  background: var(--kemis-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--kemis-shadow-lg);
+  border-top: 5px solid var(--kemis-primary);
+  /* Heading Font */
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* ============================================
+   FIELDSETS (Sections)
+   ============================================ */
+.kemis-form fieldset {
+  background: var(--kemis-white);
+  border: 1px solid var(--kemis-border) !important;
+  border-radius: var(--border-radius);
+  padding: 2rem !important;
+  margin-bottom: 2.5rem !important;
+  box-shadow: var(--kemis-shadow);
+  transition: box-shadow 0.3s ease;
+}
+
+.kemis-form fieldset:hover {
+  box-shadow: var(--kemis-shadow-lg);
+}
+
+/* The Section Title (Legend) */
+.kemis-form legend {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--kemis-white);
+  background: var(--kemis-dark-blue);
+  padding: 0.4rem 1.5rem;
+  border-radius: 50px;
+  border: none;
+  box-shadow: var(--kemis-shadow);
+  margin-bottom: 0;
+  width: auto; /* Prevents legend from stretching */
+}
+
+/* ============================================
+   LABELS & INPUTS
+   ============================================ */
+.kemis-form .row {
+  margin-bottom: 1rem; /* Consistent spacing between rows */
+}
+
+.kemis-form .form-label {
+  color: var(--kemis-dark-blue);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  /* Body Font - slightly different from heading */
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.kemis-form .form-control,
+.kemis-form .form-select {
+  border: 2px solid var(--kemis-border);
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: var(--kemis-black);
+  background-color: var(--kemis-light);
+  text-align: center; /* Centers the text inside the input */
+  transition: all 0.2s ease;
+}
+
+/* Focus State */
+.kemis-form .form-control:focus,
+.kemis-form .form-select:focus {
+  border-color: var(--kemis-primary);
+  background-color: var(--kemis-white);
+  box-shadow: 0 0 0 0.25rem rgba(63, 190, 235, 0.25);
+  outline: none;
+}
+
+/* Placeholder text */
+.kemis-form .form-control::placeholder {
+  color: var(--kemis-secondary);
+  opacity: 0.8;
+  text-align: center;
+}
+
+/* Colorful Dropdowns */
+.kemis-form .form-select {
+  background-color: var(--kemis-primary-light); /* Light blue background */
+  color: var(--kemis-dark-blue);
+  font-weight: 600;
+  cursor: pointer;
+  /* Custom SVG arrow in KEMIS dark blue */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%231e3a8a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px 12px;
+  padding-right: 2.5rem; /* Ensure text doesn't overlap arrow */
+}
+
+.kemis-form .form-select:focus {
+  background-color: var(--kemis-primary-light);
+  border-color: var(--kemis-primary-dark);
+}
+
+/* ============================================
+   BOOLEAN TOGGLES (Switches)
+   ============================================ */
+.kemis-form .form-check {
+  display: flex;
+  justify-content: center; /* Centers the toggle */
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: var(--kemis-light);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--kemis-border);
+}
+
+.kemis-form .form-check-input {
+  cursor: pointer;
+  border-color: var(--kemis-secondary);
+  width: 3em;
+  height: 1.5em;
+  margin-top: 0;
+}
+
+.kemis-form .form-check-input:checked {
+  background-color: var(--kemis-success); /* Green for active */
+  border-color: var(--kemis-success);
+}
+
+.kemis-form .form-check-input:focus {
+  border-color: var(--kemis-primary);
+  box-shadow: 0 0 0 0.25rem rgba(63, 190, 235, 0.25);
+}
+
+.kemis-form .form-check-label {
+  cursor: pointer;
+  color: var(--kemis-dark-blue);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* ============================================
+   SUBMIT BUTTON
+   ============================================ */
+.kemis-form .btn-primary {
+  background: linear-gradient(135deg, var(--kemis-primary) 0%, var(--kemis-blue) 100%);
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  padding: 1rem 2rem;
+  color: var(--kemis-white);
+  box-shadow: var(--kemis-shadow);
+  transition: all 0.25s ease;
+  width: 100%; /* Full width on mobile */
+  max-width: 300px; /* Centered with max width */
+  margin: 0 auto;
+  display: block;
+}
+
+.kemis-form .btn-primary:hover {
+  background: linear-gradient(135deg, var(--kemis-primary-dark) 0%, var(--kemis-dark-blue) 100%);
+  box-shadow: var(--kemis-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.kemis-form .btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 767.98px) {
+  .kemis-form-wrapper {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .kemis-form fieldset {
+    padding: 1.25rem !important;
+  }
+
+  .kemis-form legend {
+    font-size: 1.1rem;
+    padding: 0.3rem 1rem;
+  }
+
+  .kemis-form .form-control,
+  .kemis-form .form-select {
+    padding: 0.6rem 0.85rem;
+  }
+}
