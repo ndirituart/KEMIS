@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // Needed for *ngFor
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../../services/notifications.service';
 
 @Component({
   selector: 'app-basic-education',
@@ -9,7 +12,19 @@ import { CommonModule } from '@angular/common'; // Needed for *ngFor
   templateUrl: './basic-education.html',
   styleUrl: './basic-education.css',
 })
+  
+  
+
+
 export class BasicEducation {
+
+  //  Dependency Injection MUST be at the class level
+  private readonly notification = inject(NotificationService);
+  private readonly router = inject(Router);
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:5215/api/BasicEducation';
+
+  isLoading = false;
 
   formData = {
     // Section 1: Institution Details
@@ -40,6 +55,7 @@ export class BasicEducation {
 
     //4. Section 4: Terms & Conditions
     isActive: true,
+
   };
 
   // 1. Dropdown Data
@@ -64,6 +80,7 @@ export class BasicEducation {
 
   // This holds the levels for the selected application type
   availableInstitutionLevels: string[] = [];
+  validate: any;
 
   // 2. The logic to handle the dependency
   onApplicationTypeChange() {
@@ -728,7 +745,51 @@ export class BasicEducation {
     }
   }
 
-  onSubmit() {
-    console.log(this.formData);
+  // ---School Registration Handler---
+  
+  onSubmit(): void {
+    const error = this.validate();
+    if (error) {
+      this.notification.showError(error);
+      return;
+    }
+
+    this.isLoading = true;
+    this.notification.showLoading('Creating your school...');
+
+    // 3. Use FormData to handle File Uploads
+    const formPayload = new FormData();
+    
+    // Append standard text fields
+    formPayload.append('institutionName', this.formData.institutionName);
+    formPayload.append('institutionType', this.formData.institutionType);
+    formPayload.append('emailId', this.formData.emailId);
+    formPayload.append('mobileNo', this.formData.mobileNo);
+    formPayload.append('headOfInstitution', this.formData.headOfInstitution);
+    // ... append the rest of your text fields ...
+    formPayload.append('county', this.formData.county);
+    formPayload.append('isActive', String(this.formData.isActive)); // Convert boolean to string
+
+    // Append the File (if it exists)
+    if (this.formData.certificatePdf) {
+      formPayload.append('certificatePdf', this.formData.certificatePdf, this.formData.certificatePdf);
+    }
+
+    // 4. Post the FormData (Do NOT set Content-Type headers manually)
+    this.http.post<any>(`${this.apiUrl}/CreateNewSchool`, formPayload).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        this.notification.showSuccess('Registration successful! Await feedback...');
+        // this.completeLogin(res); // Ensure this method exists
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        if (err.status === 500) {
+          this.notification.showError(err.error || 'Server error occurred.');
+        } else {
+          this.notification.showError('Registration failed. Please check your details.');
+        }
+      },
+    });
   }
 }
