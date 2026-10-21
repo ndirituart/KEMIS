@@ -41,7 +41,7 @@ export class BasicEducation {
     applicationType: '',
     institutionLevel: '',
     certificateValid: true,
-    certificatePdf: null, // Changed from Image to null
+    certificatePdf: null as File | null,
     certificateNumber: '',
     totalLearners: '',
 
@@ -62,25 +62,26 @@ export class BasicEducation {
   applicationTypes = [
     {
       applicationType: 'Regular School',
-      institutionLevels: ['Pre-Primary', 'Primary', 'Secondary', 'High School'],
+      institutionLevels: ['Pre-Primary', 'Primary', 'Junior High', 'Senior High'],
     },
     {
       applicationType: 'Regular School with Special Unit',
-      institutionLevels: ['Pre-Primary', 'Primary', 'Secondary', 'High School'],
+      institutionLevels: ['Pre-Primary', 'Primary', 'Junior High', 'Senior High'],
+
     },
     {
       applicationType: 'Special School',
-      institutionLevels: ['Pre-Primary', 'Primary', 'Secondary', 'High School'],
+     institutionLevels: ['Pre-Primary', 'Primary', 'Junior High', 'Senior High'],
     },
     {
       applicationType: 'Integrated School',
-      institutionLevels: ['Pre-Primary', 'Primary', 'Secondary', 'High School'],
+     institutionLevels: ['Pre-Primary', 'Primary', 'Junior High', 'Senior High'],
     },
   ];
 
   // This holds the levels for the selected application type
   availableInstitutionLevels: string[] = [];
-  validate: any;
+
 
   // 2. The logic to handle the dependency
   onApplicationTypeChange() {
@@ -745,6 +746,45 @@ export class BasicEducation {
     }
   }
 
+    //To shrink PDF file size, we can use a library like pdf-lib or pdfkit before sending it to the server.
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    
+    if (file) {
+      // Validate Type
+      if (file.type !== 'application/pdf') {
+        this.notification.showError('Only PDF files are allowed.');
+        event.target.value = ''; // Clear the input
+        return;
+      }
+
+      // Validate Size (8MB = 8 * 1024 * 1024 bytes)
+      const maxSize = 8 * 1024 * 1024;
+      if (file.size > maxSize) {
+        this.notification.showError('File is too large. Maximum size is 8MB.');
+        event.target.value = ''; // Clear the input
+        return;
+      }
+
+      // Valid file, save it to the form data
+      this.formData.certificatePdf = file;
+    }
+  }
+
+  //Validate data, prevents people from living valid entries as empty
+  validate(): string | null {
+    if (!this.formData.institutionName?.trim()) return 'Institution Name is required.';
+    if (!this.formData.emailId?.trim()) return 'Email is required.';
+    if (!this.formData.mobileNo?.trim()) return 'Mobile Number is required.';
+    if (!this.formData.county) return 'Please select a County.';
+    if (!this.formData.subCounty) return 'Please select a Sub-County.';
+    if (!this.formData.applicationType) return 'Please select an Application Type.';
+    if (!this.formData.institutionLevel) return 'Please select an Institution Level.';
+    if (!this.formData.certificatePdf) return 'Please upload the Registration Certificate (PDF).';
+    if (!this.formData.isActive) return 'You must accept the Terms & Conditions.';
+    return null; 
+  }
+
   // ---School Registration Handler---
   
   onSubmit(): void {
@@ -772,7 +812,7 @@ export class BasicEducation {
 
     // Append the File (if it exists)
     if (this.formData.certificatePdf) {
-      formPayload.append('certificatePdf', this.formData.certificatePdf, this.formData.certificatePdf);
+      formPayload.append('certificatePdf', this.formData.certificatePdf, this.formData.certificatePdf.name);//save the file name
     }
 
     // 4. Post the FormData (Do NOT set Content-Type headers manually)
