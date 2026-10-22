@@ -40,6 +40,11 @@ CREATE TABLE IF NOT EXISTS "BasicEducation" (
     "deletedAt"             VARCHAR(40)  NULL,
 
     -- Constraints
+    CONSTRAINT "CHK_BasicEdu_institutionType" CHECK ("institutionType"IN (
+        'Boys School',
+        'Girls School',
+        'Mixed School'
+    )),
     CONSTRAINT "CHK_BasicEdu_applicationType" CHECK ("applicationType" IN (
         'Regular School',
         'Regular School with Special Unit',
@@ -51,6 +56,11 @@ CREATE TABLE IF NOT EXISTS "BasicEducation" (
         'Primary', 
         'Secondary', 
         'High School'
+    )),
+    CONSTRAINT "CHK_BasicEdu_schoolCategory" CHECK ("schoolCategory" IN(
+        'Private',
+        'Public',
+        'Refugee Camp-based School '
     ))
 );
 

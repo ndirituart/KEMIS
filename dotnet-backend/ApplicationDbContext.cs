@@ -7,6 +7,8 @@ public class ApplicationDbContext : DbContext
 
     //1. Object one users
     public DbSet<User> Users => Set<User>();
+    //2. Object two Schools
+    public DbSet<BasicEducation> BasicEducations => Set<BasicEducation>();
   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -14,6 +16,7 @@ public class ApplicationDbContext : DbContext
 
         // Table names in the database
         modelBuilder.Entity<User>().ToTable("Users");
+        modelBuilder.Entity<BasicEducation>().ToTable("BasicEducation");
 
 
     }

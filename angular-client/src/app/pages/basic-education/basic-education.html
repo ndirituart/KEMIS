@@ -121,9 +121,9 @@
         </div>
 
         <div class="col-md-6">
-          <label for="schoolCategory" class="form-label fw-semibold">School Category</label>
-          <select class="form-select" id="schoolCategory" name="schoolCategory" [(ngModel)]="formData.schoolCategory">
-            <option value="" disabled selected>Select Category</option>
+          <label for="accomodationType" class="form-label fw-semibold">Accommodation Type</label>
+          <select class="form-select" id="accomodationType" name="accomodationType" [(ngModel)]="formData.accomodationType">
+            <option value="" disabled selected>Select Accommodation</option>
             <option value="Day">Day</option>
             <option value="Boarding">Boarding</option>
             <option value="Day & Boarding">Day & Boarding</option>
@@ -131,14 +131,16 @@
         </div>
 
         <div class="col-md-6">
-          <label for="accomodationType" class="form-label fw-semibold">Accommodation Type</label>
-          <select class="form-select" id="accomodationType" name="accomodationType" [(ngModel)]="formData.accomodationType">
-            <option value="" disabled selected>Select Accommodation</option>
-            <option value="Mixed">Mixed</option>
-            <option value="Boys Only">Boys Only</option>
-            <option value="Girls Only">Girls Only</option>
+          <label for="schoolCategory" class="form-label fw-semibold">School Category</label>
+          <select class="form-select" id="schoolCategory" name="schoolCategory" [(ngModel)]="formData.schoolCategory">
+            <option value="" disabled selected>Select Category</option>
+            <option value="Private">Private</option>
+            <option value="Public">Public</option>
+            <option value="Refugee Camp-Based School">Refugee Camp-Based School</option>
           </select>
         </div>
+
+
 
         <div class="col-md-6">
           <label for="totalLearners" class="form-label fw-semibold">Total Learners</label>
@@ -197,8 +199,10 @@
     </fieldset>
 
     <!-- Submit Button -->
+     <!--Removed the phrase [disabled]="!myForm.valid || isLoading" because Angular's ngForm
+      will automatically prevent submission if the form is invalid because you have required on your inputs.-->
     <div class="d-grid gap-2 mt-4">
-      <button type="submit" class="submit-btn" [disabled]="!myForm.valid || isLoading">
+      <button type="submit" class="submit-btn" [disabled]="isLoading">
         <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
         {{ isLoading ? 'Submitting...' : 'Register School' }}
       </button>

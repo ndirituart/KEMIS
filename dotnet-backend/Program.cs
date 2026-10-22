@@ -13,6 +13,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Hashing for now because of persistent error"The type or namespace name 'BasicEducationDbContext' could not be found (are you missing a using directive or an assembly reference?)"
+// builder.Services.AddDbContext<BasicEducationDbContext>(options =>
+//  options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 // Configure CORS for Angular frontend
 builder.Services.AddCors(options =>
 {
@@ -34,5 +39,7 @@ app.UseAuthorization();
 //see API errors
 app.UseDeveloperExceptionPage();
 app.MapControllers();
+//handle file uploads
+app.UseStaticFiles(); 
 
 app.Run();

@@ -50,8 +50,9 @@ export class BasicEducation {
     longitude: '',
 
     // Section 3: Other Details
-    accomodationType: '',
+    accomodationType:  '',
     schoolCategory: '',
+
 
     //4. Section 4: Terms & Conditions
     isActive: true,

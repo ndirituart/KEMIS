@@ -1,83 +1,97 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using dotnet_backend.Models;
 using System.IO;
+using System;
 using System.Threading.Tasks;
 
-[ApiController]
-[Route("api/[controller]")]
-public class BasicEducationController : ControllerBase
+namespace dotnet_backend.Controllers
 {
-    private readonly UserDbContext _context;
-    private readonly IWebHostEnvironment _environment; // Needed for file paths
-
-    public BasicEducationController(UserDbContext context, IWebHostEnvironment environment)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class BasicEducationController : ControllerBase
     {
-        _context = context;
-        _environment = environment;
-    }
+        //ApplicationDbContext universally calls all other DbContexts, we can't keep repeating this mistake omdsssss!
+        private readonly ApplicationDbContext _context; 
+        private readonly IWebHostEnvironment _environment;
 
-
-    //1. T0 register a new School
-    [HttpPost("CreateNewSchool")]
-    public async Task<IActionResult> CreateNewSchool([FromForm] SchoolRegistrationDto dto)
-    {
-        // 1. Handle the File Upload
-        string? uniqueFileName = null;
-        
-        if (dto.certificatePdf != null)
+        public BasicEducationController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
-            // Validate File on the server side too!
-            if (dto.certificatePdf.ContentType != "application/pdf")
-                return BadRequest("Only PDF files are allowed.");
-
-            if (dto.certificatePdf.Length > (8 * 1024 * 1024))
-                return BadRequest("File size cannot exceed 8MB.");
-
-            // Save to wwwroot/uploads
-            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-
-            uniqueFileName = Guid.NewGuid().ToString() + "_" + dto.certificatePdf.FileName;
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await dto.certificatePdf.CopyToAsync(stream);
-            }
+            _context = context;
+            _environment = environment;
         }
 
-        // 2. Map the data object "School" to the entity "Basic Education" 
-        var school = new BasicEducation
+//1. Register a School by HOIs
+
+        [HttpPost("CreateNewSchool")]
+        public async Task<IActionResult> CreateNewSchool([FromForm] BasicEducation obj)
         {
-            insitutionId = 0,
-            institutionName = dto.institutionName,
-            institutionType = dto.institutionType,
-            emailId: dto.emailId,
-            mobileNo: dto.mobileNo,
-            headOfInstitution: dto.headOfInstitution,
-            postalAddressHoi: dto.postalAddressHoi,
-            county: dto.county,
-            subCounty: dto.subCounty,
-            constituency: dto.constituency,
-            postalAddressInstitution: dto.postalAddressInstitution,
-            applicationType: dto.applicationType,
-            institutionLevel: dto.institutionLevel,
-            certificateValid: dto.certificateValid,
-            certificatePdf: null as File | null,
-            certificateNumber: dto.certificateNumber,
-            totalLearners: dto.totalLearners,
-            latitude: dto.latitude,
-            longitude: dto.longitude,
-            accomodationType: dto.accomodationType,
-            schoolCategory: dto.schoolCategory,
-            isActive: true,
-            certificatePdfUrl = uniqueFileName != null ? $"/uploads/{uniqueFileName}" : null,
-            status = "pending",
-            createdAt = DateTime.UtcNow.ToString("o")
-        };
+            //(a) Handling PDF file uploads
+            string? uniqueFileName = null;
+            
+        
+            if (obj.certificatePdf != null) 
+            {
+                if (obj.certificatePdf.ContentType != "application/pdf")
+                    return BadRequest("Only PDF files are allowed.");
 
-        _context.BasicEducations.Add(school);
-        await _context.SaveChangesAsync();
+                if (obj.certificatePdf.Length > (8 * 1024 * 1024))
+                    return BadRequest("File size cannot exceed 8MB.");
 
-        return Ok(new { message = "School registered successfully!", id = school.institutionId });
+                // FALLBACK for File uploads (fix current 500 INTERNAL SERVER ERROR)
+                // This uses WebRootPath if it exists, otherwise it defaults to the project's base directory
+                    var rootPath = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                    var uploadsFolder = Path.Combine(rootPath, "uploads");
+
+                    if (!Directory.Exists(uploadsFolder)) 
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + obj.certificatePdf.FileName;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await obj.certificatePdf.CopyToAsync(stream);
+                }
+            }
+
+            // (b). Map the object "school" to the database model "BasicEducation"
+            var school = new BasicEducation
+            {
+                //use obj. not this. this was bringing issues. Also dto. only when a DTO is used, which we are still learning atm
+                institutionName = obj.institutionName, 
+                institutionType = obj.institutionType,
+                emailId = obj.emailId,
+                mobileNo = obj.mobileNo,
+                headOfInstitution = obj.headOfInstitution,
+                postalAddressHoi = obj.postalAddressHoi,
+                county = obj.county,
+                subCounty = obj.subCounty,
+                constituency = obj.constituency,
+                postalAddressInstitution = obj.postalAddressInstitution,
+                applicationType = obj.applicationType,
+                institutionLevel = obj.institutionLevel,
+                certificateValid = obj.certificateValid,
+                certificateNumber = obj.certificateNumber,
+                totalLearners = obj.totalLearners,
+                latitude = obj.latitude,
+                longitude = obj.longitude,
+                accomodationType = obj.accomodationType,
+                schoolCategory = obj.schoolCategory,
+                isActive = obj.isActive,
+                
+                // Save the file name to the database
+                certificatePdfUrl = uniqueFileName != null ? $"/uploads/{uniqueFileName}" : null,
+                status = "pending",
+                createdAt = DateTime.UtcNow.ToString("o") //handle this in Controller not Model (error CS0019)
+            };
+
+            _context.BasicEducations.Add(school);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "School registered successfully!", id = school.institutionId });
+        }
     }
 }
