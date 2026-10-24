@@ -41,7 +41,7 @@ export class BasicEducation {
     applicationType: '',
     institutionLevel: '',
     certificateValid: true,
-    certificatePdf: null as File | null,
+    certificatePdfUrl: null as File | null,
     certificateNumber: '',
     totalLearners: '',
 
@@ -768,7 +768,7 @@ export class BasicEducation {
       }
 
       // Valid file, save it to the form data
-      this.formData.certificatePdf = file;
+      this.formData.certificatePdfUrl = file;
     }
   }
 
@@ -781,7 +781,7 @@ export class BasicEducation {
     if (!this.formData.subCounty) return 'Please select a Sub-County.';
     if (!this.formData.applicationType) return 'Please select an Application Type.';
     if (!this.formData.institutionLevel) return 'Please select an Institution Level.';
-    if (!this.formData.certificatePdf) return 'Please upload the Registration Certificate (PDF).';
+    if (!this.formData.certificatePdfUrl) return 'Please upload the Registration Certificate (PDF).';
     if (!this.formData.isActive) return 'You must accept the Terms & Conditions.';
     return null;
   }
@@ -789,48 +789,61 @@ export class BasicEducation {
   // ---School Registration Handler---
 
   onSubmit(): void {
-    const error = this.validate();
-    if (error) {
-      this.notification.showError(error);
-      return;
-    }
-
-    this.isLoading = true;
-    this.notification.showLoading('Creating your school...');
-
-    // 3. Use FormData to handle File Uploads
-    const formPayload = new FormData();
-
-    // Append standard text fields
-    formPayload.append('institutionName', this.formData.institutionName);
-    formPayload.append('institutionType', this.formData.institutionType);
-    formPayload.append('emailId', this.formData.emailId);
-    formPayload.append('mobileNo', this.formData.mobileNo);
-    formPayload.append('headOfInstitution', this.formData.headOfInstitution);
-    // ... append the rest of your text fields ...
-    formPayload.append('county', this.formData.county);
-    formPayload.append('isActive', String(this.formData.isActive)); // Convert boolean to string
-
-    // Append the File (if it exists)
-    if (this.formData.certificatePdf) {
-      formPayload.append('certificatePdf', this.formData.certificatePdf, this.formData.certificatePdf.name);//save the file name
-    }
-
-    // 4. Post the FormData (Do NOT set Content-Type headers manually)
-    this.http.post<any>(`${this.apiUrl}/CreateNewSchool`, formPayload).subscribe({
-      next: (res: any) => {
-        this.isLoading = false;
-        this.notification.showSuccess('Registration successful! Await feedback...');
-        // this.completeLogin(res); // Ensure this method exists
-      },
-      error: (err: any) => {
-        this.isLoading = false;
-        if (err.status === 500) {
-          this.notification.showError(err.error || 'Server error occurred.');
-        } else {
-          this.notification.showError('Registration failed. Please check your details.');
-        }
-      },
-    });
+  const error = this.validate();
+  if (error) {
+    this.notification.showError(error);
+    return;
   }
+
+  this.isLoading = true;
+  this.notification.showLoading('Creating your school...');
+
+  const formPayload = new FormData();
+  
+  // Text fields (Fallbacks added just in case)
+  formPayload.append('institutionName', this.formData.institutionName || '');
+  formPayload.append('institutionType', this.formData.institutionType || 'Mixed School');
+  formPayload.append('emailId', this.formData.emailId || '');
+  formPayload.append('mobileNo', this.formData.mobileNo || '');
+  formPayload.append('headOfInstitution', this.formData.headOfInstitution || '');
+  formPayload.append('postalAddressHoi', this.formData.postalAddressHoi || '');
+  formPayload.append('county', this.formData.county || '');
+  formPayload.append('subCounty', this.formData.subCounty || '');
+  formPayload.append('constituency', this.formData.constituency || '');
+  formPayload.append('postalAddressInstitution', this.formData.postalAddressInstitution || '');
+  
+  // THE CULPRITS: Application Type & Level
+  formPayload.append('applicationType', this.formData.applicationType || 'Regular School');
+  formPayload.append('institutionLevel', this.formData.institutionLevel || 'Primary');
+  
+  formPayload.append('schoolCategory', this.formData.schoolCategory || 'Public');
+  formPayload.append('accomodationType', this.formData.accomodationType || 'Day');
+  formPayload.append('certificateNumber', this.formData.certificateNumber || '');
+  
+  // Numbers and Booleans (Convert to string for FormData)
+  formPayload.append('totalLearners', String(this.formData.totalLearners || 0));
+  formPayload.append('certificateValid', String(this.formData.certificateValid));
+  formPayload.append('isActive', String(this.formData.isActive));
+
+  formPayload.append('latitude', this.formData.latitude || '');
+  formPayload.append('longitude', this.formData.longitude || '');
+
+  // The File
+  if (this.formData.certificatePdfUrl) {
+    formPayload.append('certificatePdfUrl', this.formData.certificatePdfUrl, this.formData.certificatePdfUrl.name);
+  }
+
+  this.http.post<any>(`${this.apiUrl}/CreateNewSchool`, formPayload).subscribe({
+    next: (res: any) => {
+      this.isLoading = false;
+      this.notification.showSuccess('Registration successful!');
+    },
+    error: (err: any) => {
+      this.isLoading = false;
+      // THIS IS CRITICAL: Log the exact backend error
+      console.error('Backend Error Details:', err.error); 
+      this.notification.showError(err.error || 'Registration failed.');
+    },
+  });
+}
 }

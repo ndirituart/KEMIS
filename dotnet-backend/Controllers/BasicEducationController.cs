@@ -49,7 +49,7 @@ namespace dotnet_backend.Controllers
                 if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
                 uniqueFileName = Guid.NewGuid().ToString() + "_" + obj.certificatePdf.FileName;
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName); 
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -93,5 +93,35 @@ namespace dotnet_backend.Controllers
 
             return Ok(new { message = "School registered successfully!", id = school.institutionId });
         }
+
+//2(a). To GET all Institutions Endpoint
+    [HttpGet("GetSchools")]
+    public IActionResult GetSchools()
+    {
+        var list = _context.BasicEducations.ToList();
+        return Ok(list);
+    }
+
+// 2 (a). Get School by ID Endpoint
+    [HttpGet("{id:int}")]
+    public IActionResult GetSchool(int id)
+    {
+        var institution = _context.BasicEducations.FirstOrDefault(i => i.institutionId == id);
+        if (institution == null)
+        {
+            return NotFound();
+        }
+        return Ok(institution);
+    }
+
+
+// 5(a). Update BasicEducation Endpoint
+    
+	[HttpPut("{id:int}")]
+	public IActionResult UpdateSchool(int id, [FromBody] object school)
+	{
+		return NoContent();
+	}
+
     }
 }

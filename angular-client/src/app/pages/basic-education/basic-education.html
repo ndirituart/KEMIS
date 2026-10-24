@@ -14,14 +14,14 @@
         <div class="col-md-6">
           <label for="institutionName" class="form-label fw-semibold">Institution Name</label>
           <input type="text" class="form-control" id="institutionName" name="institutionName" [(ngModel)]="formData.institutionName" required>
-        </div>
+          </div>
 
         <div class="col-md-6">
           <label for="institutionType" class="form-label fw-semibold">Institution Type</label>
           <select class="form-select" id="institutionType" name="institutionType" [(ngModel)]="formData.institutionType" required>
             <option value="" disabled selected>Select Institution Type</option>
-            <option value="Boy's School">Boy's School</option>
-            <option value="Girl's School">Girl's School</option>
+            <option value="Boys School">Boy's School</option>
+            <option value="Girls School">Girl's School</option>
             <option value="Mixed School">Mixed School</option>
           </select>
         </div>
@@ -67,7 +67,7 @@
         <!-- Sub-County -->
         <div class="col-md-6">
           <label for="subCounty" class="form-label fw-semibold">Sub-County</label>
-          <select class="form-select" id="subCounty" name="subCounty" [(ngModel)]="formData.subCounty" [disabled]="!formData.county" required>
+          <select class="form-select" id="subCounty" name="subCounty" [(ngModel)]="formData.subCounty" required>
             <option value="" disabled selected>Select Sub-County</option>
             <option *ngFor="let sub of availableSubCounty" [value]="sub">{{ sub }}</option>
           </select>
@@ -114,7 +114,7 @@
         <!-- Institution Level -->
         <div class="col-md-6">
           <label for="institutionLevel" class="form-label fw-semibold">Institution Level</label>
-          <select class="form-select" id="institutionLevel" name="institutionLevel" [(ngModel)]="formData.institutionLevel" [disabled]="!formData.applicationType" required>
+          <select class="form-select" id="institutionLevel" name="institutionLevel" [(ngModel)]="formData.institutionLevel" required>
             <option value="" disabled selected>Select Institution Level</option>
             <option *ngFor="let level of availableInstitutionLevels" [value]="level">{{ level }}</option>
           </select>
@@ -164,7 +164,7 @@
         <!-- Certificate Valid Switch -->
         <div class="col-12 mt-3">
           <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="certificateValid" name="certificateValid" [(ngModel)]="formData.certificateValid">
+            <input class="form-check-input" type="checkbox" role="switch" id="certificateValid" name="certificateValid" [(ngModel)]="formData.certificateValid" [ngModelOptions]="{standalone: true}">
             <label class="form-check-label fw-semibold" for="certificateValid">Institution has a valid Registration Certificate</label>
           </div>
         </div>
@@ -175,10 +175,9 @@
             <label class="upload__description" for="certificatePdf">
               Upload Registration Certificate (PDF, Max 8MB)
             </label>
-            <input
-              type="file"
+            <input type="file"
               id="certificatePdf"
-              name="certificatePdf"
+              name="certificatePdfUrl"
               class="upload__input"
               accept="application/pdf"
               (change)="onFileSelected($event)"
@@ -189,7 +188,7 @@
         <!-- Terms and Conditions -->
         <div class="col-12 mt-3">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="isActive" name="isActive" [(ngModel)]="formData.isActive" required>
+            <input class="form-check-input" type="checkbox" role="switch" id="isActive" name="isActive" [(ngModel)]="formData.isActive" [ngModelOptions]="{standalone: true}">
             <label class="form-check-label fw-semibold" for="isActive">
               I accept the Terms & Conditions and confirm all information is accurate.
             </label>
@@ -202,11 +201,12 @@
      <!--Removed the phrase [disabled]="!myForm.valid || isLoading" because Angular's ngForm
       will automatically prevent submission if the form is invalid because you have required on your inputs.-->
     <div class="d-grid gap-2 mt-4">
-      <button type="submit" class="submit-btn" [disabled]="isLoading">
+      <button type="submit" class="submit-btn">
         <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
         {{ isLoading ? 'Submitting...' : 'Register School' }}
       </button>
     </div>
+
   </div>
   </form>
 

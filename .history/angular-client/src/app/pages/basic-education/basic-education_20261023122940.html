@@ -1,0 +1,212 @@
+<form class="kemis-form" (ngSubmit)="onSubmit()" #myForm="ngForm">
+  <div class="kemis-form-wrapper">
+    <h1 class="text-center mb-4">Basic Education Institution Onboarding Form</h1>
+    <p class="text-center mb-0">Please fill in the details below to onboard your pre-primary, primary and secondary school.</p>
+    <span></span>
+
+    <!-- ========================================== -->
+    <!-- SECTION 1: Institution Details             -->
+    <!-- ========================================== -->
+    <fieldset class="mb-4 p-3 border rounded">
+      <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 1: Institution Details</legend>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="institutionName" class="form-label fw-semibold">Institution Name</label>
+          <input type="text" class="form-control" id="institutionName" name="institutionName" [(ngModel)]="formData.institutionName" required>
+          </div>
+
+        <div class="col-md-6">
+          <label for="institutionType" class="form-label fw-semibold">Institution Type</label>
+          <select class="form-select" id="institutionType" name="institutionType" [(ngModel)]="formData.institutionType" required>
+            <option value="" disabled selected>Select Institution Type</option>
+            <option value="Boy's School">Boy's School</option>
+            <option value="Girl's School">Girl's School</option>
+            <option value="Mixed School">Mixed School</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="emailId" class="form-label fw-semibold">Email Address</label>
+          <input type="email" class="form-control" id="emailId" name="emailId" [(ngModel)]="formData.emailId" required>
+        </div>
+
+        <div class="col-md-6">
+          <label for="mobileNo" class="form-label fw-semibold">Mobile Number</label>
+          <input type="text" class="form-control" id="mobileNo" name="mobileNo" [(ngModel)]="formData.mobileNo" required>
+        </div>
+
+        <div class="col-md-6">
+          <label for="headOfInstitution" class="form-label fw-semibold">Head of Institution</label>
+          <input type="text" class="form-control" id="headOfInstitution" name="headOfInstitution" [(ngModel)]="formData.headOfInstitution" required>
+        </div>
+
+        <div class="col-md-6">
+          <label for="postalAddressHoi" class="form-label fw-semibold">Postal Address (HOI)</label>
+          <input type="text" class="form-control" id="postalAddressHoi" name="postalAddressHoi" [(ngModel)]="formData.postalAddressHoi">
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- ========================================== -->
+    <!-- SECTION 2: Location Details                -->
+    <!-- ========================================== -->
+    <fieldset class="mb-4 p-3 border rounded">
+      <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 2: Location Details</legend>
+
+      <div class="row g-3">
+        <!-- County -->
+        <div class="col-md-6">
+          <label for="county" class="form-label fw-semibold">County</label>
+          <select class="form-select" id="county" name="county" [(ngModel)]="formData.county" (change)="onCountyChange()" required>
+            <option value="" disabled selected>Select County</option>
+            <option *ngFor="let c of countiesData" [value]="c.county">{{ c.county }}</option>
+          </select>
+        </div>
+
+        <!-- Sub-County -->
+        <div class="col-md-6">
+          <label for="subCounty" class="form-label fw-semibold">Sub-County</label>
+          <select class="form-select" id="subCounty" name="subCounty" [(ngModel)]="formData.subCounty" required>
+            <option value="" disabled selected>Select Sub-County</option>
+            <option *ngFor="let sub of availableSubCounty" [value]="sub">{{ sub }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="constituency" class="form-label fw-semibold">Constituency</label>
+          <input type="text" class="form-control" id="constituency" name="constituency" [(ngModel)]="formData.constituency">
+        </div>
+
+        <div class="col-md-6">
+          <label for="postalAddressInstitution" class="form-label fw-semibold">Postal Address (Institution)</label>
+          <input type="text" class="form-control" id="postalAddressInstitution" name="postalAddressInstitution" [(ngModel)]="formData.postalAddressInstitution">
+        </div>
+
+        <div class="col-md-6">
+          <label for="latitude" class="form-label fw-semibold">Latitude</label>
+          <input type="text" class="form-control" id="latitude" name="latitude" [(ngModel)]="formData.latitude">
+        </div>
+
+        <div class="col-md-6">
+          <label for="longitude" class="form-label fw-semibold">Longitude</label>
+          <input type="text" class="form-control" id="longitude" name="longitude" [(ngModel)]="formData.longitude">
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- ========================================== -->
+    <!-- SECTION 3: Application Details             -->
+    <!-- ========================================== -->
+    <fieldset class="mb-4 p-3 border rounded">
+      <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 3: Application Details</legend>
+
+      <div class="row g-3">
+        <!-- Application Type -->
+        <div class="col-md-6">
+          <label for="applicationType" class="form-label fw-semibold">Application Type</label>
+          <select class="form-select" id="applicationType" name="applicationType" [(ngModel)]="formData.applicationType" (change)="onApplicationTypeChange()" required>
+            <option value="" disabled selected>Select Application Type</option>
+            <option *ngFor="let type of schoolApplicationTypes" [value]="type.applicationType">{{ type.applicationType }}</option>
+          </select>
+        </div>
+
+        <!-- Institution Level -->
+        <div class="col-md-6">
+          <label for="institutionLevel" class="form-label fw-semibold">Institution Level</label>
+          <select class="form-select" id="institutionLevel" name="institutionLevel" [(ngModel)]="formData.institutionLevel" required>
+            <option value="" disabled selected>Select Institution Level</option>
+            <option *ngFor="let level of availableInstitutionLevels" [value]="level">{{ level }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="accomodationType" class="form-label fw-semibold">Accommodation Type</label>
+          <select class="form-select" id="accomodationType" name="accomodationType" [(ngModel)]="formData.accomodationType">
+            <option value="" disabled selected>Select Accommodation</option>
+            <option value="Day">Day</option>
+            <option value="Boarding">Boarding</option>
+            <option value="Day & Boarding">Day & Boarding</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="schoolCategory" class="form-label fw-semibold">School Category</label>
+          <select class="form-select" id="schoolCategory" name="schoolCategory" [(ngModel)]="formData.schoolCategory">
+            <option value="" disabled selected>Select Category</option>
+            <option value="Private">Private</option>
+            <option value="Public">Public</option>
+            <option value="Refugee Camp-Based School">Refugee Camp-Based School</option>
+          </select>
+        </div>
+
+
+
+        <div class="col-md-6">
+          <label for="totalLearners" class="form-label fw-semibold">Total Learners</label>
+          <input type="number" class="form-control" id="totalLearners" name="totalLearners" [(ngModel)]="formData.totalLearners" required>
+        </div>
+
+        <div class="col-md-6">
+          <label for="certificateNumber" class="form-label fw-semibold">Certificate Number</label>
+          <input type="text" class="form-control" id="certificateNumber" name="certificateNumber" [(ngModel)]="formData.certificateNumber">
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- ========================================== -->
+    <!-- SECTION 4: Certificates & Terms            -->
+    <!-- ========================================== -->
+    <fieldset class="mb-4 p-3 border rounded">
+      <legend class="float-none w-auto px-2 fs-5 fw-bold text-primary">Section 4: Certificates & Terms</legend>
+
+      <div class="row g-3">
+        <!-- Certificate Valid Switch -->
+        <div class="col-12 mt-3">
+          <div class="form-check form-switch">
+           <input class="form-check-input" type="checkbox" role="switch" id="certificateValid" name="certificateValid" [(ngModel)]="formData.certificateValid" [ngModelOptions]="{standalone: true}">
+             <label class="form-check-label fw-semibold" for="certificateValid">Institution has a valid Registration Certificate</label>
+          </div>
+        </div>
+
+        <!-- File Upload (No ngModel here, handled by (change)) -->
+        <div class="col-12">
+          <div class="upload">
+            <label class="upload__description" for="certificatePdf">
+              Upload Registration Certificate (PDF, Max 8MB)
+            </label>
+            <input
+              type="file"
+              id="certificatePdf"
+              name="certificatePdf"
+              class="upload__input"
+              accept="application/pdf"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="col-12 mt-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="isActive" name="isActive" [(ngModel)]="formData.isActive" required>
+            <label class="form-check-label fw-semibold" for="isActive">
+              I accept the Terms & Conditions and confirm all information is accurate.
+            </label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Submit Button -->
+     <!--Removed the phrase [disabled]="!myForm.valid || isLoading" because Angular's ngForm
+      will automatically prevent submission if the form is invalid because you have required on your inputs.-->
+    <div class="d-grid gap-2 mt-4">
+      <button type="submit" class="submit-btn" [(ngModel)]="isLoading">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        {{ isLoading ? 'Submitting...' : 'Register School' }}
+      </button>
+    </div>
+  </div>
+  </form>
+
