@@ -1,0 +1,172 @@
+<div class="dashboard-wrapper">
+
+  <!-- ========================================== -->
+  <!-- SIDEBAR                                    -->
+  <!-- ========================================== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/ministry-logo.png" alt="Ministry of Education" />
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active">
+        <i class="bi bi-grid-fill"></i>
+        <span>Dashboard</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-search"></i>
+        <span>Menu Search</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-clipboard-check"></i>
+        <span>KEMIS Reports</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-envelope-fill"></i>
+        <span>Escalations</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-pencil-square"></i>
+        <span>Registration</span>
+      </a>
+      <a class="nav-item text-danger mt-4">
+        <i class="bi bi-book"></i>
+        <span>User Manual</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ========================================== -->
+  <!-- MAIN CONTENT AREA                          -->
+  <!-- ========================================== -->
+  <main class="main-content">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="back-btn"><i class="bi bi-chevron-left"></i></button>
+        <span class="header-text">You are Currently accessing {{ dashboardData.currentLevel }} Education Information</span>
+      </div>
+
+      <div class="header-right">
+        <!-- Dropdowns -->
+        <select class="form-select header-select" [value]="selectedLevel" (change)="selectedLevel = $any($event.target).value">
+          <option value="Primary School">Primary School</option>
+          <option value="Junior School">Junior School</option>
+        </select>
+        <select class="form-select header-select-icon" [value]="selectedSubCounty" (change)="selectedSubCounty = $any($event.target).value">
+          <option value="" disabled selected>▼</option>
+          <option value="Vihiga">Vihiga</option>
+          <option value="Emuhaya">Emuhaya</option>
+        </select>
+
+        <!-- User Profile -->
+        <div class="user-profile ms-3">
+          <div class="avatar">
+            <i class="bi bi-person-fill"></i>
+          </div>
+          <div class="user-info">
+            <span class="name" style="text-transform: uppercase">{{ dashboardData.countyName }}SCQASO</span>
+            <span class="role">{{ dashboardData.userRole }}</span>
+          </div>
+        </div>
+        <button class="logout-btn" (click)="logout()">
+          <i class="bi bi-power"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="content-body">
+
+      <div class="page-title">
+        <h1>{{ dashboardData.countyName }}</h1>
+        <p>Educational Oversight & Quality Assurance Management Dashboard</p>
+      </div>
+
+      <!-- 5 Stat Cards (Mixed Colors) -->
+      <div class="stats-grid-5">
+        <!-- Blue Card -->
+        <div class="stat-card card-blue">
+          <div class="stat-icon"><i class="bi bi-clipboard-check-fill"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.inspectionsDone }}</div>
+          <div class="stat-label">INSPECTIONS DONE</div>
+          <div class="stat-subtext">Completed cycle</div>
+        </div>
+
+        <!-- Orange Card -->
+        <div class="stat-card card-orange">
+          <div class="stat-icon"><i class="bi bi-calendar-event-fill"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.schedulePending }}</div>
+          <div class="stat-label">SCHEDULE PENDING</div>
+          <div class="stat-subtext">Awaiting timeline</div>
+        </div>
+
+        <!-- Blue Card -->
+        <div class="stat-card card-blue">
+          <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.underEvaluation }}</div>
+          <div class="stat-label">UNDER EVALUATION</div>
+          <div class="stat-subtext">Active inspections</div>
+        </div>
+
+        <!-- Orange Card -->
+        <div class="stat-card card-orange">
+          <div class="stat-icon"><i class="bi bi-pencil-square"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.recPending }}</div>
+          <div class="stat-label">REC. PENDING</div>
+          <div class="stat-subtext">Review required</div>
+        </div>
+
+        <!-- Red Card -->
+        <div class="stat-card card-red">
+          <div class="stat-icon"><i class="bi bi-reply-fill"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.sendBack }}</div>
+          <div class="stat-label">SENDBACK BY SCDE</div>
+          <div class="stat-subtext">Requires revision</div>
+        </div>
+      </div>
+
+      <!-- Lower Grid: Type Distribution & Upcoming -->
+      <div class="lower-grid">
+
+        <!-- Institution Type Distribution -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="bi bi-pie-chart-fill me-2"></i> Institution Type Distribution</h3>
+          </div>
+          <div class="card-body chart-body">
+
+            <div class="chart-container">
+              <!-- 100% Blue Donut Chart -->
+              <div class="donut-chart" style="background: conic-gradient(#00b4d8 0% 100%);">
+                <!-- Empty inner to make it a donut -->
+                <div class="donut-inner"></div>
+              </div>
+            </div>
+
+            <div class="chart-legend-horizontal">
+              <div class="legend-item">
+                <span class="dot blue"></span>
+                <span class="legend-text">Primary School ({{ dashboardData.institutionTypes.primary.count }})</span>
+              </div>
+              <div class="legend-percentage">{{ dashboardData.institutionTypes.primary.percentage }}%</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Upcoming Inspections -->
+        <div class="card empty-card">
+          <div class="card-header">
+            <h3><i class="bi bi-calendar-check-fill me-2"></i> Upcoming Inspections</h3>
+          </div>
+          <div class="card-body">
+             <!-- Empty for now, will hold table/list later -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
