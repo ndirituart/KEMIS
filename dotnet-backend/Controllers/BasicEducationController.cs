@@ -85,7 +85,8 @@ namespace dotnet_backend.Controllers
                 // Save the file name to the database
                 certificatePdfUrl = uniqueFileName != null ? $"/uploads/{uniqueFileName}" : null,
                 status = "pending",
-                createdAt = DateTime.UtcNow.ToString("o") //handle this in Controller not Model (error CS0019)
+                createdAt = DateTime.UtcNow.ToString("o"), //handle this in Controller not Model (error CS0019)
+                userId = obj.userId
             };
 
             _context.BasicEducations.Add(school);
@@ -103,15 +104,13 @@ namespace dotnet_backend.Controllers
     }
 
 // 2 (a). Get School by ID Endpoint
-    [HttpGet("{id:int}")]
-    public IActionResult GetSchool(int id)
+[HttpGet("GetSchools/{id:int}")]
+    public IActionResult GetSchools(int id)
     {
-        var institution = _context.BasicEducations.FirstOrDefault(i => i.institutionId == id);
-        if (institution == null)
-        {
-            return NotFound();
-        }
-        return Ok(institution);
+        var school = _context.BasicEducations.FirstOrDefault(s => s.institutionId == id);
+        if (school == null) return NotFound("School not found.");
+        
+        return Ok(school);
     }
 
 

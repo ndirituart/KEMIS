@@ -11,6 +11,12 @@ import { InstitutionOnboardingComponent } from './pages/institution-onboarding/i
 import { BasicEducation } from './pages/basic-education/basic-education';
 import { Tvet } from './pages/tvet/tvet';
 import { HigherEducation } from './pages/higher-education/higher-education';
+import { SchoolDashboard } from './pages/school-dashboard/school-dashboard';
+import { HeadOfInsitution } from './pages/head-of-insitution/head-of-insitution';
+import { CountyEducation } from './pages/county-education/county-education';
+import { SubCountyEducation } from './pages/sub-county-education/sub-county-education';
+import { CountyQualityAssurance } from './pages/county-quality-assurance/county-quality-assurance';
+import { SuperAdmin } from './pages/super-admin/super-admin';
 
 export const routes: Routes = [
   //{ path: '/', component: Layout}, //making this the default
@@ -24,7 +30,13 @@ export const routes: Routes = [
   { path: 'institution-onboarding', component: InstitutionOnboardingComponent},
   { path: 'basic-education', component: BasicEducation},
   { path: 'tvet', component: Tvet},
-  { path: 'higher-education', component: HigherEducation},
+  { path: 'higher-education', component: HigherEducation },
+  { path: 'school-dashboard', component: SchoolDashboard },
+  { path: 'head-of-instituion', component: HeadOfInsitution },
+  { path: 'county-education', component: CountyEducation },
+  { path: 'sub-county-education', component: SubCountyEducation },
+  { path: 'county-quality-assurance', component: CountyQualityAssurance },
+   { path: 'super-admin', component: SuperAdmin },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' }
 ];

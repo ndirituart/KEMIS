@@ -45,4 +45,5 @@ public class BasicEducation
     public string createdAt { get; set; } = string.Empty; //Changed from DateTime.UtcNow.ToString("o");
     public string? updatedAt { get; set; }
     public string? deletedAt { get; set; }
+     public int? userId { get; set; } //linking each institution to a user later on
 }

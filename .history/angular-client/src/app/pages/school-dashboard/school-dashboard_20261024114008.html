@@ -1,0 +1,131 @@
+<div class="dashboard-container" *ngIf="!isLoading && schoolData">
+
+  <!-- Top Bar / User Profile -->
+  <header class="dashboard-header">
+    <div class="header-left">
+      <button class="back-btn" (click)="goBack()">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <h2 class="institution-name">{{ schoolData.institutionName | uppercase }}</h2>
+    </div>
+    <div class="header-right">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <div class="user-details">
+          <span class="user-name">{{ schoolData.institutionName | uppercase }}</span>
+          <span class="user-role">HOI</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <div class="page-title">
+      <h1>Institution Dashboard</h1>
+      <p>{{ schoolData.institutionName }} – Academic Overview</p>
+    </div>
+
+    <!-- Top Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+        <div class="stat-value">{{ schoolData.totalLearners || 0 }}</div>
+        <div class="stat-title">Total Active Learners</div>
+        <div class="stat-desc">Currently Enrolled</div>
+      </div>
+
+      <div class="stat-card blue">
+        <div class="stat-icon"><i class="bi bi-person-x-fill"></i></div>
+        <div class="stat-value">0</div>
+        <div class="stat-title">Total InActive Learners</div>
+        <div class="stat-desc">Currently InActive Learners</div>
+      </div>
+
+      <div class="stat-card blue">
+        <div class="stat-icon"><i class="bi bi-person-plus-fill"></i></div>
+        <div class="stat-value">0</div>
+        <div class="stat-title">New Admissions</div>
+        <div class="stat-desc">Current Academic Year</div>
+      </div>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="bottom-grid">
+
+      <!-- Registration Status -->
+      <div class="status-card">
+        <div class="card-header">
+          <h3>School Registration Status</h3>
+          <p>Current status of your institution's onboarding</p>
+        </div>
+
+        <div class="card-body text-center">
+          <!-- Dynamic status class based on database -->
+          <div class="status-badge" [ngClass]="'status-' + (schoolData.status || 'pending')">
+            <i class="bi" [ngClass]="{
+              'bi-hourglass-split': schoolData.status === 'pending',
+              'bi-check-circle-fill': schoolData.status === 'approved',
+              'bi-x-circle-fill': schoolData.status === 'denied'
+            }"></i>
+            {{ (schoolData.status || 'pending') | uppercase }}
+            <span *ngIf="schoolData.status === 'pending'"> APPROVAL</span>
+          </div>
+
+          <p class="status-message">
+            <span *ngIf="schoolData.status === 'pending'">Your application has been received and is currently being reviewed by the Ministry. You will receive a notification once a decision has been made.</span>
+            <span *ngIf="schoolData.status === 'approved'">Congratulations! Your institution has been approved and is fully onboarded into the KEMIS system.</span>
+            <span *ngIf="schoolData.status === 'denied'">Unfortunately, your application was not successful. Please contact the Ministry for more details.</span>
+          </p>
+
+          <div class="timeline">
+            <div class="timeline-step completed">
+              <div class="timeline-icon"><i class="bi bi-check-lg"></i></div>
+              <div class="timeline-text">Submitted</div>
+            </div>
+            <div class="timeline-line" [ngClass]="{'active': schoolData.status === 'pending' || schoolData.status === 'approved'}"></div>
+            <div class="timeline-step" [ngClass]="{'active': schoolData.status === 'pending', 'completed': schoolData.status === 'approved'}">
+              <div class="timeline-icon"><i class="bi bi-search"></i></div>
+              <div class="timeline-text">Under Review</div>
+            </div>
+            <div class="timeline-line" [ngClass]="{'active': schoolData.status === 'approved'}"></div>
+            <div class="timeline-step" [ngClass]="{'completed': schoolData.status === 'approved'}">
+              <div class="timeline-icon"><i class="bi bi-flag"></i></div>
+              <div class="timeline-text">Decision</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gender Distribution -->
+      <div class="gender-card">
+        <div class="card-header blue-header">
+          <h3>School Details</h3>
+          <p>Registered information</p>
+        </div>
+        <div class="card-body details-list">
+          <p><strong>County:</strong> {{ schoolData.county }}</p>
+          <p><strong>Sub-County:</strong> {{ schoolData.subCounty }}</p>
+          <p><strong>Level:</strong> {{ schoolData.institutionLevel }}</p>
+          <p><strong>Type:</strong> {{ schoolData.institutionType }}</p>
+          <p><strong>Email:</strong> {{ schoolData.emailId }}</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Loading State -->
+<div class="loading-screen" *ngIf="isLoading">
+  <div class="spinner-border text-primary" role="status"></div>
+  <p>Loading Dashboard...</p>
+</div>
+
+<!-- Error State -->
+<div class="error-screen" *ngIf="errorMessage">
+  <h2>Oops!</h2>
+  <p>{{ errorMessage }}</p>
+  <button (click)="goBack()">Go to Registration</button>
+</div>

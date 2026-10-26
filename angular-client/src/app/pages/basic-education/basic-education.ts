@@ -799,7 +799,7 @@ export class BasicEducation {
   this.notification.showLoading('Creating your school...');
 
   const formPayload = new FormData();
-  
+
   // Text fields (Fallbacks added just in case)
   formPayload.append('institutionName', this.formData.institutionName || '');
   formPayload.append('institutionType', this.formData.institutionType || 'Mixed School');
@@ -811,15 +811,15 @@ export class BasicEducation {
   formPayload.append('subCounty', this.formData.subCounty || '');
   formPayload.append('constituency', this.formData.constituency || '');
   formPayload.append('postalAddressInstitution', this.formData.postalAddressInstitution || '');
-  
+
   // THE CULPRITS: Application Type & Level
   formPayload.append('applicationType', this.formData.applicationType || 'Regular School');
   formPayload.append('institutionLevel', this.formData.institutionLevel || 'Primary');
-  
+
   formPayload.append('schoolCategory', this.formData.schoolCategory || 'Public');
   formPayload.append('accomodationType', this.formData.accomodationType || 'Day');
   formPayload.append('certificateNumber', this.formData.certificateNumber || '');
-  
+
   // Numbers and Booleans (Convert to string for FormData)
   formPayload.append('totalLearners', String(this.formData.totalLearners || 0));
   formPayload.append('certificateValid', String(this.formData.certificateValid));
@@ -833,16 +833,21 @@ export class BasicEducation {
     formPayload.append('certificatePdfUrl', this.formData.certificatePdfUrl, this.formData.certificatePdfUrl.name);
   }
 
-  this.http.post<any>(`${this.apiUrl}/CreateNewSchool`, formPayload).subscribe({
+   this.http.post<any>(`${this.apiUrl}/CreateNewSchool`, formPayload).subscribe({
     next: (res: any) => {
       this.isLoading = false;
       this.notification.showSuccess('Registration successful!');
+
+      // 1. Save the ID so the dashboard knows which school to fetch
+      localStorage.setItem('institutionId', res.id);
+
+      // 2. Navigate to the dashboard
+      this.router.navigate(['/school-dashboard']);
     },
     error: (err: any) => {
       this.isLoading = false;
-      // THIS IS CRITICAL: Log the exact backend error
-      console.error('Backend Error Details:', err.error); 
-      this.notification.showError(err.error || 'Registration failed.');
+      console.error('Backend Error Details:', err.error);
+      this.notification.showError('Registration failed. Please check your details.');
     },
   });
 }
