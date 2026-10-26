@@ -12,7 +12,7 @@ import { BasicEducation } from './pages/basic-education/basic-education';
 import { Tvet } from './pages/tvet/tvet';
 import { HigherEducation } from './pages/higher-education/higher-education';
 import { SchoolDashboard } from './pages/school-dashboard/school-dashboard';
-import { HeadOfInsitution } from './pages/head-of-insitution/head-of-insitution';
+import { HeadOfInstitution } from './pages/head-of-institution/head-of-institution';
 import { CountyEducation } from './pages/county-education/county-education';
 import { SubCountyEducation } from './pages/sub-county-education/sub-county-education';
 import { CountyQualityAssurance } from './pages/county-quality-assurance/county-quality-assurance';
@@ -32,7 +32,7 @@ export const routes: Routes = [
   { path: 'tvet', component: Tvet},
   { path: 'higher-education', component: HigherEducation },
   { path: 'school-dashboard', component: SchoolDashboard },
-  { path: 'head-of-instituion', component: HeadOfInsitution },
+  { path: 'head-of-instituion', component: HeadOfInstitution },
   { path: 'county-education', component: CountyEducation },
   { path: 'sub-county-education', component: SubCountyEducation },
   { path: 'county-quality-assurance', component: CountyQualityAssurance },
