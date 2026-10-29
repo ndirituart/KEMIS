@@ -14,29 +14,29 @@ export class CountyEducation {
 
   // Static data should be changed to f
   dashboardData = {
-    countyName: 'Vihiga',
+    countyName: 'Nairobi',
     userRole: 'CDE',
     stats: {
-      approved: 117,
+      approved: 0,
       rejected: 0,
-      pending: 39,
-      appeals: 3,
-      totalLearners: 372
+      pending: 1,
+      appeals: 0,
+      totalLearners: 0
     },
     approvalBreakdown: {
-      approved: 117,
-      pending: 39,
+      approved: 0,
+      pending: 1,
       rejected: 0
     },
     categories: {
-      regular: { count: 149, percentage: 96.8 },
-      integrated: { count: 5, percentage: 3.2 },
+      regular: { count: 0, percentage: 0.0 },
+      integrated: { count: 0, percentage: 0.0 },
       sne: { count: 0, percentage: 0.0 }
     }
   };
 
   // For the top right dropdowns
-  selectedLevel = 'Junior School';
+  selectedLevel = 'Primary School';
   selectedSubCounty = '';
 
   constructor(private router: Router) {}

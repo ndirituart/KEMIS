@@ -43,10 +43,10 @@
 
     <!-- Top Header -->
     <header class="top-header">
-      <div class="header-left">
+      <!-- <div class="header-left">
         <button class="back-btn"><i class="bi bi-chevron-left"></i></button>
         <span class="header-text">You are Currently accessing {{ dashboardData.currentLevel }} Education Information</span>
-      </div>
+      </div> -->
 
       <div class="header-right">
         <!-- Dropdowns -->
@@ -56,8 +56,8 @@
         </select>
         <select class="form-select header-select-icon" [value]="selectedSubCounty" (change)="selectedSubCounty = $any($event.target).value">
           <option value="" disabled selected>▼</option>
-          <option value="Vihiga">Vihiga</option>
-          <option value="Emuhaya">Emuhaya</option>
+          <option value="Nairobi">Nairobi</option>
+          <option value="Embakasi East">Embakasi East</option>
         </select>
 
         <!-- User Profile -->

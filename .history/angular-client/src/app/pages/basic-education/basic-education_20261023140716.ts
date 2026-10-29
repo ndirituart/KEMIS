@@ -697,15 +697,15 @@ export class BasicEducation {
       ]
     },
     {
-      county: "Vihiga",
-      capital: "Vihiga",
+      county: "Nairobi",
+      capital: "Nairobi",
       code: 38,
       subCounty: [
-        "Emuhaya",
+        "Embakasi East",
         "Hamisi",
         "Luanda",
-        "Sabatia",
-        "vihiga"
+        "Lower Savannah",
+        "Nairobi"
       ]
     },
     {

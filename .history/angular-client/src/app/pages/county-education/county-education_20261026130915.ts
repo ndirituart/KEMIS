@@ -14,7 +14,7 @@ export class CountyEducation {
 
   // Static data mapping to the screenshot
   dashboardData = {
-    countyName: 'Vihiga',
+    countyName: 'Nairobi',
     userRole: 'CDE',
     stats: {
       approved: 117,

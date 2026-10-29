@@ -1,0 +1,201 @@
+<div class="dashboard-wrapper">
+  <!--Sidebar-->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/ministry-logo.png" alt="Ministry of Education" />
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active">
+        <i class="bi bi-grid-fill"></i>
+        <span>Dashboard</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-search"></i>
+        <span>Menu Search</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-clipboard-check"></i>
+        <span>KEMIS Reports</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-envelope-fill"></i>
+        <span>Escalations</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-pencil-square"></i>
+        <span>Registration</span>
+      </a>
+      <a class="nav-item text-danger mt-4">
+        <i class="bi bi-book"></i>
+        <span>User Manual</span>
+      </a>
+    </nav>
+  </aside>
+  
+  <main class="main-content">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <!-- <div class="header-left">
+        <button class="back-btn"><i class="bi bi-chevron-left"></i></button>
+        <span class="header-text">n</span>
+      </div> -->
+
+      <div class="header-right">
+        <!-- Dropdowns -->
+        <select class="form-select header-select" [(ngModel)]="selectedLevel">
+          <option value="Primary School">Primary School</option>
+          <option value="Junior School">Junior School</option>
+          <option value="Secondary School">Secondary School</option>
+        </select>
+        <select class="form-select header-select" [(ngModel)]="selectedSubCounty">
+          <option value="" disabled selected>▼</option>
+          <option value="Nairobi">Nairobi</option>
+          <option value="Embakasi East">Embakasi East</option>
+        </select>
+
+        <!-- User Profile -->
+        <div class="user-profile ms-3">
+          <div class="avatar">
+            <i class="bi bi-person-fill"></i>
+          </div>
+          <div class="user-info">
+            <span class="name">{{ dashboardData.countyName | uppercase }}SCDE</span>
+            <span class="role">{{ dashboardData.userRole }}</span>
+          </div>
+        </div>
+        <button class="logout-btn" (click)="logout()">
+          <i class="bi bi-power"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="content-body">
+
+      <div class="page-title">
+        <h1>Subcounty Director Dashboard</h1>
+        <p>{{ dashboardData.countyName }} – Educational Management</p>
+      </div>
+
+      <!-- 5 Stat Cards -->
+      <div class="stats-grid-5">
+        <!-- Applications -->
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-clipboard-data-fill"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.totalApplications }}</div>
+          <div class="stat-label">Total Applications</div>
+          <div class="stat-subtext">Awaiting SCDE Review</div>
+        </div>
+
+        <!-- Institutions -->
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-building-fill"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.totalInstitutions }}</div>
+          <div class="stat-label">Total Institutions</div>
+          <div class="stat-subtext">Recommended In Subcounty</div>
+        </div>
+
+        <!-- Schools Received -->
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-book-fill"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.schoolsReceived }}</div>
+          <div class="stat-label">Schools received</div>
+          <div class="stat-subtext">from CDE Pending Approval</div>
+        </div>
+
+        <!-- Total Learners -->
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.totalLearners }}</div>
+          <div class="stat-label">Total Learners</div>
+          <div class="stat-subtext">Subcounty Enrollment</div>
+        </div>
+
+        <!-- Subject Combinations -->
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-journal-bookmark-fill"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.subjectCombinations }}</div>
+          <div class="stat-label">Subject Combinations</div>
+          <div class="stat-subtext">Pending Approval</div>
+        </div>
+      </div>
+
+      <!-- Lower Grid: Submissions & Gender -->
+      <div class="lower-grid">
+
+        <!-- Submission Action Status Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="bi bi-list-check me-2"></i> Submission Action Status</h3>
+            <p>Current status of institution submissions</p>
+          </div>
+          <div class="card-body">
+
+            <div class="progress-row">
+              <div class="progress-label"><span class="dot blue"></span> Completed</div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill blue" style="width: 0%;"></div>
+              </div>
+              <div class="progress-value">{{ dashboardData.submissionStatus.completed }}</div>
+            </div>
+
+            <div class="progress-row">
+              <div class="progress-label"><span class="dot yellow"></span> In Progress</div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill yellow" style="width: 0%;"></div>
+              </div>
+              <div class="progress-value">{{ dashboardData.submissionStatus.inProgress }}</div>
+            </div>
+
+            <div class="progress-row">
+              <div class="progress-label"><span class="dot red"></span> Pending</div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill red" style="width: 0%;"></div>
+              </div>
+              <div class="progress-value">{{ dashboardData.submissionStatus.pending }}</div>
+            </div>
+
+            <div class="progress-footer">
+              <div class="footer-stat">
+                <span class="value blue-text">{{ dashboardData.submissionStatus.completed }}</span>
+                <!-- The screenshot doesn't have labels under the numbers for this specific chart, but we keep spacing -->
+              </div>
+              <div class="footer-stat">
+                <span class="value yellow-text">{{ dashboardData.submissionStatus.inProgress }}</span>
+              </div>
+              <div class="footer-stat">
+                <span class="value red-text">{{ dashboardData.submissionStatus.pending }}</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Gender Distribution Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="bi bi-pie-chart-fill me-2"></i> Gender Distribution</h3>
+            <p>Learner gender distribution in subcounty</p>
+          </div>
+          <div class="card-body chart-body">
+
+            <div class="chart-container">
+              <!-- Pure CSS Donut Chart for 50/50 split -->
+              <!-- Using conic-gradient with Blue and Dark Red to match screenshot -->
+              <div class="donut-chart" style="background: conic-gradient(#00b4d8 0% 50%, #b91c1c 50% 100%);">
+                <div class="donut-inner">
+                  <span class="total">{{ dashboardData.gender.total }}</span>
+                  <span class="total-label">Total Learners</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>

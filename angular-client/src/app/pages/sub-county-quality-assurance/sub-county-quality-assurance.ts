@@ -14,18 +14,18 @@ export class SubCountyQualityAssurance {
 
   // Static data mapping to the screenshot
   dashboardData = {
-    countyName: 'Vihiga',
+    countyName: 'Nairobi',
     userRole: 'SCQASO',
     currentLevel: 'Primary School',
     stats: {
-      inspectionsDone: 9,
-      schedulePending: 0,
+      inspectionsDone: 0,
+      schedulePending: 1,
       underEvaluation: 0,
       recPending: 0,
       sendBack: 0
     },
     institutionTypes: {
-      primary: { count: 120, percentage: 100 }
+      primary: { count: 1, percentage: 100 }
     }
   };
 

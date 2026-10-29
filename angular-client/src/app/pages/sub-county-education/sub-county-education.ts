@@ -14,13 +14,13 @@ export class SubCountyEducation {
 
   // Static data mapping to the screenshot
   dashboardData = {
-    countyName: 'Vihiga',
+    countyName: 'Nairobi',
     userRole: 'SCDE',
     stats: {
-      totalApplications: 119,
-      totalInstitutions: 119,
+      totalApplications: 1,
+      totalInstitutions: 1,
       schoolsReceived: 0,
-      totalLearners: 345,
+      totalLearners: 0,
       subjectCombinations: 0
     },
     submissionStatus: {
@@ -29,9 +29,9 @@ export class SubCountyEducation {
       pending: 0
     },
     gender: {
-      total: 345,
-      male: 172, // Estimated from the 50/50 visual in the screenshot
-      female: 173
+      total: 0,
+      male: 0, // Estimated from the 50/50 visual in the screenshot
+      female: 0
     }
   };
 

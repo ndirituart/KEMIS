@@ -14,7 +14,7 @@ export class SubCountyQualityAssurance {
 
   // Static data mapping to the screenshot
   dashboardData = {
-    countyName: 'Vihiga',
+    countyName: 'Nairobi',
     userRole: 'SCQASO',
     currentLevel: 'Primary School',
     stats: {

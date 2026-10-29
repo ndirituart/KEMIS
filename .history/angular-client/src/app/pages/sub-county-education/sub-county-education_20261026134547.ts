@@ -14,7 +14,7 @@ export class SubCountyEducationComponent {
 
   // Static data mapping to the screenshot
   dashboardData = {
-    countyName: 'Vihiga',
+    countyName: 'Nairobi',
     userRole: 'SCDE',
     stats: {
       totalApplications: 119,

@@ -14,7 +14,7 @@ export class CountyEducation {
 
   // Static data should be cha
   dashboardData = {
-    countyName: 'Vihiga',
+    countyName: 'Nairobi',
     userRole: 'CDE',
     stats: {
       approved: 117,

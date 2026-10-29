@@ -591,15 +591,15 @@
         ]
     },
     {
-        "county": "Vihiga",
-        "capital": "Vihiga",
+        "county": "Nairobi",
+        "capital": "Nairobi",
         "code": 38,
         "sub_counties": [
-            "Emuhaya",
+            "Embakasi East",
             "Hamisi",
             "Luanda",
-            "Sabatia",
-            "vihiga"
+            "Lower Savannah",
+            "Nairobi"
         ]
     },
     {

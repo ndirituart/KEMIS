@@ -1,0 +1,248 @@
+<div class="dashboard-wrapper">
+
+  <!-- ========================================== -->
+  <!-- SIDEBAR                                    -->
+  <!-- ========================================== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/ministry-logo.png" alt="Ministry of Education" />
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active">
+        <i class="bi bi-grid-fill"></i>
+        <span>Dashboard</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-search"></i>
+        <span>Menu Search</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-clipboard-check"></i>
+        <span>KEMIS Reports</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-envelope-fill"></i>
+        <span>Escalations</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-pencil-square"></i>
+        <span>Registration</span>
+      </a>
+      <a class="nav-item text-danger mt-4">
+        <i class="bi bi-book"></i>
+        <span>User Manual</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ========================================== -->
+  <!-- MAIN CONTENT AREA                          -->
+  <!-- ========================================== -->
+  <main class="main-content">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="back-btn"><i class="bi bi-chevron-left"></i></button>
+        <!-- The text "nation" is cut off in the screenshot, likely part of "Onboarding Nation" or similar
+        <span class="header-text">nation</span> -->
+      </div>
+
+      <div class="header-right">
+        <!-- New Dropdowns -->
+        <select class="form-select header-select" [(ngModel)]="selectedLevel">
+          <option value="Junior School">Junior School</option>
+          <option value="Primary School">Primary School</option>
+          <option value="Secondary School">Secondary School</option>
+        </select>
+        <select class="form-select header-select-icon" [(ngModel)]="selectedSubCounty">
+          <option value="" disabled selected>▼</option>
+          <option value="Dagoretti North Sub County">Dagoretti North Sub County</option>
+          <option value="Dagoretti South Sub County"> Dagoretti South Sub County </option>
+          <option value="Embakasi East Sub County"> Embakasi East Sub County</option>
+          <option value="Embakasi North Sub County">Embakasi North Sub County</option>
+          <option value="Embakasi South Sub County"> Embakasi South Sub County </option>
+          <option value="Embakasi West Sub County"> Embakasi West Sub County</option>
+          <option value="Kamukunji Sub County">Kamukunji Sub County</option>
+          <option value="Kasarani Sub County"> Kasarani Sub County </option>
+          <option value="Kibra Sub County "> Kibra Sub County </option>
+          <option value="Lang'ata Sub County">Lang'ata Sub County</option>
+          <option value="Makadara Sub County"> Makadara Sub County </option>
+          <option value="Roysambu Sub County"> Roysambu Sub County</option>
+          <option value="Ruaraka Sub County"> Ruaraka Sub County</option>
+          <option value="Starehe Sub County"> Starehe Sub County</option>
+          <option value="Westlands Sub County"> Westlands Sub County</option>
+          
+        </select>
+
+        <!-- User Profile -->
+        <div class="user-profile ms-3">
+          <div class="avatar">
+            <i class="bi bi-person-fill"></i>
+          </div>
+          <div class="user-info">
+            <span class="name">{{ dashboardData.countyName | uppercase }}</span>
+            <span class="role">{{ dashboardData.userRole }}</span>
+          </div>
+        </div>
+        <button class="logout-btn" (click)="logout()">
+          <i class="bi bi-power"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="content-body">
+
+      <div class="page-title">
+        <h1>County Director Dashboard</h1>
+        <p>{{ dashboardData.countyName }} – Educational Oversight & Management</p>
+      </div>
+
+      <!-- 5 Stat Cards -->
+      <div class="stats-grid-5">
+        <!-- Approved -->
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-building-check"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.approved }}</div>
+          <div class="stat-label">Approved Institutions</div>
+          <div class="stat-subtext">Onboard under KEMIS</div>
+        </div>
+
+        <!-- Rejected -->
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-building-x"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.rejected }}</div>
+          <div class="stat-label">Rejected Institutions</div>
+          <div class="stat-subtext">Onboard under KEMIS</div>
+        </div>
+
+        <!-- Pending -->
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-file-earmark-text"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.pending }}</div>
+          <div class="stat-label">Pending Applications</div>
+          <div class="stat-subtext">Awaiting CDE Review</div>
+        </div>
+
+        <!-- Appeals -->
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-scale"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.appeals }}</div>
+          <div class="stat-label">Transfer Appeals</div>
+          <div class="stat-subtext">Requiring Decision</div>
+        </div>
+
+        <!-- Total Learners -->
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+          <div class="stat-number">{{ dashboardData.stats.totalLearners }}</div>
+          <div class="stat-label">Total Learners</div>
+          <div class="stat-subtext">County-wide Enrollment</div>
+        </div>
+      </div>
+
+      <!-- Lower Grid: Approvals & Categories -->
+      <div class="lower-grid">
+
+        <!-- Institution Approval Status Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="bi bi-check-circle-fill me-2"></i> Institution Approval Status Breakdown</h3>
+            <p>Current status of institution applications</p>
+          </div>
+          <div class="card-body">
+
+            <div class="progress-row">
+              <div class="progress-label"><span class="dot blue"></span> Approved</div>
+              <div class="progress-bar-bg">
+                <!-- Width calculated dynamically based on total -->
+                <div class="progress-bar-fill blue" style="width: 75%;"></div>
+              </div>
+              <div class="progress-value">{{ dashboardData.approvalBreakdown.approved }}</div>
+            </div>
+
+            <div class="progress-row">
+              <div class="progress-label"><span class="dot yellow"></span> Pending</div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill yellow" style="width: 25%;"></div>
+              </div>
+              <div class="progress-value">{{ dashboardData.approvalBreakdown.pending }}</div>
+            </div>
+
+            <div class="progress-row">
+              <div class="progress-label"><span class="dot red"></span> Rejected</div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill red" style="width: 0%;"></div>
+              </div>
+              <div class="progress-value">{{ dashboardData.approvalBreakdown.rejected }}</div>
+            </div>
+
+            <div class="progress-footer">
+              <div class="footer-stat">
+                <span class="value blue-text">{{ dashboardData.approvalBreakdown.approved }}</span>
+                <span class="label">Approved</span>
+              </div>
+              <div class="footer-stat">
+                <span class="value yellow-text">{{ dashboardData.approvalBreakdown.pending }}</span>
+                <span class="label">Pending</span>
+              </div>
+              <div class="footer-stat">
+                <span class="value red-text">{{ dashboardData.approvalBreakdown.rejected }}</span>
+                <span class="label">Rejected</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Institution Categories Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="bi bi-pie-chart-fill me-2"></i> Institution Categories</h3>
+            <p>Distribution by institution type</p>
+          </div>
+          <div class="card-body chart-body">
+
+            <div class="chart-container">
+              <!-- Pure CSS Donut Chart for 96.8% / 3.2% -->
+              <!-- Using conic-gradient to represent the 3.2% yellow slice -->
+              <div class="donut-chart" style="background: conic-gradient(#ffc107 0% 3.2%, #00b4d8 3.2% 100%);">
+                <div class="donut-inner"></div>
+              </div>
+            </div>
+
+            <div class="chart-legend-vertical">
+              <div class="legend-row">
+                <div class="legend-left">
+                  <span class="dot blue"></span>
+                  <span class="legend-text">Regular {{ dashboardData.categories.regular.count }}</span>
+                </div>
+                <div class="legend-right">{{ dashboardData.categories.regular.percentage }}%</div>
+              </div>
+
+              <div class="legend-row">
+                <div class="legend-left">
+                  <span class="dot yellow"></span>
+                  <span class="legend-text">Integrated ({{ dashboardData.categories.integrated.count }})</span>
+                </div>
+                <div class="legend-right">{{ dashboardData.categories.integrated.percentage }}%</div>
+              </div>
+
+              <div class="legend-row">
+                <div class="legend-left">
+                  <span class="dot green"></span>
+                  <span class="legend-text">SNE ({{ dashboardData.categories.sne.count }})</span>
+                </div>
+                <div class="legend-right">{{ dashboardData.categories.sne.percentage }}%</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
