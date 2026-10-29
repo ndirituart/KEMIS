@@ -1,5 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using dotnet_backend.Models;
+//JWT Token Authentication
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using dotnet_backend.Services; //To use Token service
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +35,28 @@ builder.Services.AddCors(options =>
     });
 });
 
+// 1. Registering your Token Service
+builder.Services.AddScoped<TokenService>(); //if using an interface use builder.Services.AddScoped<ITokenService, TokenService>();
+
+// 2. Configuring the JWT Authentication from frontend to backend
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateLifetime = true
+        };
+    });
+
+    
+
+
 var app = builder.Build();
 
 app.UseRouting();
@@ -41,5 +68,9 @@ app.UseDeveloperExceptionPage();
 app.MapControllers();
 //handle file uploads
 app.UseStaticFiles(); 
+//JWT authentication
+app.UseAuthentication(); 
+app.UseAuthorization();  
+
 
 app.Run();

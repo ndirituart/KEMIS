@@ -72,43 +72,69 @@ export class Login {
 
   // --- Login Handler ---
   onLogin(): void {
-    const error = this.validateLogin();
-    if (error) {
-      this.notification.showError(error);
-      return;
-    }
+      const error = this.validateLogin();
+      if (error) {
+        this.notification.showError(error);
+        return;
+      }
 
-    this.isLoading = true;
-    this.notification.showLoading('Logging in...');
+      this.isLoading = true;
+      this.notification.showLoading('Logging in...');
 
-    const payload = {
-      emailId: this.loginModel.emailId,
-      password: this.loginModel.password,
-    };
+      const payload = {
+        emailId: this.loginModel.emailId,
+        password: this.loginModel.password,
+      };
 
-    this.http.post<any>(`${this.apiUrl}/login`, payload).subscribe({
-      next: (res: any) => {
-        this.isLoading = false;
+      this.http.post<any>(`${this.apiUrl}/Login`, payload).subscribe({
+        next: res => {
+          this.isLoading = false;
+          
+          // 1. Save session data
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('role', res.role);
+          localStorage.setItem('userId', res.userId);
+          if(res.institutionId) localStorage.setItem('institutionId', res.institutionId);
 
-        if (res?.twofaEnabled) {
-          this.userPending2FA = this.loginModel.emailId;
-          this.show2FA = true;
-          this.notification.showSuccess('Password verified. Please enter 2FA code.');
-          return;
-        }
+          this.notification.showSuccess('Login successful!');
 
-        this.completeLogin(res);
-      },
-      error: (err: any) => {
-        this.isLoading = false;
-        if (err.status === 401) {
-          this.notification.showError(err.error?.message || 'Invalid emailId or password.');
-        } else {
-          this.notification.showError('An error occurred during login. Please try again.');
-        }
-      },
-    });
-  }
+          // 2. Route based on role
+          switch (res.role) {
+            case 'Admin':
+              this.router.navigate(['/super-admin']);
+              break;
+            case 'Head of Institution (HOI)':
+              this.router.navigate(['/head-of-institution']);
+              break;
+            case 'County Director of Education (CDE)':
+              this.router.navigate(['/county-education']);
+              break;
+            case 'Sub-County Director of Education (SCDE)':
+              this.router.navigate(['/sub-county-education']);
+              break;
+            case 'Sub-County Quality Assurance and Standards Officer (SCQASO)':
+              this.router.navigate(['/sub-county-quality-assurance']);
+              break;
+            case 'IT Officer':
+            case 'Deputy Principal':
+            case 'Teacher':
+              this.router.navigate(['/school-dashboard']);
+              break;
+            default:
+              this.router.navigate(['/institution-onboarding']);
+              break;
+          }
+        },
+        error: (err: any) => {
+          this.isLoading = false;
+          if (err.status === 401) {
+            this.notification.showError(err.error?.message || 'Invalid email or password.');
+          } else {
+            this.notification.showError('An error occurred during login.');
+          }
+        },
+      });
+} 
 
 
 

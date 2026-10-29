@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using dotnet_backend.Models;
+using dotnet_backend.Services;
 
 namespace dotnet_backend.Controllers;
 
@@ -10,11 +11,13 @@ namespace dotnet_backend.Controllers;
 public class UserController : ControllerBase
 {
     private readonly UserDbContext _context;
+    private readonly TokenService _tokenService; 
 
     // Injected Dependency Injection constructor
-    public UserController(UserDbContext context)
+    public UserController(UserDbContext context, TokenService tokenService)
     {
         _context = context;
+        _tokenService = tokenService;
     }
 
 //to handle date ISO
@@ -44,17 +47,25 @@ public class UserController : ControllerBase
 
     // 2. Login Endpoint
     [HttpPost("Login")]
-    public IActionResult Login([FromBody] UserLogin userLogin)
+public IActionResult Login([FromBody] UserLogin userLogin)
+{
+    // Note: Use ToLower() if you want case-insensitive email
+    var user = _context.Users.FirstOrDefault(u => u.emailId == userLogin.emailId && u.password == userLogin.password);
+    
+    if (user == null)
     {
-        var user = _context.Users.FirstOrDefault(u => u.emailId == userLogin.emailId && u.password == userLogin.password);
-        
-        if (user == null)
-        {
-            return Unauthorized("Invalid emailId or password");
-        }
-
-        return Ok(user);
+        return Unauthorized(new { message = "Invalid emailId or password" });
     }
+
+    var token = _tokenService.CreateToken(user);
+
+    return Ok(new { 
+        token = token, 
+        role = user.role, 
+        userId = user.userId,
+        emailId = user.emailId 
+    });
+}
 
     // 3. Get All Users Endpoint
     [HttpGet("GetUsers")]
@@ -177,6 +188,14 @@ public class UserController : ControllerBase
         _context.Users.Remove(user);
         _context.SaveChanges();
         return NoContent();
+    }
+
+    //7. Superadmin
+    [HttpGet("SuperAdmin")]
+    // [Authorize(Role = "Admin")] // Only users with 'Admin' role in their JWT can access this
+    public IActionResult GetSecretData()
+    {
+        return Ok("You are an admin!");
     }
     
 }
