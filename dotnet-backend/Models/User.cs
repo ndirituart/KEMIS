@@ -20,6 +20,7 @@ public class User
     public string constituency { get; set; } = string.Empty;
     public string createdDate { get; set; } = DateTime.UtcNow.ToString("o");
     //new thoughts to handle status when updating and soft deleting
+    public int? institutionId { get; set; } //later link a user to aan institution
     public string? updatedAt { get; set; }              
     public string? deletedAt { get; set; }              
     public string status { get; set; } = "active";      // "active" | "inactive"

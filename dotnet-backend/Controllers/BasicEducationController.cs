@@ -28,10 +28,8 @@ namespace dotnet_backend.Controllers
         [HttpPost("CreateNewSchool")]
         public async Task<IActionResult> CreateNewSchool([FromForm] BasicEducation obj)
         {
-            //(a) Handling PDF file uploads
             string? uniqueFileName = null;
             
-        
             if (obj.certificatePdf != null) 
             {
                 if (obj.certificatePdf.ContentType != "application/pdf")
@@ -40,15 +38,9 @@ namespace dotnet_backend.Controllers
                 if (obj.certificatePdf.Length > (8 * 1024 * 1024))
                     return BadRequest("File size cannot exceed 8MB.");
 
-                // FALLBACK for File uploads (fix current 500 INTERNAL SERVER ERROR)
-                // This uses WebRootPath if it exists, otherwise it defaults to the project's base directory
-                    var rootPath = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                    var uploadsFolder = Path.Combine(rootPath, "uploads");
+                var rootPath = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                var uploadsFolder = Path.Combine(rootPath, "uploads");
 
-                    if (!Directory.Exists(uploadsFolder)) 
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
                 if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
                 uniqueFileName = Guid.NewGuid().ToString() + "_" + obj.certificatePdf.FileName;
@@ -60,10 +52,9 @@ namespace dotnet_backend.Controllers
                 }
             }
 
-            // (b). Map the object "school" to the database model "BasicEducation"
+            // 1. Create the School FIRST
             var school = new BasicEducation
             {
-                //use obj. not this. this was bringing issues. Also dto. only when a DTO is used, which we are still learning atm
                 institutionName = obj.institutionName, 
                 institutionType = obj.institutionType,
                 emailId = obj.emailId,
@@ -84,39 +75,50 @@ namespace dotnet_backend.Controllers
                 accomodationType = obj.accomodationType,
                 schoolCategory = obj.schoolCategory,
                 isActive = obj.isActive,
-                
-                // Save the file name to the database
                 certificatePdfUrl = uniqueFileName != null ? $"/uploads/{uniqueFileName}" : null,
                 status = "pending",
-                createdAt = DateTime.UtcNow.ToString("o"), //handle this in Controller not Model (error CS0019)
-                userId = obj.userId
+                createdAt = DateTime.UtcNow.ToString("o")
             };
 
             _context.BasicEducations.Add(school);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); // Now school.institutionId has a value!
 
-            // 1. Create a temporary User object to generate the token
-            var userForToken = new User 
+            // 2. Create the User (HOI) and link to School
+               // 2. Create the User (HOI) and link to School
+            var newUser = new User 
             {
-                userId = obj.userId, // The ID from the form
                 emailId = obj.emailId,
                 fullName = obj.headOfInstitution,
+                mobileNo = obj.mobileNo,
+                password = "Password@123", 
                 role = "Head of Institution (HOI)",
-                institutionId = school.institutionId // The newly created school ID
+                nationalId = "PENDING",
+                county = obj.county,
+                subCounty = obj.subCounty,
+                constituency = obj.constituency,
+                institutionId = school.institutionId!, 
+                status = "active",
+                createdDate = DateTime.UtcNow.ToString("o") 
             };
 
-            // 2. Generate the token
-            var token = _tokenService.CreateToken(userForToken);
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
 
-            // 3. Return the token and ID to Angular
+            // 3. Update School with the new User's ID
+            school.userId = newUser.userId; 
+            _context.BasicEducations.Update(school);
+            await _context.SaveChangesAsync();
+
+            // 4. Generate the token using the freshly saved user
+            var token = _tokenService.CreateToken(newUser);
+
+            // 5. Return success
             return Ok(new { 
                 message = "School registered successfully!", 
                 id = school.institutionId,
                 token = token,
                 role = "Head of Institution (HOI)"
             });
-
-        return Ok(new { message = "School registered successfully!", id = school.institutionId });
         }
 
 //2(a). To GET all Institutions Endpoint
@@ -129,7 +131,7 @@ namespace dotnet_backend.Controllers
 
 // 2 (b). Get School by ID Endpoint
     [HttpGet("GetSchool/{id:int}")]
-    public IActionResult GetSchool(int id)
+    public IActionResult GetSchools(int id)
     {
         var school = _context.BasicEducations.FirstOrDefault(s => s.institutionId == id);
         if (school == null) return NotFound("School not found.");

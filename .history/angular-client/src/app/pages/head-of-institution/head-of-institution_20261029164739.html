@@ -1,0 +1,179 @@
+<div class="dashboard-wrapper">
+
+  <!-- ========================================== -->
+  <!-- SIDEBAR                                    -->
+  <!-- ========================================== -->
+  <aside class="sidebar">
+    <nav class="sidebar-nav">
+      <a class="nav-item active">
+        <i class="bi bi-grid-fill"></i>
+        <span>Dashboard</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-search"></i>
+        <span>Menu Search</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-clipboard-check"></i>
+        <span>KEMIS Reports</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-pencil-square"></i>
+        <span>Registration</span>
+      </a>
+      <a class="nav-item text-danger mt-4">
+        <i class="bi bi-book"></i>
+        <span>User Manual</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ========================================== -->
+  <!-- MAIN CONTENT AREA                          -->
+  <!-- ========================================== -->
+  
+   <main class="main-content">
+
+  <!-- Top Header -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="back-btn"><i class="bi bi-chevron-left"></i></button>
+    </div>
+
+        <div class="header-right">
+      <div class="user-profile">
+        <div class="avatar">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <div class="user-info">
+          <!-- Separating having two items called "name", this is for the  -->
+          <span class="name">{{ schoolData?.institutionName | uppercase }}</span>
+          <!-- Show the Role below it -->
+          <span class="role">{{ schoolData?.role }}</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <i class="bi bi-power"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <div class="content-body">
+
+    <div class="page-title">
+      <h1>Institution Dashboard</h1>
+      <p>{{ schoolData?.institutionName }} – Academic Overview</p>
+    </div>
+
+    <!-- Registration Status Banner (Visible immediately) -->
+    <div class="status-banner" [ngClass]="'status-' + (schoolData?.status || 'pending')">
+      <i class="bi" [ngClass]="{
+        'bi-hourglass-split': schoolData?.status === 'pending',
+        'bi-check-circle-fill': schoolData?.status === 'approved',
+        'bi-x-circle-fill': schoolData?.status === 'denied'
+      }"></i>
+      <div class="status-text">
+        <strong>Application Status: {{ (schoolData?.status || 'pending') | uppercase }}</strong>
+        <span *ngIf="schoolData?.status === 'pending'">Your school is awaiting review from the Ministry.</span>
+        <span *ngIf="schoolData?.status === 'approved'">Your school is fully onboarded!</span>
+      </div>
+    </div>
+
+    <!-- 4 Stat Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+        <div class="stat-number">{{ schoolData?.activeLearners || 0 }}</div>
+        <div class="stat-label">Total Active Learners</div>
+        <div class="stat-subtext">Currently Enrolled</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-person-x-fill"></i></div>
+        <div class="stat-number">{{ schoolData?.inactiveLearners || 0 }}</div>
+        <div class="stat-label">Total InActive Learners</div>
+        <div class="stat-subtext">Currently InActive Learners</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-person-plus-fill"></i></div>
+        <div class="stat-number">{{ schoolData?.newAdmissions || 0 }}</div>
+        <div class="stat-label">New Admissions</div>
+        <div class="stat-subtext">Current Academic Year</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-arrow-left-right"></i></div>
+        <div class="stat-number">{{ schoolData?.totalTransfers || 0 }}</div>
+        <div class="stat-label">Total Transfer Requests</div>
+        <div class="stat-subtext">Received</div>
+      </div>
+    </div>
+
+    <!-- Lower Grid -->
+    <div class="lower-grid">
+      <!-- Transfers Card -->
+      <div class="card transfers-card">
+        <div class="card-header">
+          <h3><i class="bi bi-arrow-left-right me-2"></i> Transfer Requests by Status</h3>
+          <p>Current status of transfer requests</p>
+        </div>
+        <div class="card-body">
+          <div class="progress-row">
+            <div class="progress-label"><span class="dot blue"></span> Released</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill blue" style="width: 100%;"></div></div>
+            <div class="progress-value">{{ schoolData?.transfers?.released || 0 }}</div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-label"><span class="dot yellow"></span> Pending</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill yellow" style="width: 0%;"></div></div>
+            <div class="progress-value">{{ schoolData?.transfers?.pending || 0 }}</div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-label"><span class="dot red"></span> Appeals</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill red" style="width: 0%;"></div></div>
+            <div class="progress-value">{{ schoolData?.transfers?.appeals || 0 }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gender Card -->
+      <div class="card gender-card">
+        <div class="card-header">
+          <h3><i class="bi bi-gender-ambiguous me-2"></i> Gender Distribution</h3>
+          <p>Learner population by gender</p>
+        </div>
+        <div class="card-body chart-body">
+          <div class="donut-chart">
+            <div class="donut-inner">
+              <span class="total">{{ (schoolData?.gender?.male || 0) + (schoolData?.gender?.female || 0) }}</span>
+              <span class="total-label">Total Learners</span>
+            </div>
+          </div>
+
+          <div class="chart-legend">
+            <div class="legend-item">
+              <span class="dot blue"></span>
+              Male: {{ schoolData?.gender?.male || 0 }}
+            </div>
+            <div class="legend-item">
+              <span class="dot red"></span>
+              Female: {{ schoolData?.gender?.female || 0 }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Loading Template -->
+<ng-template #loadingTpl>
+  <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+</ng-template>
+
+</div>

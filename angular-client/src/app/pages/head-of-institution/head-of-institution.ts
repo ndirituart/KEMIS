@@ -16,9 +16,9 @@ export class HeadOfInstitution implements OnInit {
 
   isLoading = true;
 
-  // Initialize with default/fallback data so the page isn't blank
   schoolData: any = {
-    name: 'Loading...',
+    institutionName: 'Loading School ...',
+    headOfInstitution: 'Loading HOI ...',
     role: 'HOI',
     status: 'pending',
     activeLearners: 0,
@@ -31,14 +31,18 @@ export class HeadOfInstitution implements OnInit {
 
   ngOnInit() {
     const instId = localStorage.getItem('institutionId');
-    console.log('Institution ID from LocalStorage:', instId); // Debugging
     
     if (instId) {
-      this.http.get<any>(`http://localhost:5215/api/BasicEducation/GetSchools/${instId}`).subscribe({
+      // Note: use GetSchool (singular) not GetSchools (plural) if you are fetching one by ID
+      this.http.get<any>(`http://localhost:5215/api/BasicEducation/GetSchool/${instId}`).subscribe({
         next: (res) => {
-          console.log('School Data from API:', res); // Debugging
+          console.log('School Data from API:', res); 
+          
+
           this.schoolData = {
-            name: res.institutionName || 'Unknown School',
+          //resolving the issue where I had only one "name"
+            institutionName: res.institutionName || 'Unknown School',
+            headOfInstitution: res.headOfInstitution || 'HOI Name',
             role: 'HOI',
             status: res.status || 'pending',
             activeLearners: res.totalLearners || 0,
@@ -48,8 +52,8 @@ export class HeadOfInstitution implements OnInit {
             transfers: { released: 0, pending: 0, appeals: 0 },
             gender: { male: 0, female: 0 }
           };
-          //since the temporary data is persistent
-          this.schoolData = res; 
+          
+          
           this.isLoading = false;
         },
         error: (err) => {

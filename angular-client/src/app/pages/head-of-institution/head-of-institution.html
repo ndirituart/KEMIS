@@ -1,26 +1,53 @@
 <div class="dashboard-wrapper">
 
-  <!-- ========================================== -->
-  <!-- SIDEBAR                                    -->
-  <!-- ========================================== -->
+  <!-- SIDEBAR -->
   <aside class="sidebar">
-    <nav class="sidebar-nav">
+    <div class="sidebar-logo">
+      <img src="assets/school-logo.jpg" alt="School Dashboard" />
+    </div>
+        <nav class="sidebar-nav">
+      <!-- 1. Dashboard (Default) -->
       <a class="nav-item active">
         <i class="bi bi-grid-fill"></i>
         <span>Dashboard</span>
       </a>
+
+      <!-- 2. Menu Search (Will just do a search tab instead) -->
       <a class="nav-item">
         <i class="bi bi-search"></i>
         <span>Menu Search</span>
       </a>
-      <a class="nav-item">
-        <i class="bi bi-clipboard-check"></i>
-        <span>KEMIS Reports</span>
-      </a>
-      <a class="nav-item">
-        <i class="bi bi-pencil-square"></i>
-        <span>Registration</span>
-      </a>
+
+      <!-- 3. KEMIS Reports-->
+      <div class="nav-parent has-children">
+        <a class="nav-item">
+          <i class="bi bi-clipboard-check"></i>
+          <span>KEMIS Reports</span>
+        </a>
+        <ul class="nav-children">
+          <li><a href="#">Learner list in the Institution</a></li>
+          <li><a href="#">Learners Per Grade Institution</a></li>
+          <li><a href="#">Number of Orphan Learners</a></li>
+          <li><a href="#">SNE learners In an Institution</a></li>
+          <li><a href="#">In Active Learners List</a></li>
+        </ul>
+      </div>
+
+      <!-- 4. Registration -->
+      <div class="nav-parent has-children">
+        <a class="nav-item">
+          <i class="bi bi-pencil-square"></i>
+          <span>Registration</span>
+        </a>
+        <ul class="nav-children">
+          <li><a href="#">Learner Transfer approval</a></li>
+          <li><a href="#">Learner Admissions</a></li>
+          <li><a href="#">Institution Update Request</a></li>
+          <li><a href="#">User Registration</a></li>
+        </ul>
+      </div>
+
+      <!--5.  User Manual Hapa si nikucopy paste tu the Manual in a page -->
       <a class="nav-item text-danger mt-4">
         <i class="bi bi-book"></i>
         <span>User Manual</span>
@@ -28,26 +55,25 @@
     </nav>
   </aside>
 
-  <!-- ========================================== -->
-  <!-- MAIN CONTENT AREA                          -->
-  <!-- ========================================== -->
+
   
    <main class="main-content">
 
-  <!-- Top Header -->
+  <!-- Top Header for School and User -->
   <header class="top-header">
     <div class="header-left">
       <button class="back-btn"><i class="bi bi-chevron-left"></i></button>
     </div>
 
-    <div class="header-right">
+        <div class="header-right">
       <div class="user-profile">
         <div class="avatar">
           <i class="bi bi-person-fill"></i>
         </div>
         <div class="user-info">
-          <!-- Fallback to 'Loading...' if name is undefined -->
-          <span class="name">{{ schoolData?.name | uppercase }}</span>
+          <!-- Separating having two items called "name", this is for the School Name -->
+           <!--Spent the night looking for an error kumbe it is lack of fallback <span class="name">{{ schoolData?.headOfInstitution | uppercase }}</span>-->
+          <span class="name">{{ schoolData?.headOfInstitution ? (schoolData.headOfInstitution | uppercase) : 'LOADING...' }}</span>
           <span class="role">{{ schoolData?.role }}</span>
         </div>
       </div>
@@ -62,7 +88,7 @@
 
     <div class="page-title">
       <h1>Institution Dashboard</h1>
-      <p>{{ schoolData?.name }} – Academic Overview</p>
+      <p>{{ schoolData?.institutionName }} – Academic Overview</p>
     </div>
 
     <!-- Registration Status Banner (Visible immediately) -->
