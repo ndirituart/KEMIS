@@ -835,15 +835,17 @@ export class BasicEducation {
 
    this.http.post<any>(`${this.apiUrl}/CreateNewSchool`, formPayload).subscribe({
     next: (res: any) => {
-      this.isLoading = false;
-      this.notification.showSuccess('Registration successful!');
+    this.isLoading = false;
+    this.notification.showSuccess('Registration successful! Await approval.');
 
-      // 1. Save the ID so the dashboard knows which school to fetch
-      localStorage.setItem('institutionId', res.id);
+    // Save everything needed for the next screen
+    localStorage.setItem('token', res.token);
+    localStorage.setItem('institutionId', res.id);
+    localStorage.setItem('role', res.role);
 
-      // 2. Navigate to the dashboard
-      this.router.navigate(['/school-dashboard']);
-    },
+    // Navigate to the dashboard
+    this.router.navigate(['/head-of-institution']);
+  },
     error: (err: any) => {
       this.isLoading = false;
       console.error('Backend Error Details:', err.error);

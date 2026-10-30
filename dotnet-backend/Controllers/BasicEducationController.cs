@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using dotnet_backend.Services;
 using dotnet_backend.Models;
 using System.IO;
 using System;
@@ -11,13 +12,15 @@ namespace dotnet_backend.Controllers
     public class BasicEducationController : ControllerBase
     {
         //ApplicationDbContext universally calls all other DbContexts, we can't keep repeating this mistake omdsssss!
-        private readonly ApplicationDbContext _context; 
-        private readonly IWebHostEnvironment _environment;
+       private readonly ApplicationDbContext _context;
+       private readonly IWebHostEnvironment _environment;
+       private readonly TokenService _tokenService; 
 
-        public BasicEducationController(ApplicationDbContext context, IWebHostEnvironment environment)
+        public BasicEducationController(ApplicationDbContext context, IWebHostEnvironment environment, TokenService tokenService)
         {
             _context = context;
             _environment = environment;
+            _tokenService = tokenService;
         }
 
 //1. Register a School by HOIs
@@ -92,7 +95,28 @@ namespace dotnet_backend.Controllers
             _context.BasicEducations.Add(school);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "School registered successfully!", id = school.institutionId });
+            // 1. Create a temporary User object to generate the token
+            var userForToken = new User 
+            {
+                userId = obj.userId, // The ID from the form
+                emailId = obj.emailId,
+                fullName = obj.headOfInstitution,
+                role = "Head of Institution (HOI)",
+                institutionId = school.institutionId // The newly created school ID
+            };
+
+            // 2. Generate the token
+            var token = _tokenService.CreateToken(userForToken);
+
+            // 3. Return the token and ID to Angular
+            return Ok(new { 
+                message = "School registered successfully!", 
+                id = school.institutionId,
+                token = token,
+                role = "Head of Institution (HOI)"
+            });
+
+        return Ok(new { message = "School registered successfully!", id = school.institutionId });
         }
 
 //2(a). To GET all Institutions Endpoint
@@ -103,16 +127,15 @@ namespace dotnet_backend.Controllers
         return Ok(list);
     }
 
-// 2 (a). Get School by ID Endpoint
-[HttpGet("GetSchools/{id:int}")]
-    public IActionResult GetSchools(int id)
+// 2 (b). Get School by ID Endpoint
+    [HttpGet("GetSchool/{id:int}")]
+    public IActionResult GetSchool(int id)
     {
         var school = _context.BasicEducations.FirstOrDefault(s => s.institutionId == id);
         if (school == null) return NotFound("School not found.");
         
         return Ok(school);
     }
-
 
 // 5(a). Update BasicEducation Endpoint
     

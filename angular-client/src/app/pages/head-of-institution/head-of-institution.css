@@ -156,6 +156,40 @@
   font-size: 1rem;
 }
 
+.status-banner {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.status-banner i { font-size: 1.8rem; }
+.status-text { display: flex; flex-direction: column; }
+.status-text strong { font-size: 1rem; }
+.status-text span { font-size: 0.85rem; opacity: 0.8; }
+
+/* Colors */
+.status-pending {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+}
+
+.status-approved {
+  background-color: #d4edda;
+  border: 1px solid #28a745;
+  color: #155724;
+}
+
+.status-denied {
+  background-color: #f8d7da;
+  border: 1px solid #dc3545;
+  color: #721c24;
+}
+
 /* ============================================
    STAT CARDS
    ============================================ */
