@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using dotnet_backend.Models;
 using dotnet_backend.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_backend.Controllers;
 
@@ -47,25 +48,45 @@ public class UserController : ControllerBase
 
     // 2. Login Endpoint
     [HttpPost("Login")]
-public IActionResult Login([FromBody] UserLogin userLogin)
-{
-    // Note: Use ToLower() if you want case-insensitive email
-    var user = _context.Users.FirstOrDefault(u => u.emailId == userLogin.emailId && u.password == userLogin.password);
-    
-    if (user == null)
-    {
-        return Unauthorized(new { message = "Invalid emailId or password" });
-    }
+  public IActionResult Login([FromBody] UserLogin userLogin)
+  {
+      // Check if email address exists and edited to check institutionId too
+      var user = _context.Users.AsNoTracking().FirstOrDefault(u => u.emailId == userLogin.emailId);
+      int? realInstitutionId = _context.Entry(user).Property(u => u.institutionId).CurrentValue; //check in PostgreSQL Admin
+      
+      // Authentication
+      if (user == null || user.password != userLogin.password) 
+      {
+          return Unauthorized(new { message = "Invalid email or password." });
+      }
 
-    var token = _tokenService.CreateToken(user);
+      //Check if the user is active
+      if (user.status != "active")
+      {
+          return Unauthorized(new { message = "Account is pending approval or inactive." });
+      }
 
-    return Ok(new { 
-        token = token, 
-        role = user.role, 
+      // Generate the JWT
+      var token = _tokenService.CreateToken(user);
+
+     
+      // Carrying the token alongside the password + emailID
+      //Replacing the initial logic because I need HOI to go to school dashboard, CDE to go to county dashboard, 
+      // SCDE  and SCQASOto go to sub-scounty dashboard
+       var actualInstitutionId = _context.Users
+        .Where(u => u.userId == user.userId)
+        .Select(u => u.institutionId)
+        .FirstOrDefault();
+
+        
+      return Ok(new { 
+        token = token,
+        role = user.role,
         userId = user.userId,
-        emailId = user.emailId 
+        emailId = user.emailId,
+        institutionId = user.institutionId
     });
-}
+    }
 
     // 3. Get All Users Endpoint
     [HttpGet("GetUsers")]

@@ -61,7 +61,8 @@
       </div>
 
       <!-- Right: this calls the function when the button is clicked -->
-      <button type="submit" class="submit-btn" [disabled]="isLoading">
+      <!-- Remove the [disabled]="isLoading"-->
+      <button type="submit" class="submit-btn">
         <span class="btn-text" *ngIf="!isLoading">Login</span>
         <span class="spinner" *ngIf="isLoading"><i class="fas fa-spinner fa-spin"></i></span>
       </button>
@@ -184,11 +185,11 @@
 </body>
 </html>
 
-<script>
+<!-- <script> 
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault(); // Stop page reload
 
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('emailId').value;
     const password = document.getElementById('password').value;
 
     try {
@@ -221,7 +222,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             window.location.href = "/super-admin";
         } else if (data.role === "Head of Institution (HOI)") {
             window.location.href = "/head-of-instituion";
-        }else if (data.role === "County Director of Education(CDE)") {
+        }else if (data.role === "County Director of Education (CDE)") {
             window.location.href = "/county-education";
         }
         else if (data.role === "Sub-County Director of Education (SCDE)") {
@@ -239,4 +240,4 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         alert("Could not connect to the server.");
     }
 });
-</script>
+</script> -->

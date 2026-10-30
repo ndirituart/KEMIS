@@ -71,70 +71,84 @@ export class Login {
   passwordStrengthColor: string = '';
 
   // --- Login Handler ---
-  onLogin(): void {
-      const error = this.validateLogin();
-      if (error) {
-        this.notification.showError(error);
-        return;
-      }
+  //Had to be redone to allow Role-Based System
+   onLogin(): void {
+    const error = this.validateLogin();
+    if (error) {
+      this.notification.showError(error);
+      return;
+    }
 
-      this.isLoading = true;
-      this.notification.showLoading('Logging in...');
+    this.isLoading = true;
+    this.notification.showLoading('Logging in...');
 
-      const payload = {
-        emailId: this.loginModel.emailId,
-        password: this.loginModel.password,
-      };
+    const payload = {
+      emailId: this.loginModel.emailId,
+      password: this.loginModel.password,
+    };
 
-      this.http.post<any>(`${this.apiUrl}/Login`, payload).subscribe({
-        next: res => {
-          this.isLoading = false;
-          
-          // 1. Save session data
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('role', res.role);
-          localStorage.setItem('userId', res.userId);
-          if(res.institutionId) localStorage.setItem('institutionId', res.institutionId);
+    this.http.post<any>(`${this.apiUrl}/Login`, payload).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        
+        // Console log to see why role based routing fails
+        console.log("FULL BACKEND RESPONSE:", res); 
 
-          this.notification.showSuccess('Login successful!');
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('userRole', res.role);
+        localStorage.setItem('userId', res.userId);
+        localStorage.setItem('institutionId', res.institutionId);  //incase of successful login
+        
+        // Save institutionId safely
+        if (res.institutionId !== null && res.institutionId !== undefined) {
+          localStorage.setItem('institutionId', res.institutionId.toString());
+          console.log("Saved institutionId:", res.institutionId);
+        } else {
+          localStorage.removeItem('institutionId');
+          console.log("No institutionId found in response.");
+        }
 
-          // 2. Route based on role
-          switch (res.role) {
-            case 'Admin':
-              this.router.navigate(['/super-admin']);
-              break;
-            case 'Head of Institution (HOI)':
-              this.router.navigate(['/head-of-institution']);
-              break;
-            case 'County Director of Education (CDE)':
-              this.router.navigate(['/county-education']);
-              break;
-            case 'Sub-County Director of Education (SCDE)':
-              this.router.navigate(['/sub-county-education']);
-              break;
-            case 'Sub-County Quality Assurance and Standards Officer (SCQASO)':
-              this.router.navigate(['/sub-county-quality-assurance']);
-              break;
-            case 'IT Officer':
-            case 'Deputy Principal':
-            case 'Teacher':
-              this.router.navigate(['/school-dashboard']);
-              break;
-            default:
-              this.router.navigate(['/institution-onboarding']);
-              break;
-          }
-        },
-        error: (err: any) => {
-          this.isLoading = false;
-          if (err.status === 401) {
-            this.notification.showError(err.error?.message || 'Invalid email or password.');
+        this.notification.showSuccess('Login successful!');
+
+        // ROLE ROUTING
+        const role = res.role?.trim();
+        console.log("Routing based on role:", role);
+
+        if (role === 'Admin') {
+          this.router.navigate(['/super-admin']);
+        } 
+        else if (role === 'Head of Institution (HOI)') {
+          if (res.institutionId) {
+            console.log("HOI detected with school. Going to dashboard.");
+            this.router.navigate(['/head-of-institution']); 
           } else {
-            this.notification.showError('An error occurred during login.');
+            console.log("HOI detected WITHOUT school. Going to onboarding.");
+            this.router.navigate(['/institution-onboarding']); 
           }
-        },
-      });
-} 
+        } 
+        else if (role === 'County Director of Education (CDE)') {
+          this.router.navigate(['/county-education']);
+        } 
+        else if (role === 'Sub-County Director of Education (SCDE)') {
+          this.router.navigate(['/sub-county-education']);
+        } 
+        else if (role === 'Sub-County Quality Assurance and Standards Officer (SCQASO)') {
+          this.router.navigate(['/sub-county-quality-assurance']);
+        } 
+        else if (role === 'IT Officer' || role === 'Teacher' || role === 'Deputy Principal') {
+          this.router.navigate(['/school-dashboard']);
+        }
+        else {
+          this.notification.showError('Unknown role: ' + role);
+        }
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        console.error('Login Error:', err);
+        this.notification.showError(err.error?.message || 'Login failed.');
+      },
+    });
+}
 
 
 

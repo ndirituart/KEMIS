@@ -88,7 +88,7 @@
 
     <div class="page-title">
       <h1>Institution Dashboard</h1>
-      <p>{{ schoolData?.institutionName }} – Academic Overview</p>
+      <span class="name">{{ schoolData?.institutionName ? (schoolData.institutionName  | uppercase) : 'LOADING...' }}– Academic Overview</span>
     </div>
 
     <!-- Registration Status Banner (Visible immediately) -->
