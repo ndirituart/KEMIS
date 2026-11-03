@@ -223,11 +223,11 @@ export class BasicEducation {
       county: "Kajiado",
       code: 34,
       subCounty: [
-        "Isinya.",
-        "Kajiado Central.",
-        "Kajiado North.",
-        "Loitokitok.",
-        "Mashuuru."
+        "Isinya",
+        "Kajiado Central",
+        "Kajiado North",
+        "Loitokitok",
+        "Mashuuru"
       ]
     },
     {
@@ -313,7 +313,17 @@ export class BasicEducation {
       capital: "Kisii",
       code: 45,
       subCounty: [
-
+        'Etago',
+        'Gucha',
+        'Gucha South',
+        'Kenyenya',
+        'Kisii Central',
+        'Kisii South ',
+        'Kitutu Central', 
+        'Marani',
+        'Masaba South',
+        'Nyamache',
+        'Sameta '
       ]
     },
     {
@@ -696,18 +706,7 @@ export class BasicEducation {
         "Turbo"
       ]
     },
-    {
-      county: "Nairobi",
-      capital: "Nairobi",
-      code: 38,
-      subCounty: [
-        "Embakasi East",
-        "Hamisi",
-        "Luanda",
-        "Lower Savannah",
-        "Nairobi"
-      ]
-    },
+  
     {
       county: "Wajir",
       capital: "Wajir",

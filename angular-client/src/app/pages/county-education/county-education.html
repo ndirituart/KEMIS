@@ -4,9 +4,13 @@
   <!-- SIDEBAR                                    -->
   <!-- ========================================== -->
   <aside class="sidebar">
-    <div class="sidebar-logo">
-      <img src="assets/counties/Nairobi.png" alt="County Logo" />
-    </div>
+  
+  <!--Conditional formating fo rlogo for each county with a  map, download them by Name-->
+   <div class="sidebar-logo">
+    <img [src]="'assets/counties/' + dashboardData.county.toLowerCase() + '.png'" 
+        alt="County Logo" 
+        onerror="this.src='assets/counties/default.png'" /> <!-- Fallback if image missing -->
+  </div>
 
     <nav class="sidebar-nav">
       <a class="nav-item active">
@@ -57,23 +61,11 @@
           <option value="Secondary School">Secondary School</option>
         </select>
         <select class="form-select header-select" [(ngModel)]="selectedSubCounty">
-          <option value="" disabled selected>▼</option>
-          <option value="Dagoretti North Sub County">Dagoretti North Sub County</option>
-          <option value="Dagoretti South Sub County"> Dagoretti South Sub County </option>
-          <option value="Embakasi East Sub County"> Embakasi East Sub County</option>
-          <option value="Embakasi North Sub County">Embakasi North Sub County</option>
-          <option value="Embakasi South Sub County"> Embakasi South Sub County </option>
-          <option value="Embakasi West Sub County"> Embakasi West Sub County</option>
-          <option value="Kamukunji Sub County">Kamukunji Sub County</option>
-          <option value="Kasarani Sub County"> Kasarani Sub County </option>
-          <option value="Kibra Sub County "> Kibra Sub County </option>
-          <option value="Lang'ata Sub County">Lang'ata Sub County</option>
-          <option value="Makadara Sub County"> Makadara Sub County </option>
-          <option value="Roysambu Sub County"> Roysambu Sub County</option>
-          <option value="Ruaraka Sub County"> Ruaraka Sub County</option>
-          <option value="Starehe Sub County"> Starehe Sub County</option>
-          <option value="Westlands Sub County"> Westlands Sub County</option>
-          
+          <option value="" disabled selected>▼ Select Sub-County</option>
+          <!--Collects Subcounty based on County -->
+          <option *ngFor="let subCounty of subCounty" [value]="subCounty">
+            {{ subCounty }}
+          </option>
         </select>
 
         <!-- User Profile -->
@@ -82,8 +74,8 @@
             <i class="bi bi-person-fill"></i>
           </div>
           <div class="user-info">
-            <span class="name">{{ dashboardData.countyName | uppercase }}</span>
-            <span class="role">{{ dashboardData.userRole }}</span>
+            <span class="name">{{ dashboardData.county | uppercase }}</span>
+            <span class="role">{{ dashboardData.role }}</span>
           </div>
         </div>
         <button class="logout-btn" (click)="logout()">
@@ -97,7 +89,7 @@
 
       <div class="page-title">
         <h1>County Director Dashboard</h1>
-        <p>{{ dashboardData.countyName }} – Educational Oversight & Management</p>
+        <p>{{ dashboardData.county }} – Educational Oversight & Management</p>
       </div>
 
       <!-- 5 Stat Cards -->
