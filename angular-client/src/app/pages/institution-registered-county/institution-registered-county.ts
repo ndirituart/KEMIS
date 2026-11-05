@@ -12,7 +12,7 @@ import { SearchPipe } from '../../pipes/search.pipe'; //for filtering
  templateUrl: './institution-registered-county.html',
   styleUrl: './institution-registered-county.css',
 })
-export class InstitutionsRegisteredCounty {
+export class InstitutionRegisteredCounty {
 
   // Hardcoded filter data
   institutionLevels = ['Pre-Primary', 'Primary', 'Junior School', 'Secondary', 'High School'];

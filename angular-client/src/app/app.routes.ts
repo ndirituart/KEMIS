@@ -14,7 +14,7 @@ import { SchoolDashboard } from './pages/school-dashboard/school-dashboard';
 import { HeadOfInstitution } from './pages/head-of-institution/head-of-institution';
 import { CountyEducation } from './pages/county-education/county-education';
 //children pages of CDE
-import {InstitutionsRegisteredCounty} from './pages/institution-registered-county/institution-registered-county';
+import {InstitutionRegisteredCounty} from './pages/institution-registered-county/institution-registered-county';
 import { SubCountyEducation } from './pages/sub-county-education/sub-county-education';
 import { SubCountyQualityAssurance } from './pages/sub-county-quality-assurance/sub-county-quality-assurance';
 import { SuperAdmin } from './pages/super-admin/super-admin';
@@ -44,7 +44,7 @@ export const routes: Routes = [
   { path: 'head-of-institution', component: HeadOfInstitution, canActivate: [hOIGuard], data: { allowedRoles: 'Head of Institution (HOI)'} },
   { path: 'county-education', component: CountyEducation, canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
   //CDE children pages
-  { path: 'institution-registered-county', component: InstitutionsRegisteredCounty,canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
+  { path: 'institution-registered-county', component: InstitutionRegisteredCounty,canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
   { path: 'sub-county-education', component: SubCountyEducation, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
   { path: 'sub-county-quality-assurance', component: SubCountyQualityAssurance, canActivate: [subCountyQAGuard], data: { allowedRoles: 'Sub-County Quality Assurance and Standards Officer (SCQASO)' } },
   { path: 'super-admin', component: SuperAdmin,  canActivate: [adminGuard],  data: {  allowedRoles: 'Admin' }  },
