@@ -15,7 +15,7 @@ export class LearnersPerGradeCounty {
   
   // --- Filter Data ---
   institutionLevels = ['All', 'Pre-Primary', 'Primary', 'Junior School', 'Senior School'];
-  counties = [ 'Nairobi', 'Mombasa', 'Kisumu'];
+  counties = [ 'Nairobi',];
   subCounties = [
           'All',
           "Dagoretti North Sub County",
