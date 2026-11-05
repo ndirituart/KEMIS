@@ -11,9 +11,10 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './county-education.css'
 })
 export class CountyEducation implements OnInit {
-  
+   loggedInCounty = 'Nairobi';
+
   dashboardData = {
-    county: 'Nairobi', // This will eventually come from the logged-in user
+    county: 'Nairobi', // Placeholder should fetch from Localstorage after loggin
     role: 'CDE',
     stats: { approved: 0, rejected: 0, pending: 1, appeals: 0, totalLearners: 0 },
     approvalBreakdown: { approved: 0, pending: 1, rejected: 0 },
@@ -29,10 +30,10 @@ export class CountyEducation implements OnInit {
   selectedLevel = 'Primary School';
   selectedSubCounty = '';
 
-  constructor(private router: Router) {}
+  //constructor(private router: Router) {} //Multiple constructor implementations are not allowed.
 
   ngOnInit() {
-    // All the 47 counties and respective subCounties
+    // All the 47 counties and respective subCounty
     
     //1. Baringo
     if (this.dashboardData.county === 'Baringo') {
@@ -568,8 +569,13 @@ export class CountyEducation implements OnInit {
       ]
     }
 
+    this.dashboardData.county = this.loggedInCounty;
+
+
+
 }
 
+constructor(private router: Router) {}
 
   logout() {
     localStorage.clear();

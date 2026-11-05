@@ -1,0 +1,43 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
+
+[Table("CountyEducation")]
+public class CountyEducation
+{
+    [Key]
+    public int countyEducationId { get; set; }
+
+    public string county { get; set; } = string.Empty;
+    public string countyCode{ get; set; } = string.Empty;
+    public string subCounty { get; set; } = string.Empty;
+    
+    
+    public string applicationType { get; set; } = string.Empty;
+    public string institutionLevel { get; set; } = string.Empty;
+    public bool certificateValid { get; set; } = true;
+    
+    //PDF form handling this was failing earlier
+    [NotMapped] 
+    public IFormFile? certificatePdf { get; set; }
+
+    // To save the path to the database
+    public string? certificatePdfUrl { get; set; }
+    
+    public string? certificateNumber { get; set; }
+    public int totalLearners { get; set; }
+
+    public string? latitude { get; set; }
+    public string? longitude { get; set; }
+
+    public string? accomodationType { get; set; }
+    public string? schoolCategory { get; set; }
+
+    public bool isActive { get; set; } = true;
+    [AllowedValues("pending", "approved", "denied", "inactive", ErrorMessage = "Invalid status.")]
+    public string status { get; set; } = "pending"; //default is pending until approved
+    public string createdAt { get; set; } = string.Empty; //Changed from DateTime.UtcNow.ToString("o");
+    public string? updatedAt { get; set; }
+    public string? deletedAt { get; set; }
+     public int? userId { get; set; } //linking each institution to a user later on
+}

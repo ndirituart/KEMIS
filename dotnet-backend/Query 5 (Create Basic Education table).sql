@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS "BasicEducation" (
     "createdAt"             VARCHAR(40)  NOT NULL DEFAULT (to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')),
     "updatedAt"             VARCHAR(40)  NULL,
     "deletedAt"             VARCHAR(40)  NULL,
+    "userId"                INT          NOT NULL REFERENCES "Users"("userId") ON DELETE CASCADE
 
     -- Constraints
     CONSTRAINT "CHK_BasicEdu_institutionType" CHECK ("institutionType"IN (

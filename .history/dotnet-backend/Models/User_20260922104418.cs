@@ -4,7 +4,7 @@ namespace dotnet_backend.Models;
 [Table("Users")]
 public class User
 {
-    public int UserId { get; set; }
+    public int userId { get; set; }
     public string EmailId { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
     public string MobileNo { get; set; } = string.Empty;

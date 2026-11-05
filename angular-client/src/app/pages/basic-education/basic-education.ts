@@ -706,6 +706,15 @@ export class BasicEducation {
         "Turbo"
       ]
     },
+
+    {
+      county: 'Vihiga',
+      capital: 'Mbale',
+      code: 38,
+      subCounty: [
+
+      ]
+    },
   
     {
       county: "Wajir",

@@ -124,7 +124,7 @@
     },
     "/api/User/5": {
       "get": {
-        "summary": "Get User by UserId {id:int}",
+        "summary": "Get User by userId {id:int}",
         "parameters": [
           {
             "name": "userId",
@@ -142,7 +142,7 @@
         "description": "Replace {id:int} with actual number eg 3 or 100 to get user details if they exist in the database"
       },
       "delete": {
-        "summary": "Delete by UserId {id:int}",
+        "summary": "Delete by userId {id:int}",
         "responses": {},
         "tags": [
           "USERS"

@@ -52,7 +52,7 @@ public class UserController : ControllerBase
   {
       // Check if email address exists and edited to check institutionId too
       var user = _context.Users.AsNoTracking().FirstOrDefault(u => u.emailId == userLogin.emailId);
-      int? realInstitutionId = _context.Entry(user).Property(u => u.institutionId).CurrentValue; //check in PostgreSQL Admin
+      int? realinstitutionId = _context.Entry(user).Property(u => u.institutionId).CurrentValue; //check in PostgreSQL Admin
       
       // Authentication
       if (user == null || user.password != userLogin.password) 
@@ -73,7 +73,7 @@ public class UserController : ControllerBase
       // Carrying the token alongside the password + emailID
       //Replacing the initial logic because I need HOI to go to school dashboard, CDE to go to county dashboard, 
       // SCDE  and SCQASOto go to sub-scounty dashboard
-       var actualInstitutionId = _context.Users
+       var actualinstitutionId = _context.Users
         .Where(u => u.userId == user.userId)
         .Select(u => u.institutionId)
         .FirstOrDefault();
@@ -147,6 +147,10 @@ public class UserController : ControllerBase
 
     if (!string.IsNullOrWhiteSpace(user.constituency)) 
         existingUser.constituency = user.constituency;
+
+    //to make a user active after soft delete
+     if (!string.IsNullOrWhiteSpace(user.status)) 
+        existingUser.status = user.status;
 
     existingUser.updatedAt = DateTime.UtcNow.ToString("o");
 

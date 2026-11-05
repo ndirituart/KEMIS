@@ -21,7 +21,7 @@ public class EmployeeController : ControllerBase
     [HttpPost("CreateNewEmployee")]
     public IActionResult CreateEmployee([FromBody] Employee obj)
     {
-        //Employee must have an existing UserId
+        //Employee must have an existing userId
         var employeeExistWithUserId = _context.Employeess.FirstOrDefault(u => u.i == obj.emailId);
 
         // If basic-educationdoes NOT exist, create the account

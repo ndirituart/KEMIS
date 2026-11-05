@@ -54,6 +54,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+    //Using Institution Service
+    builder.Services.AddScoped<InstitutionWorkflowService>();
     
 
 

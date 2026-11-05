@@ -1,0 +1,1 @@
+//Handles schools status (approval/denial)

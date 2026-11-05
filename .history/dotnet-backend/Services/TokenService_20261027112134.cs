@@ -23,7 +23,7 @@ namespace dotnet_backend.Services
                 new Claim(ClaimTypes.NameIdentifier, user.userId.ToString()),
                 new Claim(ClaimTypes.Email, user.emailId),
                 new Claim(ClaimTypes.Name, user.fullName),
-                new Claim(ClaimTypes.Role, user.role) // 🔥 THIS IS THE MAGIC KEY FOR AUTH
+                new Claim(ClaimTypes.Role, user.role) //  THIS IS THE MAGIC KEY FOR AUTH
             };
 
             // 2. Create the Security Key
