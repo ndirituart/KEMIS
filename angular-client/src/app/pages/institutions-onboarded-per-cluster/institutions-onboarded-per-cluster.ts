@@ -14,7 +14,7 @@ export class InstitutionsOnboardedPerCluster {
   
   // --- Filter Options ---
   institutionLevels = ['All', 'Pre-Primary', 'Primary', 'Junior School', 'Pre-Vocational', 'Vocational'];
-  clusters = ['All', 'Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4'];
+  clusters = ['All', 'Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4', 'Private'];
   counties = [ 'Nairobi', ];
   subCounties = [ 'All',
           "Dagoretti North Sub County",

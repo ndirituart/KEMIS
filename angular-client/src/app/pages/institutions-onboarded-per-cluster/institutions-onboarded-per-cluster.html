@@ -1,1 +1,107 @@
-<p>institutions-onboarded-per-cluster works!</p>
+<div class="page-container">
+  
+  <!-- Page Title -->
+  <div class="page-header">
+    <h2>List of institutions onboarded per Cluster</h2>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filter-section">
+    <div class="filter-grid">
+      
+      <!-- Row 1 -->
+      <div class="filter-group">
+        <label>Institution Level</label>
+        <select class="form-select bg-light" [(ngModel)]="filter.institutionLevel">
+          <option *ngFor="let level of institutionLevels" [value]="level">{{ level }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Select Cluster</label>
+        <select class="form-select" [(ngModel)]="filter.cluster">
+          <option *ngFor="let c of clusters" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="filter-group">
+        <label>From</label>
+        <input type="date" class="form-control" [(ngModel)]="filter.fromDate">
+      </div>
+
+      <div class="filter-group">
+        <label>To</label>
+        <input type="date" class="form-control" [(ngModel)]="filter.toDate">
+      </div>
+
+      <!-- Row 3 -->
+      <div class="filter-group">
+        <label>County</label>
+        <select class="form-select bg-light" [(ngModel)]="filter.county">
+          <option *ngFor="let county of counties" [value]="county">{{ county }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Subcounty</label>
+        <select class="form-select" [(ngModel)]="filter.subCounty">
+          <option *ngFor="let sub of subCounties" [value]="sub">{{ sub }}</option>
+        </select>
+      </div>
+
+      <!-- Search Button (Centered in the grid) -->
+      <div class="filter-group search-btn-group">
+        <button class="btn-search" (click)="onSearch()">Search</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-section">
+    
+    <!-- Table Search Bar -->
+    <div class="table-search-row">
+      <input type="text" class="form-control search-input" placeholder="Search" [(ngModel)]="tableSearch" [disabled]="institutions.length === 0">
+    </div>
+
+    <!-- Data Table (Only shows if there is data) -->
+    <div class="table-responsive" *ngIf="institutions.length > 0; else noDataTpl">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Institution ID</th>
+            <th>Institution Name</th>
+            <th>Cluster</th>
+            <th>Sub County</th>
+            <th>Head of Institution</th>
+            <th>Status</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inst of institutions | search: tableSearch">
+            <td>{{ inst.institutionId }}</td>
+            <td>{{ inst.institutionName }}</td>
+            <td>{{ inst.cluster }}</td>
+            <td>{{ inst.subCounty }}</td>
+            <td>{{ inst.headOfInstitution }}</td>
+            <td>
+              <span class="badge-status">{{ inst.status }}</span>
+            </td>
+            <td>{{ inst.createdAt | date:'dd-MM-yyyy' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State Template -->
+    <ng-template #noDataTpl>
+      <div class="no-data-message">
+        No Records to display
+      </div>
+    </ng-template>
+
+  </div>
+</div>
