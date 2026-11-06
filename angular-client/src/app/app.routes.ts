@@ -29,7 +29,7 @@ import { hOIGuard } from './guards/hoi/hoi-guard';
 import { schoolDashboardGuard } from './guards/school-dashboard/school-dashboard-guard';
 import { subCountyQAGuard } from './guards/subcounty-qualityassurance/sub-county-qa-guard';
 
-  
+
 export const routes: Routes = [
   //{ path: '/', component: Layout}, //making this the default
   { path: 'login', component: Login },
@@ -50,6 +50,7 @@ export const routes: Routes = [
   { path: 'institution-registered-county', component: InstitutionRegisteredCounty,canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
   { path: 'learners-per-grade-county', component: LearnersPerGradeCounty, canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
   { path: 'learners-registered-county', component: LearnersRegisteredCounty, canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
+  { path: 'pending-institution-county', component: InstitutionRegisteredCounty, canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
   { path: 'sub-county-education', component: SubCountyEducation, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
   { path: 'sub-county-quality-assurance', component: SubCountyQualityAssurance, canActivate: [subCountyQAGuard], data: { allowedRoles: 'Sub-County Quality Assurance and Standards Officer (SCQASO)' } },
   { path: 'super-admin', component: SuperAdmin,  canActivate: [adminGuard],  data: {  allowedRoles: 'Admin' }  },
