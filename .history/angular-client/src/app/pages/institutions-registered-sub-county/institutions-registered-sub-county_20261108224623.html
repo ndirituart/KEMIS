@@ -1,0 +1,106 @@
+<div class="page-container">
+  
+  <!-- Page Title -->
+  <div class="page-header">
+    <h2>List of institutions onboarded per Sub County</h2>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filter-section">
+    <div class="filter-grid">
+      
+      <!-- Institution Level -->
+      <div class="filter-group">
+        <label>Institution Level</label>
+        <select class="form-select" [(ngModel)]="filter.institutionLevel">
+          <option *ngFor="let institutionLevel of institutionLevels" [value]="institutionLevel">{{ institutionLevel }}</option>
+        </select>
+      </div>
+
+      <!-- From Date -->
+      <div class="filter-group">
+        <label>From</label>
+        <input type="date" class="form-control" [(ngModel)]="filter.fromDate">
+      </div>
+
+      <!-- To Date -->
+      <div class="filter-group">
+        <label>To</label>
+        <input type="date" class="form-control" [(ngModel)]="filter.toDate">
+      </div>
+
+      <!-- County -->
+      <div class="filter-group">
+        <label>County</label>
+        <select class="form-select bg-light" [(ngModel)]="filter.county">
+          <option *ngFor="let county of county" [value]="county">{{ county }}</option>
+        </select>
+      </div>
+
+      <!-- Subcounty -->
+      <div class="filter-group">
+        <label>Subcounty</label>
+        <select class="form-select" [(ngModel)]="filter.subCounty">
+          <option *ngFor="let sub of subCounty" [value]="sub">{{ sub }}</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-row">
+      <button class="btn-download" (click)="onDownload()">
+        Download <i class="bi bi-caret-down-fill ms-1"></i>
+      </button>
+      <button class="btn-search" (click)="onSearch()">
+        Search
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-section">
+    
+    <!-- Table Search Bar -->
+    <div class="table-search-row">
+      <input type="text" class="form-control search-input" placeholder="Search" [(ngModel)]="tableSearch">
+    </div>
+
+    <!-- Data Table Wrapper (for horizontal scrolling) -->
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>S. No</th>
+            <th>Institution Certificate Number</th>
+            <th>Institution Type</th>
+            <th>Institution Name</th>
+            <th>Institution TelemobileNo Number/Landline</th>
+            <th>Institution Level</th>
+            <th>Sub County</th>
+            <th>Created Date</th>
+            <th>Created By</th>
+            <th>Constituency</th>
+            <th>Institution Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inst of institutions | search: tableSearch">
+            <td class="text-center">{{ inst.institutionId }}</td>
+            <td>{{ inst.certificateNumber }}</td>
+            <td>{{ inst.institutionType }}</td>
+            <td>{{ inst.institutionName }}</td>
+            <td>{{ inst.mobileNo }}</td>
+            <td>{{ inst.institutionLevel }}</td>
+            <td>{{ inst.subCounty }}</td>
+            <td>{{ inst.createdAt }}</td>
+            <td>{{ inst.headOfInstitution }}</td>
+            <td>{{ inst.constituency }}</td>
+            <td>{{ inst.emailId }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
