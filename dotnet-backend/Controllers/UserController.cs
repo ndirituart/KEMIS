@@ -149,9 +149,14 @@ public class UserController : ControllerBase
         existingUser.constituency = user.constituency;
 
     //to make a user active after soft delete
-     if (!string.IsNullOrWhiteSpace(user.status)) 
+     if (user.status != null) 
         existingUser.status = user.status;
 
+    //to link to a school
+     if (!string.IsNullOrWhiteSpace(user.institutionId.ToString())) 
+        existingUser.institutionId = user.institutionId;
+
+    //always update this column
     existingUser.updatedAt = DateTime.UtcNow.ToString("o");
 
     _context.SaveChanges();

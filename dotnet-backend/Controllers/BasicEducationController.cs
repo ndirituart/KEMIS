@@ -79,6 +79,7 @@ namespace dotnet_backend.Controllers
                 certificatePdfUrl = uniqueFileName != null ? $"/uploads/{uniqueFileName}" : null,
                 status = "pending",
                 createdAt = DateTime.UtcNow.ToString("o")
+                
             };
 
             _context.BasicEducations.Add(school);
@@ -141,12 +142,81 @@ namespace dotnet_backend.Controllers
     }
 
 // 5(a). Update BasicEducation Endpoint
-    
-	[HttpPut("{id:int}")]
-	public IActionResult UpdateSchool(int id, [FromBody] object school)
-	{
-		return NoContent();
-	}
+       [HttpPut("{id:int}")]
+    public IActionResult UpdateSchool(int id, [FromBody] BasicEducation schoolUpdate)
+    {
+        var existingSchool = _context.BasicEducations.FirstOrDefault(s => s.institutionId == id);
+        if (existingSchool == null) return NotFound("School not found.");
 
+        // Immutable: certificateNumber, county, subCounty
+        // (We allow constituency, lat, long now)
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.institutionName))
+            existingSchool.institutionName = schoolUpdate.institutionName;
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.institutionType))
+            existingSchool.institutionType = schoolUpdate.institutionType;
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.emailId))
+            existingSchool.emailId = schoolUpdate.emailId;
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.mobileNo))
+            existingSchool.mobileNo = schoolUpdate.mobileNo;
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.headOfInstitution))
+            existingSchool.headOfInstitution = schoolUpdate.headOfInstitution;
+
+        if (schoolUpdate.postalAddressHoi != null)
+            existingSchool.postalAddressHoi = schoolUpdate.postalAddressHoi;
+
+        if (schoolUpdate.postalAddressInstitution != null)
+            existingSchool.postalAddressInstitution = schoolUpdate.postalAddressInstitution;
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.applicationType))
+            existingSchool.applicationType = schoolUpdate.applicationType;
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.institutionLevel))
+            existingSchool.institutionLevel = schoolUpdate.institutionLevel;
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.accomodationType))
+            existingSchool.accomodationType = schoolUpdate.accomodationType;
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.schoolCategory))
+            existingSchool.schoolCategory = schoolUpdate.schoolCategory;
+
+        // Unlocked Fields
+        if (schoolUpdate.constituency != null)
+            existingSchool.constituency = schoolUpdate.constituency;
+
+        if (schoolUpdate.latitude != null)
+            existingSchool.latitude = schoolUpdate.latitude;
+
+        if (schoolUpdate.longitude != null)
+            existingSchool.longitude = schoolUpdate.longitude;
+            
+        if (schoolUpdate.userId != null)
+            existingSchool.userId = schoolUpdate.userId;
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.cluster))
+            existingSchool.cluster = schoolUpdate.cluster;
+
+        if (schoolUpdate.totalLearners > 0)
+            existingSchool.totalLearners = schoolUpdate.totalLearners;
+
+        if (schoolUpdate.certificateValid != existingSchool.certificateValid)
+            existingSchool.certificateValid = schoolUpdate.certificateValid;
+
+        if (schoolUpdate.isActive != existingSchool.isActive)
+            existingSchool.isActive = schoolUpdate.isActive;
+
+        if (!string.IsNullOrWhiteSpace(schoolUpdate.status))
+            existingSchool.status = schoolUpdate.status;
+
+        existingSchool.updatedAt = DateTime.UtcNow.ToString("o");
+
+        _context.SaveChanges();
+
+        return Ok(new { message = "School details updated successfully.", school = existingSchool });
     }
+ }
 }
