@@ -23,6 +23,11 @@ public class CountyEducationController : ControllerBase
     private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
 
+     // Get ALL schools in the logged-in County, regardless of status
+    [HttpGet("institutions/all")]
+    public Task<List<PendingInstitution>> GetAllSchools(CancellationToken ct) =>
+        _workflow.GetAllAsync(userId, ct);
+
     //1. Get ALL schools in logged in County
     [HttpGet("institutions")]
         public Task<List<PendingInstitution>> Pending(CancellationToken ct) =>

@@ -1,7 +1,7 @@
 namespace dotnet_backend.Models;
 
 public record PendingInstitutionDto(int institutionId, string institutionName, string county, string subCounty, string status);
-public record ApprovedInstitutionDto(int institutionId, string institutionName, string county, string subCounty, string status, string approvedDate);
+public record ApprovedInstitutionDto(int institutionId, string institutionName, string county, string subCounty, string status, string updatedAt);
 public record RejectedInstitutionDto(int institutionId, string institutionName, string county, string rejectionReason);
 public record InstitutionDetailDto(int institutionId, string institutionName, string county, string status, List<CommentDto> Comments, List<DecisionDto> Decisions);
 public record CommentDto(int commentId, string comment, string CreatedAt);

@@ -55,6 +55,7 @@ namespace dotnet_backend.Controllers
             // 1. Create the School FIRST
             var school = new BasicEducation
             {
+                institutionId = obj.institutionId!, //make this nullable to avoid errors
                 institutionName = obj.institutionName, 
                 institutionType = obj.institutionType,
                 emailId = obj.emailId,
@@ -95,7 +96,7 @@ namespace dotnet_backend.Controllers
                 nationalId = "PENDING",
                 county = obj.county,
                 subCounty = obj.subCounty,
-                constituency = obj.constituency,
+                constituency = obj.constituency!,
                 institutionId = school.institutionId!, 
                 status = "active",
                 createdDate = DateTime.UtcNow.ToString("o") 

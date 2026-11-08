@@ -86,7 +86,8 @@ public class SubCountyEducationController : ControllerBase
     [HttpGet("reports")]
     public async Task<ActionResult<IEnumerable<Report>>> GetMyReports()
     {
-        var reports = await _context.SubCountyEducation
+        var reports = await _context.Reports
+            .AsNoTracking()
             .Where(r => r.scdeId == CurrentUserId)
             .OrderByDescending(r => r.createdAt)
             .Select(r => new Report
@@ -100,7 +101,7 @@ public class SubCountyEducationController : ControllerBase
                     .FirstOrDefault() ?? "Unknown",
                 summary = r.summary,
                 recommendation = r.recommendation,
-                Status = r.status,
+                status = r.status,
                 createdAt = r.createdAt
             })
             .ToListAsync();

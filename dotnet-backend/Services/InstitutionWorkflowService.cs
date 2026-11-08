@@ -1,7 +1,6 @@
-//Handles schools status (approval/denial) and assignment of schools to SCDEs by CDEs
 using dotnet_backend.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc; //  Fixes the IActionResult error, rememeber this!
+using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_backend.Services;
 
@@ -14,14 +13,32 @@ public class InstitutionWorkflowService
         _context = context;
     }
 
-    // 1. Get Pending Schools in the CDE's County
-    public async Task<List<PendingInstitution>> GetPendingAsync(int userId, CancellationToken ct)
+    // 0. Get ALL schools in the CDE's county (No status filter)
+    public async Task<List<PendingInstitution>> GetAllAsync(int userId, CancellationToken ct)
     {
-        // Find the CDE's county based on their userId
         var cde = await _context.Users.FindAsync(userId);
         if (cde == null) return new List<PendingInstitution>();
 
-        // Fetch pending schools in that county
+        return await _context.BasicEducations
+            .Where(s => s.county == cde.county)
+            .Select(s => new PendingInstitution(
+                s.institutionId, 
+                s.institutionName, 
+                s.county, 
+                s.subCounty, 
+                s.status,
+                s.createdAt, // Date of onboarding
+                s.certificateNumber ?? "N/A" // Institution No
+            ))
+            .ToListAsync(ct);
+    }
+
+    // 1. Get Pending Schools in the CDE's County
+    public async Task<List<PendingInstitution>> GetPendingAsync(int userId, CancellationToken ct)
+    {
+        var cde = await _context.Users.FindAsync(userId);
+        if (cde == null) return new List<PendingInstitution>();
+
         return await _context.BasicEducations
             .Where(s => s.county == cde.county && s.status == "pending")
             .Select(s => new PendingInstitution(
@@ -29,12 +46,14 @@ public class InstitutionWorkflowService
                 s.institutionName, 
                 s.county, 
                 s.subCounty, 
-                s.status
+                s.status,
+                s.createdAt, 
+                s.certificateNumber ?? "N/A"
             ))
             .ToListAsync(ct);
     }
 
-    // 2. Get Approved Schools in the CDE's County
+    // 2. Get Approved Schools
     public async Task<List<ApprovedInstitution>> GetApprovedAsync(int userId, CancellationToken ct)
     {
         var cde = await _context.Users.FindAsync(userId);
@@ -48,12 +67,12 @@ public class InstitutionWorkflowService
                 s.county, 
                 s.subCounty, 
                 s.status, 
-                s.updatedAt ?? s.createdAt // Use updatedAt as the approval date
+                s.updatedAt ?? s.createdAt
             ))
             .ToListAsync(ct);
     }
 
-    // 3. Get Rejected Schools in the CDE's County
+    // 3. Get Rejected Schools
     public async Task<List<RejectedInstitution>> GetRejectedAsync(int userId, CancellationToken ct)
     {
         var cde = await _context.Users.FindAsync(userId);
@@ -65,12 +84,14 @@ public class InstitutionWorkflowService
                 s.institutionId, 
                 s.institutionName, 
                 s.county, 
-                s.rejectionReason ?? "No reason provided"
+                s.status,
+                s.rejectionReason ?? "No reason provided",
+                s.updatedAt ?? s.createdAt //approval Date
             ))
             .ToListAsync(ct);
     }
 
-    // 4. Get School Details (Including Comments & Decisions)
+    // 4. Get School Details
     public async Task<InstitutionDetail> GetDetailAsync(int id, int userId, CancellationToken ct)
     {
         var school = await _context.BasicEducations.FindAsync(id);
@@ -97,7 +118,7 @@ public class InstitutionWorkflowService
 
         return await _context.BasicEducations
             .Where(s => s.county == cde.county && s.constituency == clusterName && s.status == "pending")
-            .Select(s => new PendingInstitution(s.institutionId, s.institutionName, s.county, s.subCounty, s.status))
+            .Select(s => new PendingInstitution(s.institutionId, s.institutionName, s.county, s.subCounty, s.status, s.createdAt, s.certificateNumber ?? "N/A"))
             .ToListAsync(ct);
     }
 
@@ -109,7 +130,7 @@ public class InstitutionWorkflowService
 
         return await _context.BasicEducations
             .Where(s => s.county == cde.county && s.subCounty == subCountyName && s.status == "pending")
-            .Select(s => new PendingInstitution(s.institutionId, s.institutionName, s.county, s.subCounty, s.status))
+            .Select(s => new PendingInstitution(s.institutionId, s.institutionName, s.county, s.subCounty, s.status, s.createdAt, s.certificateNumber ?? "N/A"))
             .ToListAsync(ct);
     }
 
@@ -124,18 +145,17 @@ public class InstitutionWorkflowService
             .ToListAsync(ct);
     }
 
-        // 8. Assign a School to an SCDE
+    // 8. Assign a School to an SCDE
     public async Task<InstitutionDetail> AssignAsync(int id, int userId, AssignRequest req, CancellationToken ct)
     {
         var school = await _context.BasicEducations.FindAsync(id);
         if (school == null) throw new Exception("School not found");
 
-        // Save assignment using the unified table
         var assignment = new InstitutionAssignment
         {
             institutionId = id,
             assigneeId = req.assigneeId,
-            assignerId = userId, // The CDE making the request
+            assignerId = userId,
             status = "pending",
             hasReport = false,
             assignedAt = DateTime.UtcNow.ToString("o")
@@ -143,7 +163,6 @@ public class InstitutionWorkflowService
         
         _context.InstitutionAssignments.Add(assignment);
         
-        // Update school status to show it is being reviewed
         school.status = "under_review";
         school.updatedAt = DateTime.UtcNow.ToString("o");
         
@@ -159,7 +178,7 @@ public class InstitutionWorkflowService
         {
             institutionId = id,
             userId = userId,
-            commentText = req.Comment,
+            commentText = req.comment,
             createdAt = DateTime.UtcNow.ToString("o")
         };
         _context.InstitutionComments.Add(comment);
@@ -193,33 +212,58 @@ public class InstitutionWorkflowService
         return await GetDetailAsync(id, userId, ct);
     }
 
-    // 11. CDE Final Decision (Approve/Reject)
-    public async Task<IActionResult> SubmitReport(SubmitReportRequest req, int scdeId)
-{
-    // 1. Create the report
-    var report = new Report
+    // 11. Submit Report
+    public async Task SubmitReportAsync(SubmitReportRequest req, int scdeId)
     {
-        institutionId = req.institutionId,
-        scdeId = scdeId,
-        institutionName = "School Name...", // You can fetch this from BasicEducation
-        summary = req.Summary,
-        recommendation = req.Recommendation,
-        status = "submitted",
-        createdAt = DateTime.UtcNow.ToString("o")
-    };
-    _context.Reports.Add(report);
+        var report = new Report
+        {
+            institutionId = req.institutionId,
+            scdeId = scdeId,
+            institutionName = "School Name...", 
+            summary = req.summary,
+            recommendation = req.recommendation,
+            status = "submitted",
+            createdAt = DateTime.UtcNow.ToString("o")
+        };
+        
+        _context.Reports.Add(report);
 
-    // 2.  UPDATE THE hasReport FLAG IN Assignments
-    var assignment = await _context.InstitutionAssignments
-        .FirstOrDefaultAsync(a => a.institutionId == req.institutionId && a.assigneeId == scdeId);
-    
-    if (assignment != null)
-    {
-        assignment.hasReport = true; // Links institution to the report
-        assignment.status = "completed"; // Mark the assignment as done
+        var assignment = await _context.InstitutionAssignments
+            .FirstOrDefaultAsync(a => a.institutionId == req.institutionId && a.assigneeId == scdeId);
+        
+        if (assignment != null)
+        {
+            assignment.hasReport = true; 
+            assignment.status = "completed"; 
+        }
+
+        await _context.SaveChangesAsync();
     }
 
-    await _context.SaveChangesAsync();
-    return Ok("Report submitted successfully.");
-}
+    // 12. Make the final decision (CDE)
+    public async Task<InstitutionDetail> FinalDecisionAsync(int id, int userId, DecisionRequest req, CancellationToken ct)
+    {
+        var school = await _context.BasicEducations.FindAsync(id);
+        if (school == null) throw new Exception("School not found");
+
+        school.status = req.isApproved ? "approved" : "rejected";
+        if (!req.isApproved) school.rejectionReason = req.rejectionReason ?? req.remarks;
+        school.updatedAt = DateTime.UtcNow.ToString("o");
+
+        var decision = new InstitutionDecision
+        {
+            institutionId = id,
+            userId = userId,
+            isApproved = req.isApproved,
+            remarks = req.remarks,
+            rejectionReason = req.rejectionReason,
+            decisionType = "CDE Final",
+            createdAt = DateTime.UtcNow.ToString("o")
+        };
+        _context.InstitutionDecisions.Add(decision);
+
+        await _context.SaveChangesAsync(ct);
+
+        return await GetDetailAsync(id, userId, ct);
+    }
 }

@@ -16,10 +16,10 @@ export class CountyEducation implements OnInit {
   dashboardData = {
     county: 'Nairobi', // Placeholder should fetch from Localstorage after loggin
     role: 'CDE',
-    stats: { approved: 0, rejected: 0, pending: 1, appeals: 0, totalLearners: 0 },
-    approvalBreakdown: { approved: 0, pending: 1, rejected: 0 },
+    stats: { approved: 0, rejected: 0, pending: 53, appeals: 0, totalLearners: 0 },
+    approvalBreakdown: { approved: 0, pending: 53, rejected: 0 },
     categories: {
-      regular: { count: 0, percentage: 0.0 },
+      regular: { count: 53, percentage: 100.0 },
       integrated: { count: 0, percentage: 0.0 },
       sne: { count: 0, percentage: 0.0 }
     }

@@ -52,7 +52,7 @@ public class UserController : ControllerBase
   {
       // Check if email address exists and edited to check institutionId too
       var user = _context.Users.AsNoTracking().FirstOrDefault(u => u.emailId == userLogin.emailId);
-      int? realinstitutionId = _context.Entry(user).Property(u => u.institutionId).CurrentValue; //check in PostgreSQL Admin
+      int? realinstitutionId = _context.Entry(user!).Property(u => u.institutionId).CurrentValue; //check in PostgreSQL Admin
       
       // Authentication
       if (user == null || user.password != userLogin.password) 

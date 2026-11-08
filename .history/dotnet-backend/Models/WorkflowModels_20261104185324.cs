@@ -2,7 +2,7 @@ namespace dotnet_backend.Models;
 
 // --- s ---
 public record PendingInstitution(int institutionId, string institutionName, string county, string subCounty, string status);
-public record ApprovedInstitution(int institutionId, string institutionName, string county, string subCounty, string status, string approvedDate);
+public record ApprovedInstitution(int institutionId, string institutionName, string county, string subCounty, string status, string updatedAt);
 public record RejectedInstitution(int institutionId, string institutionName, string county, string rejectionReason);
 public record InstitutionDetail(int institutionId, string institutionName, string county, string status, List<Comment> Comments, List<Decision> Decisions);
 

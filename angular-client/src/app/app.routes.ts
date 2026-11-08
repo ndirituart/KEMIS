@@ -31,6 +31,11 @@ import { sCDEGuard } from './guards/scde/s-cde-guard';
 import { hOIGuard } from './guards/hoi/hoi-guard';
 import { schoolDashboardGuard } from './guards/school-dashboard/school-dashboard-guard';
 import { subCountyQAGuard } from './guards/subcounty-qualityassurance/sub-county-qa-guard';
+/// Import Layouts
+// import { HoiLayoutComponent } from '../layouts/hoi-layout/hoi-layout';
+// import { CdeLayoutComponent } from '../layouts/cde-layout/cde-layout.';
+// import { ScdeLayoutComponent } from '../layouts/scde-layout/scde-layout';
+// import { AdminLayoutComponent } from '../layouts/admin-layout/admin-layout';
 
 
 export const routes: Routes = [
