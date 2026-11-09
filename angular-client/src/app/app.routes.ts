@@ -23,8 +23,8 @@ import { LearnersRegisteredPerCluster } from './pages/learners-registered-per-cl
 // 3. System User SCDE and their child routes
 import { SubCountyEducation } from './pages/sub-county-education/sub-county-education';
 import { InstitutionsRegisteredSubCounty } from './pages/institutions-registered-sub-county/institutions-registered-sub-county';
-// import { LearnersPerGradeSubCounty } from './pages/learners-per-grade-sub-county/learners-per-grade-sub-county';
-// import { LearnersRegisteredSubCounty } from './pages/learners-registered-sub-county/learners-registered-sub-county';
+//  import { LearnersPerGradeSubCounty } from './pages/learners-per-grade-sub-county/learners-per-grade-sub-county';
+import { LearnersRegisteredSubCounty } from './pages/learners-registered-sub-county/learners-registered-sub-county';
 // import { PendingInstitutionSubCounty } from './pages/pending-institution-sub-county/pending-institution-sub-county';
 // import { InstitutionsOnboardedPerClusterSubCounty } from './pages/institutions-onboarded-per-cluster-sub-county/institutions-onboarded-per-cluster-sub-county';
 // import { LearnersRegisteredPerClusterSubCounty } from './pages/learners-registered-per-cluster-sub-county/learners-registered-per-cluster-sub-county';
@@ -71,6 +71,8 @@ export const routes: Routes = [
   //SCDE children pages
   { path: 'sub-county-education', component: SubCountyEducation, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
   { path: 'institutions-registered-sub-county', component: InstitutionsRegisteredSubCounty, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
+  { path: 'learners-registered-sub-county', component: LearnersRegisteredSubCounty, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
+  // { path: 'learners-per-grade-sub-county', component: LearnersPerGradeSubCounty, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
   { path: 'sub-county-quality-assurance', component: SubCountyQualityAssurance, canActivate: [subCountyQAGuard], data: { allowedRoles: 'Sub-County Quality Assurance and Standards Officer (SCQASO)' } },
   { path: 'super-admin', component: SuperAdmin,  canActivate: [adminGuard],  data: {  allowedRoles: 'Admin' }  },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
