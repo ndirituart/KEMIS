@@ -1,0 +1,129 @@
+<div class="page-container">
+  
+  <!-- Page Title -->
+  <div class="page-header">
+    <h2>Orphan Learners Registered Per County</h2>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filter-section">
+    <div class="filter-grid">
+      
+      <!-- Row 1 -->
+      <div class="filter-group">
+        <label>Institution Level</label>
+        <select class="form-select" [(ngModel)]="filter.institutionLevel">
+          <option *ngFor="let level of institutionLevels" [value]="level">{{ level }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>County</label>
+        <select class="form-select bg-light" [(ngModel)]="filter.county">
+          <option *ngFor="let county of counties" [value]="county">{{ county }}</option>
+        </select>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="filter-group">
+        <label>Gender</label>
+        <select class="form-select" [(ngModel)]="filter.gender">
+          <option *ngFor="let gender of genders" [value]="gender">{{ gender }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Grade</label>
+        <select class="form-select" [(ngModel)]="filter.grade">
+          <option *ngFor="let grade of grades" [value]="grade">{{ grade }}</option>
+        </select>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="filter-group">
+        <label>From</label>
+        <input type="date" class="form-control" [(ngModel)]="filter.fromDate">
+      </div>
+
+      <div class="filter-group">
+        <label>To</label>
+        <input type="date" class="form-control" [(ngModel)]="filter.toDate">
+      </div>
+      
+      <!-- Spacer and Search Button -->
+      <div class="filter-group empty-spacer"></div>
+      
+      <div class="filter-group align-end">
+        <button class="btn-search" (click)="onSearch()">Search</button>
+      </div>
+
+    </div>
+
+    <!-- Download Button -->
+    <div class="action-row">
+      <button class="btn-download" (click)="onDownload()">
+        Download <i class="bi bi-caret-down-fill ms-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-section">
+    
+    <!-- Table Search Bar -->
+    <div class="table-search-row">
+      <input type="text" class="form-control search-input" placeholder="Search" [(ngModel)]="tableSearch">
+    </div>
+
+    <!-- Data Table Wrapper -->
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>S. No</th>
+            <th>Unique Learner Identifier (ULI)</th>
+            <th>KCPE/KCSE Index Number</th>
+            <th>Learner First Name</th>
+            <th>Learner Middle Name</th>
+            <th>Learner Last Name</th>
+            <th>Institution</th>
+            <th>Grade</th>
+            <th>Gender</th>
+            <th>SNE Status</th>
+            <th>SNE Type</th>
+            <th>Age</th>
+            <th>Created Date</th>
+            <th>Created By</th>
+            <th>Constituency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filter pipe applied here -->
+          <tr *ngFor="let learner of orphanLearners | search: tableSearch">
+            <td class="text-center">{{ learner.sNo }}</td>
+            <td>{{ learner.uli }}</td>
+            <td>{{ learner.indexNo }}</td>
+            <td>{{ learner.firstName }}</td>
+            <td>{{ learner.middleName }}</td>
+            <td>{{ learner.lastName }}</td>
+            <td>{{ learner.institution }}</td>
+            <td>{{ learner.grade }}</td>
+            <td>{{ learner.gender }}</td>
+            <td>{{ learner.sneStatus }}</td>
+            <td>{{ learner.sneType }}</td>
+            <td>{{ learner.age }}</td>
+            <td>{{ learner.createdDate }}</td>
+            <td>{{ learner.createdBy }}</td>
+            <td>{{ learner.constituency }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination / Footer Info -->
+    <div class="table-footer">
+      <span>Showing 1-25 of 2653 entries</span>
+    </div>
+
+  </div>
+</div>

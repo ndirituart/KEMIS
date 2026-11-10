@@ -21,7 +21,7 @@ export class LearnersRegisteredCountyComponent {
   // --- Filter Model ---
   filter = {
     institutionLevel: 'All',
-    county: 'Vihiga',
+  county: 'Nairobi',
     gender: 'All',
     grade: 'All',
     fromDate: '',

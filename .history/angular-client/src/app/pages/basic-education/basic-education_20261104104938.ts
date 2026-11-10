@@ -708,7 +708,7 @@ export class BasicEducation {
     },
 
     {
-      county: 'Vihiga',
+    county: 'Nairobi',
       capital: '',
       code: 38,
       subCounty:

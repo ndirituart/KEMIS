@@ -88,7 +88,7 @@ export class PendingInstitutionCounty {
     sneGirls: 0,
     totalLearners: 450,
     coordinates: 'null, null',
-    county: 'Vihiga',
+  county: 'Nairobi',
     subCounty: 'Hamisi',
     constituency: 'HAMISI',
     postalCode: '50309',

@@ -24,7 +24,7 @@ export class InstitutionsOnboardedPerClusterComponent {
     cluster: 'All',
     fromDate: '',
     toDate: '',
-    county: 'Vihiga',
+  county: 'Nairobi',
     subCounty: 'All'
   };
 

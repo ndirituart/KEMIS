@@ -42,7 +42,7 @@ export class LearnersRegisteredPerCluster {
     cluster: 'All',
     fromDate: '',
     toDate: '',
-    county: 'Vihiga',
+  county: 'Nairobi',
     subCounty: 'All'
   };
 

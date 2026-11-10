@@ -31,7 +31,7 @@ export class InstitutionsRegisteredCountyComponent {
     institutionLevel: 'Junior School',
     fromDate: '',
     toDate: '',
-    county: 'Vihiga',
+  county: 'Nairobi',
     subCounty: 'All'
   };
 

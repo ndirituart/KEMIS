@@ -646,7 +646,7 @@ export class CountyEducation implements OnInit {
     },
 
     {
-      county: 'Vihiga',
+    county: 'Nairobi',
       capital: 'Mbale',
       code: 38,
       subCounty: [

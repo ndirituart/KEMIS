@@ -23,7 +23,7 @@ export class LearnersPerGradeCountyComponent {
     institutionLevel: 'All',
     fromDate: '',
     toDate: '',
-    county: 'Vihiga',
+  county: 'Nairobi',
     subCounty: 'All',
     institution: 'All',
     grade: 'All'
