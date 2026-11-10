@@ -34,7 +34,7 @@ export class HeadOfInstitution implements OnInit {
     console.log('Institution ID from LocalStorage:', instId); // Debugging
     
     if (instId) {
-      this.http.get<any>(`http://localhost:5215/api/BasicEducation/GetSchool/${instId}`).subscribe({
+      this.http.get<any>(`http://localhost:5215/api/county-education/institutions/all/GetSchool/${instId}`).subscribe({
         next: (res) => {
           console.log('School Data from API:', res); // Debugging
           this.schoolData = {

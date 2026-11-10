@@ -34,7 +34,7 @@ export class HeadOfInstitution implements OnInit {
 
     if (instId) {
       // Fetch data from backend
-      this.http.get<any>(`http://localhost:5215/api/BasicEducation/GetSchools/${instId}`).subscribe({
+      this.http.get<any>(`http://localhost:5215/api/county-education/institutions/all/GetSchools/${instId}`).subscribe({
         next: (res) => {
           this.schoolData = {
             name: res.institutionName,

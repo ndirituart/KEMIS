@@ -1,7 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+
+// 1. Define the type for your data
+export interface CountyData {
+  county: string;
+  subCounty: string[];
+}
 
 @Component({
   selector: 'app-county-education',
@@ -11,54 +18,62 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './county-education.css'
 })
 export class CountyEducation implements OnInit {
-   loggedInCounty = 'Nairobi';
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
-  dashboardData = {
-    county: 'Nairobi', // Placeholder should fetch from Localstorage after loggin
+  private apiUrl = 'http://localhost:5215/api/CountyEducation/institutions/all';
+
+  dashboardData: any = {
+    fullName: 'Loading...',
+    county: 'Loading...',
     role: 'CDE',
-    stats: { approved: 0, rejected: 0, pending: 53, appeals: 0, totalLearners: 0 },
-    approvalBreakdown: { approved: 0, pending: 53, rejected: 0 },
+    stats: { approved: 0, rejected: 0, pending: 0, appeals: 0, totalLearners: 0 },
+    approvalBreakdown: { approved: 0, pending: 0, rejected: 0 },
     categories: {
-      regular: { count: 53, percentage: 100.0 },
-      integrated: { count: 0, percentage: 0.0 },
-      sne: { count: 0, percentage: 0.0 }
+      regular: { count: 0, percentage: 0 },
+      integrated: { count: 0, percentage: 0 },
+      sne: { count: 0, percentage: 0 }
     }
   };
 
-  // Dynamic arrays for dropdowns
   subCounty: string[] = [];
   selectedLevel = 'Primary School';
   selectedSubCounty = '';
 
-  //constructor(private router: Router) {} //Multiple constructor implementations are not allowed.
-
-  ngOnInit() {
-    // All the 47 counties and respective subCounty
-    
-    //1. Baringo
-    if (this.dashboardData.county === 'Baringo') {
-      this.subCounty = [
+    // Replacing static counties with array for county and subscounty
+  countiesData =
+    [
+    {
+      county: "Baringo",
+      capital: "Kabarnet",
+      code: 30,
+      subCounty: [
         "Baringo central",
         "Baringo north",
         "Baringo south",
         "Eldama ravine",
         "Mogotio",
         "Tiaty"
-      ];
-    }
-    //2. Bomet
-    else if (this.dashboardData.county === 'Bomet') {
-      this.subCounty = [
+      ]
+    },
+    {
+      county: "Bomet",
+      capital: "Bomet",
+      code: 36,
+      subCounty: [
         "Bomet central",
         "Bomet east",
         "Chepalungu",
         "Konoin",
         "Sotik"
-      ];
-    }
-    //3. Bungoma
-    else if (this.dashboardData.county === 'Bungoma') {
-      this.subCounty = [
+      ]
+    },
+    {
+      county: "Bungoma",
+      capital: "Bungoma",
+      code: 39,
+      subCounty: [
         "Bumula",
         "Kabuchai",
         "Kanduyi",
@@ -69,51 +84,61 @@ export class CountyEducation implements OnInit {
         "Webuye east",
         "Webuye west"
       ]
-    }
-    //4. Busia
-    else if (this.dashboardData.county === 'Busia') {
-      this.subCounty = [
-         "Budalangi",
+    },
+    {
+      county: "Busia",
+      capital: "Busia",
+      code: 40,
+      subCounty: [
+        "Budalangi",
         "Butula",
         "Funyula",
         "Nambele",
         "Teso North",
         "Teso South"
       ]
-    }
-    //5. Elgeyo-Marakwet
-    else if (this.dashboardData.county === 'Elgeyo-Marakwet') {
-      this.subCounty = [
-         "Keiyo north",
+    },
+    {
+      county: "Elgeyo-Marakwet",
+      capital: "Iten",
+      code: 28,
+      subCounty: [
+        "Keiyo north",
         "Keiyo south",
         "Marakwet east",
         "Marakwet west"
       ]
-    }
-    //6. Embu
-    else if (this.dashboardData.county === 'Embu') {
-      this.subCounty = [
-         "Manyatta",
+    },
+    {
+      county: "Embu",
+      capital: "Embu",
+      code: 14,
+      subCounty: [
+        "Manyatta",
         "Mbeere north",
         "Mbeere south",
         "Runyenjes"
       ]
-    }
-    //7. Garissa
-    else if (this.dashboardData.county === 'Garissa') {
-      this.subCounty = [
-         "Daadab",
+    },
+    {
+      county: "Garissa",
+      capital: "Garissa",
+      code: 7,
+      subCounty: [
+        "Daadab",
         "Fafi",
         "Garissa",
         "Hulugho",
         "Ijara",
         "Lagdera balambala"
       ]
-    }
-    //8. Homa Bay
-    else if (this.dashboardData.county === 'HomaBay') {
-      this.subCounty = [
-         "Homabay town",
+    },
+    {
+      county: "Homa Bay",
+      capital: "Homa Bay",
+      code: 43,
+      subCounty: [
+        "Homabay town",
         "Kabondo",
         "Karachwonyo",
         "Kasipul",
@@ -122,28 +147,33 @@ export class CountyEducation implements OnInit {
         "Rangwe",
         "Suba"
       ]
-    }
-    //9. Isiolo
-    else if (this.dashboardData.county === 'Isiolo') {
-      this.subCounty = [
+    },
+    {
+      county: "Isiolo",
+      capital: "Isiolo",
+      code: 11,
+      subCounty: [
         "Isiolo",
         "Garba tula",
         "Merit"
       ]
-    }
-    //10. Kajiado
-    else if (this.dashboardData.county === 'Kajiado') {
-      this.subCounty = [
+    },
+    {
+      county: "Kajiado",
+      code: 34,
+      subCounty: [
         "Isinya",
         "Kajiado Central",
         "Kajiado North",
         "Loitokitok",
         "Mashuuru"
       ]
-    }
-    //11. Kakamega
-    else if (this.dashboardData.county === 'Kakamega') {
-      this.subCounty = [
+    },
+    {
+      county: "Kakamega",
+      capital: "Kakamega",
+      code: 37,
+      subCounty: [
         "Butere",
         "Kakamega central",
         "Kakamega east",
@@ -157,23 +187,26 @@ export class CountyEducation implements OnInit {
         "Mumias",
         "Mutungu",
         "Navakholo"
-        
       ]
-    }
-    //12. Kericho
-    else if (this.dashboardData.county === 'Kericho') {
-      this.subCounty = [
-       "Ainamoi",
+    },
+    {
+      county: "Kericho",
+      capital: "Kericho",
+      code: 35,
+      subCounty: [
+        "Ainamoi",
         "Belgut",
         "Bureti",
         "Kipkelion east",
         "Kipkelion west",
-        "Soin sigowet"        
+        "Soin sigowet"
       ]
-    }
-    //13. Kiambu
-    else if (this.dashboardData.county === 'Kiambu') {
-      this.subCounty = [
+    },
+    {
+      county: "Kiambu",
+      capital: "Kiambu",
+      code: 22,
+      subCounty: [
         "Gatundu north",
         "Gatundu south",
         "Githunguri",
@@ -187,10 +220,12 @@ export class CountyEducation implements OnInit {
         "Thika town",
         "lari"
       ]
-    }
-    //14. Kilifi
-    else if (this.dashboardData.county === 'Kilifi') {
-      this.subCounty = [
+    },
+    {
+      county: "Kilifi",
+      capital: "Kilifi",
+      code: 3,
+      subCounty: [
         "Genzw",
         "Kaloleni",
         "Kilifi north",
@@ -199,20 +234,24 @@ export class CountyEducation implements OnInit {
         "Malindi",
         "Rabai"
       ]
-    }
-    //15. Kirinyaga
-    else if (this.dashboardData.county === 'Kirinyaga') {
-      this.subCounty = [
+    },
+    {
+      county: "Kirinyaga",
+      capital: "Kerugoya/Kutus",
+      code: 20,
+      subCounty: [
         "Kirinyaga central",
         "Kirinyaga east",
         "Kirinyaga west",
         "Mwea east",
         "Mwea west"
       ]
-    }
-    //16. Kisii
-    else if (this.dashboardData.county === 'Kisii') {
-      this.subCounty = [
+    },
+    {
+      county: "Kisii",
+      capital: "Kisii",
+      code: 45,
+      subCounty: [
         'Etago',
         'Gucha',
         'Gucha South',
@@ -225,10 +264,12 @@ export class CountyEducation implements OnInit {
         'Nyamache',
         'Sameta '
       ]
-    }
-    //17. Kisumu
-    else if (this.dashboardData.county === 'Kisumu') {
-      this.subCounty = [
+    },
+    {
+      county: "Kisumu",
+      capital: "Kisumu",
+      code: 42,
+      subCounty: [
         "Kisumu central",
         "Kisumu east ",
         "Kisumu west",
@@ -237,10 +278,12 @@ export class CountyEducation implements OnInit {
         "Nyando",
         "Seme"
       ]
-    }
-    //18. Kitui
-    else if (this.dashboardData.county === 'Kitui') {
-      this.subCounty = [
+    },
+    {
+      county: "Kitui",
+      capital: "Kitui",
+      code: 15,
+      subCounty: [
         "Ikutha",
         "Katulani",
         "Kisasi",
@@ -257,49 +300,58 @@ export class CountyEducation implements OnInit {
         "Nzambani",
         "Tseikuru"
       ]
-    }
-    //19. Kwale
-    else if (this.dashboardData.county === 'Kwale') {
-      this.subCounty = [
+    },
+    {
+      county: "Kwale",
+      capital: "Kwale",
+      code: 2,
+      subCounty: [
         "Kinango",
         "Lungalunga",
         "Msambweni",
         "Mutuga"
       ]
-    }
-    //20. Laikipia
-    else if (this.dashboardData.county === 'Laikipia') {
-      this.subCounty = [
+    },
+    {
+      county: "Laikipia",
+      capital: "Rumuruti",
+      code: 31,
+      subCounty: [
         "Laikipia central",
         "Laikipia east",
         "Laikipia north",
         "Laikipia west ",
         "Nyahururu"
       ]
-    }
-    //21. Lamu
-    else if (this.dashboardData.county === 'Lamu') {
-      this.subCounty = [
+    },
+    {
+      county: "Lamu",
+      capital: "Lamu",
+      code: 5,
+      subCounty: [
         "Lamu East",
         "Lamu West"
       ]
-    }
-    //22. Machakos
-    else if (this.dashboardData.county === 'Machakos') {
-      this.subCounty = [
-
+    },
+    {
+      county: "Machakos",
+      capital: "Machakos",
+      code: 16,
+      subCounty: [
         "Kathiani",
         "Machakos town",
         "Masinga",
         "Matungulu",
         "Mavoko",
         "Mwala",
-        "Yatta" 
+        "Yatta"
       ]
-    }
-    //23. Makueni
-    else if (this.dashboardData.county === 'Makueni') {
-      this.subCounty = [
+    },
+    {
+      county: "Makueni",
+      capital: "Wote",
+      code: 17,
+      subCounty: [
         "Kaiti",
         "Kibwei west",
         "Kibwezi east",
@@ -307,10 +359,12 @@ export class CountyEducation implements OnInit {
         "Makueni",
         "Mbooni"
       ]
-    }
-    //24. Mandera
-    else if (this.dashboardData.county === 'Mandera') {
-      this.subCounty = [
+    },
+    {
+      county: "Mandera",
+      capital: "Mandera",
+      code: 9,
+      subCounty: [
         "Banissa",
         "Lafey",
         "Mandera East",
@@ -318,20 +372,24 @@ export class CountyEducation implements OnInit {
         "Mandera South",
         "Mandera West"
       ]
-    }
-    //25. Marsabit
-    else if (this.dashboardData.county === 'Marsabit') {
-      this.subCounty = [
+    },
+    {
+      county: "Marsabit",
+      capital: "Marsabit",
+      code: 10,
+      subCounty: [
         "Laisamis",
         "Moyale",
         "North hor",
         "Saku"
       ]
-    }
-    //26. Meru
-    else if (this.dashboardData.county === 'Meru') {
-      this.subCounty = [
-         "Buuri",
+    },
+    {
+      county: "Meru",
+      capital: "Meru",
+      code: 12,
+      subCounty: [
+        "Buuri",
         "Igembe central",
         "Igembe north",
         "Igembe south",
@@ -341,10 +399,12 @@ export class CountyEducation implements OnInit {
         "Tigania east",
         "Tigania west"
       ]
-    }
-    //27. Migori
-    else if (this.dashboardData.county === 'Migori') {
-      this.subCounty = [
+    },
+    {
+      county: "Migori",
+      capital: "Migori",
+      code: 44,
+      subCounty: [
         "Awendo",
         "Kuria east",
         "Kuria west",
@@ -355,10 +415,12 @@ export class CountyEducation implements OnInit {
         "Suna west",
         "Uriri"
       ]
-    }
-    //28. Mombasa
-    else if (this.dashboardData.county === 'Mombasa') {
-      this.subCounty = [
+    },
+    {
+      county: "Mombasa",
+      capital: "Mombasa City",
+      code: 1,
+      subCounty: [
         "Changamwe",
         "Jomvu",
         "Kisauni",
@@ -366,10 +428,12 @@ export class CountyEducation implements OnInit {
         "Mvita",
         "Nyali"
       ]
-    }
-    //29. Murang'a
-    else if (this.dashboardData.county === "Murang'a" ){
-      this.subCounty = [
+    },
+    {
+      county: "Murang'a",
+      capital: "Murang'a",
+      code: 21,
+      subCounty: [
         "Gatanga",
         "Kahuro",
         "Kandara",
@@ -379,10 +443,12 @@ export class CountyEducation implements OnInit {
         "Mathioya",
         "Murang’a south"
       ]
-    }
-    //30. Nairobi
-    else if (this.dashboardData.county === 'Nairobi') {
-      this.subCounty = [
+    },
+    {
+      county: "Nairobi",
+      capital: "Nairobi City",
+      code: 47,
+      subCounty: [
         "Dagoretti North Sub County",
         "Dagoretti South Sub County ",
         "Embakasi Central Sub Count",
@@ -401,10 +467,12 @@ export class CountyEducation implements OnInit {
         "Starehe Sub County ",
         "Westlands Sub County "
       ]
-    }
-    //31. Nakuru
-    else if (this.dashboardData.county === 'Nakuru') {
-      this.subCounty = [
+    },
+    {
+      county: "Nakuru",
+      capital: "Nakuru",
+      code: 32,
+      subCounty: [
         "Bahati",
         "Gilgil",
         "Kuresoi north",
@@ -417,21 +485,25 @@ export class CountyEducation implements OnInit {
         "Rongai",
         "Subukia"
       ]
-    }
-    //32. Nandi
-    else if (this.dashboardData.county === 'Nandi') {
-      this.subCounty = [
-         "Aldai",
+    },
+    {
+      county: "Nandi",
+      capital: "Kapsabet",
+      code: 29,
+      subCounty: [
+        "Aldai",
         "Chesumei",
         "Emgwen",
         "Mosop",
         "Namdi hills",
         "Tindiret"
       ]
-    }
-    //33. Narok
-    else if (this.dashboardData.county === 'Narok') {
-      this.subCounty = [
+    },
+    {
+      county: "Narok",
+      capital: "Narok",
+      code: 33,
+      subCounty: [
         "Narok east",
         "Narok north",
         "Narok south",
@@ -439,30 +511,36 @@ export class CountyEducation implements OnInit {
         "Transmara east",
         "Transmara west"
       ]
-    }
-    //34. Nyamira
-    else if (this.dashboardData.county === 'Nyamira') {
-      this.subCounty = [
+    },
+    {
+      county: "Nyamira",
+      capital: "Nyamira",
+      code: 46,
+      subCounty: [
         "Borabu",
         "Manga",
         "Masaba north",
         "Nyamira north",
         "Nyamira south"
       ]
-    }
-    //35. Nyandarua
-    else if (this.dashboardData.county === 'Nyandarua') {
-      this.subCounty = [
+    },
+    {
+      county: "Nyandarua",
+      capital: "Ol Kalou",
+      code: 18,
+      subCounty: [
         "Kinangop",
         "Kipipiri",
         "Ndaragwa",
         "Ol Kalou",
         "Ol joro orok"
       ]
-    }
-    //36. Nyeri 
-    else if (this.dashboardData.county === 'Nyeri') {
-      this.subCounty = [
+    },
+    {
+      county: "Nyeri",
+      capital: "Nyeri",
+      code: 19,
+      subCounty: [
         "Kieni east",
         "Kieni west",
         "Mathira east",
@@ -472,18 +550,22 @@ export class CountyEducation implements OnInit {
         "Othaya",
         "Tetu"
       ]
-    }
-    //37. Samburu
-    else if (this.dashboardData.county === 'Samburu') {
-      this.subCounty = [
+    },
+    {
+      county: "Samburu",
+      capital: "Maralal",
+      code: 25,
+      subCounty: [
         "Samburu east",
         "Samburu north",
         "Samburu west"
       ]
-    }
-   //38. Siaya
-   else if (this.dashboardData.county === 'Siaya') {
-      this.subCounty = [
+    },
+    {
+      county: "Siaya",
+      capital: "Siaya",
+      code: 41,
+      subCounty: [
         "Alego usonga",
         "Bondo",
         "Gem",
@@ -491,59 +573,93 @@ export class CountyEducation implements OnInit {
         "Ugenya",
         "Unguja"
       ]
-    }
-    //39. Taita Taveta
-    else if (this.dashboardData.county === 'Taita Taveta') {
-      this.subCounty = [
+    },
+    {
+      county: "Taita-Taveta",
+      capital: "Voi",
+      code: 6,
+      subCounty: [
         "Mwatate",
         "Taveta",
         "Voi",
         "Wundanyi"
       ]
-    }
-    //40. Tana River
-    else if (this.dashboardData.county === 'Tana River') {
-      this.subCounty = [
+    },
+    {
+      county: "Tana River",
+      capital: "Hola",
+      code: 4,
+      subCounty: [
         "Bura",
         "Galole",
         "Garsen"
       ]
-    }
-    //41. Tharaka Nithi
-    else if (this.dashboardData.county === 'Tharaka Nithi') {
-      this.subCounty = [
-        
+    },
+    {
+      county: "Tharaka-Nithi",
+      capital: "Chuka",
+      code: 13,
+      subCounty: [
+        "Chuka",
+        "Igambangobe",
+        "Maara",
+        "Muthambi",
+        "Tharak north",
+        "Tharaka south"
       ]
-    }
-    //42. Trans Nzoia
-    else if (this.dashboardData.county === 'Trans Nzoia') {
-      this.subCounty = [
-          "Cherangany",
-          "Endebess",
-          "Kiminini",
-          "Kwanza",
-          "Saboti"
+    },
+    {
+      county: "Trans-Nzoia",
+      capital: "Kitale",
+      code: 26,
+      subCounty: [
+        "Cherangany",
+        "Endebess",
+        "Kiminini",
+        "Kwanza",
+        "Saboti"
       ]
-    }
-    //43. Turkana
-    else if (this.dashboardData.county === 'Turkana') {
-      this.subCounty = [
+    },
+    {
+      county: "Turkana",
+      capital: "Lodwar",
+      code: 23,
+      subCounty: [
         "Loima",
         "Turkana central",
         "Turkana east",
         "Turkana north",
         "Turkana south"
       ]
-    }
-    //44. Uasin Gishu
-    else if (this.dashboardData.county === 'Uasin Gishu') {
-      this.subCounty = [
-        
+    },
+    {
+      county: "Uasin Gishu",
+      capital: "Eldoret",
+      code: 27,
+      subCounty: [
+        "Ainabkoi",
+        "Kapseret",
+        "Kesses",
+        "Moiben",
+        "Soy",
+        "Turbo"
       ]
-    }
-    //45. Wajir
-    else if (this.dashboardData.county === 'Wajir') {
-      this.subCounty = [
+    },
+
+    {
+      county: 'Vihiga',
+      capital: 'Mbale',
+      code: 38,
+      subCounty: [
+
+      ]
+    },
+  
+    {
+      county: "Wajir",
+      capital: "Wajir",
+      code: 8,
+      subCounty: [
         "Eldas",
         "Tarbaj",
         "Wajir East",
@@ -551,31 +667,63 @@ export class CountyEducation implements OnInit {
         "Wajir South",
         "Wajir West"
       ]
-    }
-    //46. West Pokot
-    else if (this.dashboardData.county === 'West Pokot') {
-      this.subCounty = [
+    },
+    {
+      county: "West Pokot",
+      capital: "Kapenguria",
+      code: 24,
+      subCounty: [
         "Central Pokot",
         "North Pokot",
         "Pokot South",
         "West Pokot"
-        
       ]
     }
-    //47. 
-    else if (this.dashboardData.county === '') {
-      this.subCounty = [
-        
-      ]
-    }
+  ];
 
-    this.dashboardData.county = this.loggedInCounty;
+  ngOnInit() {
+    this.loadDashboardData();
+  }
 
+   loadDashboardData() {
+    // STEP 1: Fetch the CDE Profile
+    this.http.get<any>('http://localhost:5215/api/CountyEducation/profile').subscribe({
+      next: (profile) => {
+        this.dashboardData.fullName = profile.fullName;
+        this.dashboardData.county = profile.county;
 
+        // Load subcounties from local array
+        const countyObj = this.countiesData.find(c => c.county.toLowerCase() === profile.county.toLowerCase());
+        if (countyObj) this.subCounty = countyObj.subCounty;
 
-}
+        // STEP 2: Fetch schools using the CDE's county
+        this.fetchSchools(profile.county);
+      },
+      error: (err) => console.error('Failed to load profile', err)
+    });
+  }
 
-constructor(private router: Router) {}
+  fetchSchools(countyName: string) {
+    this.http.get<any>(`http://localhost:5215/api/CountyEducation/institutions?county=${countyName}`).subscribe({
+      next: (res) => {
+        const schools = res.schools || [];
+
+        // Calculate stats
+        const approved = schools.filter((s: any) => s.status === 'approved').length;
+        const rejected = schools.filter((s: any) => s.status === 'rejected' || s.status === 'denied').length;
+        const pending = schools.filter((s: any) => s.status === 'pending' || s.status === 'under_review').length;
+        const totalLearners = schools.reduce((sum: number, s: any) => sum + (s.totalLearners || 0), 0);
+
+        // Update UI
+        this.dashboardData.stats = { approved, rejected, pending, appeals: 0, totalLearners };
+        this.dashboardData.approvalBreakdown = { approved, pending, rejected };
+        this.dashboardData.categories.regular = { count: schools.length, percentage: 100 };
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Failed to load schools', err)
+    });
+  }
 
   logout() {
     localStorage.clear();

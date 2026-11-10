@@ -28,7 +28,7 @@ export class SchoolDashboardComponent implements OnInit {
     }
 
     // Fetch the school details
-    this.http.get(`http://localhost:5215/api/BasicEducation/GetSchool/${instId}`).subscribe({
+    this.http.get(`http://localhost:5215/api/county-education/institutions/all/GetSchool/${instId}`).subscribe({
       next: (res: any) => {
         this.schoolData = res;
         this.isLoading = false;

@@ -22,7 +22,7 @@ export class BasicEducation {
   private readonly notification = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:5215/api/BasicEducation';
+  private readonly apiUrl = 'http://localhost:5215/api/county-education/institutions/all';
 
   isLoading = false;
 

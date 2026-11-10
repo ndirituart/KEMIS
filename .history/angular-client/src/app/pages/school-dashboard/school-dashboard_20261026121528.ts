@@ -30,7 +30,7 @@ export class SchoolDashboard implements OnInit {
     }
 
     // Fetch the school details
-    this.http.get<any>(`http://localhost:5215/api/BasicEducation/GetSchool/${instId}`).subscribe({
+    this.http.get<any>(`http://localhost:5215/api/county-education/institutions/all/GetSchool/${instId}`).subscribe({
       next: (res: any) => {
         this.obj = res;
         this.isLoading = false;

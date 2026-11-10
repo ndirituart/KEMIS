@@ -20,7 +20,8 @@ public class CountyEducationController : ControllerBase
         _workflow = workflow;
     }
 
-    private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    // private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+private int userId => 3; // <-- Hardcoded for testing
 
 
     //1. Get ALL schools in logged in County

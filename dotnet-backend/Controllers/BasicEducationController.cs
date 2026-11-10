@@ -4,13 +4,14 @@ using dotnet_backend.Models;
 using System.IO;
 using System;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore; // Bruh, I always forget this import
 
 namespace dotnet_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class BasicEducationController : ControllerBase
-    {
+ {
         //ApplicationDbContext universally calls all other DbContexts, we can't keep repeating this mistake omdsssss!
        private readonly ApplicationDbContext _context;
        private readonly IWebHostEnvironment _environment;
@@ -218,5 +219,38 @@ namespace dotnet_backend.Controllers
 
         return Ok(new { message = "School details updated successfully.", school = existingSchool });
     }
- }
+ 
+// 6. Get ALL schools in the CDE's county 
+    public async Task<List<PendingInstitution>> GetAllAsync(int userId, string? status, CancellationToken ct)
+    {
+        // 1. Find the CDE's county from the CountyEducation table
+        var cdeMapping = await _context.CountyEducations
+            .FirstOrDefaultAsync(c => c.userId == userId && c.isActive, ct);
+
+        if (cdeMapping == null) 
+            return new List<PendingInstitution>();
+
+        // 2. Start query on BasicEducation using the CDE's county
+        var query = _context.BasicEducations
+            .Where(s => s.county == cdeMapping.county);
+
+        // 3. Apply optional status filter
+        if (!string.IsNullOrEmpty(status) && status != "All")
+        {
+            query = query.Where(s => s.status == status.ToLower());
+        }
+
+        return await query
+            .Select(s => new PendingInstitution(
+                s.institutionId, 
+                s.institutionName, 
+                s.county, 
+                s.subCounty, 
+                s.status,
+                s.createdAt, 
+                s.certificateNumber ?? "N/A"
+            ))
+            .ToListAsync(ct);
+    }
+  }
 }

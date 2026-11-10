@@ -11,11 +11,13 @@ import { SearchPipe } from '../../pipes/search.pipe';
   styleUrl: './learners-registered-sub-county.css',
 })
 export class LearnersRegisteredSubCounty {
-  
+
   // --- Filter Options ---
   institutionLevels = ['All', 'Primary', 'Junior', 'Senior', 'Foundational', 'Intermediate', 'Pre-Vocational', 'Vocational'];
-  counties = ['Nairobi'];
-  subCounties = ['All', 'Embakasi East', 'Westlands', 'Kibra']; // Added this for the dropdown
+  counties = ['Nairobi']; //default for now
+  subCounty= [
+        "Embakasi East Sub County",
+  ]; // limited to one subcounty
   genders = ['All', 'Male', 'Female'];
   grades = ['All', 'PP1', 'PP2', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'];
 
@@ -33,7 +35,7 @@ export class LearnersRegisteredSubCounty {
   tableSearch = '';
 
   // --- Hardcoded Table Data ---
-  learners: any[] = []; 
+  learners: any[] = [];
 
   // Methods are now INSIDE the class
   onSearch() {

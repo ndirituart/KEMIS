@@ -13,85 +13,57 @@ public class InstitutionWorkflowService
         _context = context;
     }
 
-    // 0. Get ALL schools in the CDE's county (No status filter)
-    public async Task<List<PendingInstitution>> GetAllAsync(int userId, CancellationToken ct)
-    {
-        var cde = await _context.Users.FindAsync(userId);
-        if (cde == null) return new List<PendingInstitution>();
+    // ==========================================
+    // 1. DASHBOARD METHODS (Used by Controller)
+    // ==========================================
 
-        return await _context.BasicEducations
-            .Where(s => s.county == cde.county)
-            .Select(s => new PendingInstitution(
-                s.institutionId, 
-                s.institutionName, 
-                s.county, 
-                s.subCounty, 
+    // Get CDE Profile (Returns the CountyEducation model with the User loaded)
+    public async Task<CountyEducation> GetCdeProfileAsync(int userId, CancellationToken ct)
+    {
+        var cdeMapping = await _context.CountyEducations
+            .Include(c => c.User) // Loads the User (CDE)
+            .FirstOrDefaultAsync(c => c.userId == userId && c.isActive, ct);
+
+        if (cdeMapping == null) 
+            throw new Exception("CDE profile not found.");
+
+        return cdeMapping;
+    }
+
+    // Get Schools by County
+    public async Task<object> GetSchoolsByCountyAsync(string county, string? status, CancellationToken ct)
+    {
+        var query = _context.BasicEducations.Where(s => s.county == county);
+
+        if (!string.IsNullOrEmpty(status) && status != "All")
+        {
+            query = query.Where(s => s.status == status.ToLower());
+        }
+
+        var schools = await query.ToListAsync(ct);
+
+        return new
+        {
+            county = county,
+            schools = schools.Select(s => new
+            {
+                s.institutionId,
+                s.institutionName,
                 s.status,
-                s.createdAt, // Date of onboarding
-                s.certificateNumber ?? "N/A" // Institution No
-            ))
-            .ToListAsync(ct);
+                s.subCounty,
+                s.totalLearners,
+                s.createdAt,
+                s.certificateNumber
+            }).ToList()
+        };
     }
 
-    // 1. Get Pending Schools in the CDE's County
-    public async Task<List<PendingInstitution>> GetPendingAsync(int userId, CancellationToken ct)
-    {
-        var cde = await _context.Users.FindAsync(userId);
-        if (cde == null) return new List<PendingInstitution>();
 
-        return await _context.BasicEducations
-            .Where(s => s.county == cde.county && s.status == "pending")
-            .Select(s => new PendingInstitution(
-                s.institutionId, 
-                s.institutionName, 
-                s.county, 
-                s.subCounty, 
-                s.status,
-                s.createdAt, 
-                s.certificateNumber ?? "N/A"
-            ))
-            .ToListAsync(ct);
-    }
+    // ==========================================
+    // 2. SPECIFIC SCHOOL METHODS
+    // ==========================================
 
-    // 2. Get Approved Schools
-    public async Task<List<ApprovedInstitution>> GetApprovedAsync(int userId, CancellationToken ct)
-    {
-        var cde = await _context.Users.FindAsync(userId);
-        if (cde == null) return new List<ApprovedInstitution>();
-
-        return await _context.BasicEducations
-            .Where(s => s.county == cde.county && s.status == "approved")
-            .Select(s => new ApprovedInstitution(
-                s.institutionId, 
-                s.institutionName, 
-                s.county, 
-                s.subCounty, 
-                s.status, 
-                s.updatedAt ?? s.createdAt
-            ))
-            .ToListAsync(ct);
-    }
-
-    // 3. Get Rejected Schools
-    public async Task<List<RejectedInstitution>> GetRejectedAsync(int userId, CancellationToken ct)
-    {
-        var cde = await _context.Users.FindAsync(userId);
-        if (cde == null) return new List<RejectedInstitution>();
-
-        return await _context.BasicEducations
-            .Where(s => s.county == cde.county && s.status == "rejected")
-            .Select(s => new RejectedInstitution(
-                s.institutionId, 
-                s.institutionName, 
-                s.county, 
-                s.status,
-                s.rejectionReason ?? "No reason provided",
-                s.updatedAt ?? s.createdAt //approval Date
-            ))
-            .ToListAsync(ct);
-    }
-
-    // 4. Get School Details
+    // Get School Details
     public async Task<InstitutionDetail> GetDetailAsync(int id, int userId, CancellationToken ct)
     {
         var school = await _context.BasicEducations.FindAsync(id);
@@ -110,31 +82,11 @@ public class InstitutionWorkflowService
         return new InstitutionDetail(school.institutionId, school.institutionName, school.county, school.status, comments, decisions);
     }
 
-    // 5. Get Schools by Cluster
-    public async Task<List<PendingInstitution>> GetClusterAsync(string clusterName, int userId, CancellationToken ct)
-    {
-        var cde = await _context.Users.FindAsync(userId);
-        if (cde == null) return new List<PendingInstitution>();
+    // ==========================================
+    // 3. WORKFLOW METHODS (Assign, Comment, Decide)
+    // ==========================================
 
-        return await _context.BasicEducations
-            .Where(s => s.county == cde.county && s.constituency == clusterName && s.status == "pending")
-            .Select(s => new PendingInstitution(s.institutionId, s.institutionName, s.county, s.subCounty, s.status, s.createdAt, s.certificateNumber ?? "N/A"))
-            .ToListAsync(ct);
-    }
-
-    // 6. Get Schools by Sub-County
-    public async Task<List<PendingInstitution>> GetSubCountyAsync(string subCountyName, int userId, CancellationToken ct)
-    {
-        var cde = await _context.Users.FindAsync(userId);
-        if (cde == null) return new List<PendingInstitution>();
-
-        return await _context.BasicEducations
-            .Where(s => s.county == cde.county && s.subCounty == subCountyName && s.status == "pending")
-            .Select(s => new PendingInstitution(s.institutionId, s.institutionName, s.county, s.subCounty, s.status, s.createdAt, s.certificateNumber ?? "N/A"))
-            .ToListAsync(ct);
-    }
-
-    // 7. Get Assignees (SCDEs)
+    // Get Assignees (SCDEs)
     public async Task<List<UserSummary>> GetAssigneesAsync(int userId, AssignmentRole role, CancellationToken ct)
     {
         string roleName = role == AssignmentRole.SCDE ? "Sub-County Director of Education (SCDE)" : "County Quality Assurance and Standards Officer (CQASO)";
@@ -145,7 +97,7 @@ public class InstitutionWorkflowService
             .ToListAsync(ct);
     }
 
-    // 8. Assign a School to an SCDE
+    // Assign a School to an SCDE
     public async Task<InstitutionDetail> AssignAsync(int id, int userId, AssignRequest req, CancellationToken ct)
     {
         var school = await _context.BasicEducations.FindAsync(id);
@@ -171,7 +123,7 @@ public class InstitutionWorkflowService
         return await GetDetailAsync(id, userId, ct);
     }
 
-    // 9. Add a Comment
+    // Add a Comment
     public async Task<InstitutionDetail> AddCommentAsync(int id, int userId, CommentRequest req, CancellationToken ct)
     {
         var comment = new InstitutionComment
@@ -187,60 +139,7 @@ public class InstitutionWorkflowService
         return await GetDetailAsync(id, userId, ct);
     }
 
-    // 10. SCDE Decision (Recommendation)
-    public async Task<InstitutionDetail> DecideAsync(int id, int userId, DecisionRequest req, CancellationToken ct)
-    {
-        var decision = new InstitutionDecision
-        {
-            institutionId = id,
-            userId = userId,
-            isApproved = req.isApproved,
-            remarks = req.remarks,
-            decisionType = "SCDE Recommendation",
-            createdAt = DateTime.UtcNow.ToString("o")
-        };
-        _context.InstitutionDecisions.Add(decision);
-
-        var school = await _context.BasicEducations.FindAsync(id);
-        if (school != null)
-        {
-            school.status = "recommendation_pending";
-            school.updatedAt = DateTime.UtcNow.ToString("o");
-        }
-
-        await _context.SaveChangesAsync(ct);
-        return await GetDetailAsync(id, userId, ct);
-    }
-
-    // 11. Submit Report
-    public async Task SubmitReportAsync(SubmitReportRequest req, int scdeId)
-    {
-        var report = new Report
-        {
-            institutionId = req.institutionId,
-            scdeId = scdeId,
-            institutionName = "School Name...", 
-            summary = req.summary,
-            recommendation = req.recommendation,
-            status = "submitted",
-            createdAt = DateTime.UtcNow.ToString("o")
-        };
-        
-        _context.Reports.Add(report);
-
-        var assignment = await _context.InstitutionAssignments
-            .FirstOrDefaultAsync(a => a.institutionId == req.institutionId && a.assigneeId == scdeId);
-        
-        if (assignment != null)
-        {
-            assignment.hasReport = true; 
-            assignment.status = "completed"; 
-        }
-
-        await _context.SaveChangesAsync();
-    }
-
-    // 12. Make the final decision (CDE)
+    // Make the final decision (CDE)
     public async Task<InstitutionDetail> FinalDecisionAsync(int id, int userId, DecisionRequest req, CancellationToken ct)
     {
         var school = await _context.BasicEducations.FindAsync(id);

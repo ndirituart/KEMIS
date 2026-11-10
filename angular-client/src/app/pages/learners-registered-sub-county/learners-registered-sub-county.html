@@ -1,14 +1,14 @@
 <div class="page-container">
-  
+
   <!-- Page Title -->
   <div class="page-header">
-    <h2>Learners Registered Per County</h2>
+    <h2>Learners Registered in Sub County</h2>
   </div>
 
   <!-- Filters Section -->
   <div class="filter-section">
     <div class="filter-grid">
-      
+
       <!-- Row 1 -->
       <div class="filter-group">
         <label>Institution Level</label>
@@ -18,9 +18,9 @@
       </div>
 
       <div class="filter-group">
-        <label>County</label>
-        <select class="form-select bg-light" [(ngModel)]="filter.county">
-          <option *ngFor="let county of counties" [value]="county">{{ county }}</option>
+        <label>Sub County</label>
+        <select class="form-select bg-light" [(ngModel)]="filter.subCounty">
+          <option *ngFor="let subCounty of subCounty" [value]="subCounty">{{ subCounty }}</option>
         </select>
       </div>
 
@@ -49,10 +49,10 @@
         <label>To</label>
         <input type="date" class="form-control" [(ngModel)]="filter.toDate">
       </div>
-      
+
       <!-- Spacer and Search Button -->
       <div class="filter-group empty-spacer"></div>
-      
+
       <div class="filter-group align-end">
         <button class="btn-search" (click)="onSearch()">Search</button>
       </div>
@@ -69,7 +69,7 @@
 
   <!-- Table Section -->
   <div class="table-section">
-    
+
     <!-- Table Search Bar -->
     <div class="table-search-row">
       <input type="text" class="form-control search-input" placeholder="Search" [(ngModel)]="tableSearch">
