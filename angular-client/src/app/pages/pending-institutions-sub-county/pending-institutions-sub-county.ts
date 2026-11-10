@@ -30,13 +30,8 @@ export class PendingInstitutionsSubCounty {
   
     // Hardcoded Table Data
     institutions = [
-      { institutionId: 1, certificateNumber: 'null', institutionName: 'Nairobi Primary School', createdAt: '2026-10-22', subCounty: 'Starehe', status: 'Pending' },
-      { institutionId: 2, certificateNumber: 'CERT-00234', institutionName: 'Star Academy', createdAt: '2026-10-29', subCounty: 'Embakasi East', status: 'Pending' },
-      { institutionId: 3, certificateNumber: 'CERT-101', institutionName: 'Dagoretti North Primary School', createdAt: '2026-01-10', subCounty: 'Dagoretti North', status: 'Pending' },
-      { institutionId: 4, certificateNumber: 'CERT-102', institutionName: 'Dagoretti North Junior School', createdAt: '2026-01-11', subCounty: 'Dagoretti North', status: 'Pending' },
-      { institutionId: 5, certificateNumber: 'CERT-103', institutionName: 'Dagoretti North Senior School', createdAt: '2026-01-12', subCounty: 'Dagoretti North', status: 'Pending' },
-      { institutionId: 6, certificateNumber: 'CERT-104', institutionName: 'Dagoretti South Primary School', createdAt: '2026-01-13', subCounty: 'Dagoretti South', status: 'Pending' }
-  
+        { institutionId: 2, certificateNumber: 'CERT-00234', institutionType: "Boys School", institutionName: 'Star Academy', mobileNo: '+254712345678', institutionLevel: 'Primary School', subCounty: 'Embakasi East', createdAt: '2026-10-29', headOfInstitution: 'Patience Njeri Ndiritu', constituency: 'Lower Savannah', emailId: 'staracademy@gmail.com' },
+       
     ];
   
     // --- Modals State ---
@@ -46,7 +41,7 @@ export class PendingInstitutionsSubCounty {
     selectedSCDE = '';
     
     // Hardcoded Assignees
-    scdeList = ['Scde Number 1', 'Scde Number 2', 'Scde Number 3'];
+    scdeList = ['Janet Mbugua', 'Paul Omondi', 'Sylas Wamalwa'];
   
     // Tabs insinstitutionIde View Modal
     activeViewTab = 'form'; // 'form' | 'reports' | 'actions'

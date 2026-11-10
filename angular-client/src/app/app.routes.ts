@@ -25,8 +25,8 @@ import { SubCountyEducation } from './pages/sub-county-education/sub-county-educ
 import { InstitutionsRegisteredSubCounty } from './pages/institutions-registered-sub-county/institutions-registered-sub-county';
 //  import { LearnersPerGradeSubCounty } from './pages/learners-per-grade-sub-county/learners-per-grade-sub-county';
 import { LearnersRegisteredSubCounty } from './pages/learners-registered-sub-county/learners-registered-sub-county';
-import { PendingInstitutionsSubCounty } from './pages/pending-institution-sub-county/pending-institution-sub-county';
-import { InstitutionsOnboardedPerClusterSubCounty } from './pages/institutions-onboarded-per-cluster-sub-county/institutions-onboarded-per-cluster-sub-county';
+import { PendingInstitutionsSubCounty } from './pages/pending-institutions-sub-county/pending-institutions-sub-county';
+import { InstitutionOnboardedPerClusterSubCounty } from './pages/institution-onboarded-per-cluster-sub-county/institution-onboarded-per-cluster-sub-county';
 import { LearnersRegisteredPerClusterSubCounty } from './pages/learners-registered-per-cluster-sub-county/learners-registered-per-cluster-sub-county';
 import { OrphanLearnersSubCounty } from './pages/orphan-learners-sub-county/orphan-learners-sub-county';  
 //4. SCQASO and their child routes
@@ -67,14 +67,14 @@ export const routes: Routes = [
   { path: 'learners-per-grade-county', component: LearnersPerGradeCounty, canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
   { path: 'learners-registered-county', component: LearnersRegisteredCounty, canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
   { path: 'pending-institution-county', component: PendingInstitutionCounty, canActivate: [cDEGuard], data: { allowedRoles: 'County Director of Education (CDE)' } },
-  { path: 'institutions-onboarded-per-cluster-sub-county', component: InstitutionsOnboardedPerClusterSubCounty, canActivate: [cDEGuard], data: { allowedRoles: 'County Director of Education (CDE)' } },
+  { path: 'institutions-onboarded-per-cluster', component: InstitutionsOnboardedPerCluster, canActivate: [cDEGuard], data: { allowedRoles: 'County Director of Education (CDE)' } },
   { path: 'learners-registered-per-cluster', component: LearnersRegisteredPerCluster, canActivate: [cDEGuard], data: { allowedRoles: 'County Director of Education (CDE)' } },
   //SCDE children pages
   { path: 'sub-county-education', component: SubCountyEducation, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
   { path: 'institutions-registered-sub-county', component: InstitutionsRegisteredSubCounty, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
   { path: 'learners-registered-sub-county', component: LearnersRegisteredSubCounty, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
   { path: 'pending-institutions-sub-county', component: PendingInstitutionsSubCounty, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },  
-  { path: 'institutions-onboarded-per-cluster-sub-county', component: InstitutionsOnboardedPerClusterSubCounty, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },  
+  { path: 'institutions-onboarded-per-cluster-sub-county', component: InstitutionOnboardedPerClusterSubCounty, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },  
   { path: 'learners-registered-per-cluster-sub-county', component: LearnersRegisteredPerClusterSubCounty, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
   { path: 'orphan-learners-sub-county', component: OrphanLearnersSubCounty, canActivate: [sCDEGuard], data: { allowedRoles: 'Sub-County Director of Education (SCDE)' } },
   { path: 'sub-county-quality-assurance', component: SubCountyQualityAssurance, canActivate: [subCountyQAGuard], data: { allowedRoles: 'Sub-County Quality Assurance and Standards Officer (SCQASO)' } },

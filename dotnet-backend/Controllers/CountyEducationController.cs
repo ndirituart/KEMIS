@@ -18,6 +18,7 @@ public class CountyEducationController : ControllerBase
         _workflow = workflow;
     }
 
+    // Hardcoded for testing. Uncomment the real one when auth is ready.
     private int userId => 3; 
     // private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
@@ -25,12 +26,12 @@ public class CountyEducationController : ControllerBase
     // 1. DASHBOARD ENDPOINTS
     // ==========================================
 
-    // Get CDE Profile (Returns the CountyEducation model with the User loaded)
+    // Get CDE Profile
     [HttpGet("profile")]
     public Task<CountyEducation> GetProfile(CancellationToken ct) =>
         _workflow.GetCdeProfileAsync(userId, ct);
 
-    // Get ALL schools in a specific County (Filtered by status if provided)
+    // Get ALL schools in a specific County
     [HttpGet("institutions")]
     public Task<object> GetAllSchools([FromQuery] string county, [FromQuery] string? status, CancellationToken ct) =>
         _workflow.GetSchoolsByCountyAsync(county, status, ct);
