@@ -1,0 +1,765 @@
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+
+export interface CountyData {
+  county: string;
+  subCounty: string[];
+}
+
+@Component({
+  selector: 'app-county-education',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './county-education.html',
+  styleUrl: './county-education.css'
+})
+export class CountyEducation implements OnInit {
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
+
+  dashboardData: any = {
+    fullName: 'Loading...', // We will set this to "Nairobi CDE"
+    county: 'Loading...',
+    role: 'CDE',
+    stats: { approved: 0, rejected: 0, pending: 0, appeals: 0, totalLearners: 0 },
+    approvalBreakdown: { approved: 0, pending: 0, rejected: 0 },
+    categories: {
+      regular: { count: 0, percentage: 0 },
+      integrated: { count: 0, percentage: 0 },
+      sne: { count: 0, percentage: 0 }
+    }
+  };
+
+  subCounty: string[] = [];
+  selectedLevel = 'Primary School';
+  selectedSubCounty = '';
+
+   countiesData = [
+    {
+      county: "Baringo",
+      capital: "Kabarnet",
+      code: 30,
+      subCounty: [
+        "Baringo central",
+        "Baringo north",
+        "Baringo south",
+        "Eldama ravine",
+        "Mogotio",
+        "Tiaty"
+      ]
+    },
+    {
+      county: "Bomet",
+      capital: "Bomet",
+      code: 36,
+      subCounty: [
+        "Bomet central",
+        "Bomet east",
+        "Chepalungu",
+        "Konoin",
+        "Sotik"
+      ]
+    },
+    {
+      county: "Bungoma",
+      capital: "Bungoma",
+      code: 39,
+      subCounty: [
+        "Bumula",
+        "Kabuchai",
+        "Kanduyi",
+        "Kimilil",
+        "Mt Elgon",
+        "Sirisia",
+        "Tongaren",
+        "Webuye east",
+        "Webuye west"
+      ]
+    },
+    {
+      county: "Busia",
+      capital: "Busia",
+      code: 40,
+      subCounty: [
+        "Budalangi",
+        "Butula",
+        "Funyula",
+        "Nambele",
+        "Teso North",
+        "Teso South"
+      ]
+    },
+    {
+      county: "Elgeyo-Marakwet",
+      capital: "Iten",
+      code: 28,
+      subCounty: [
+        "Keiyo north",
+        "Keiyo south",
+        "Marakwet east",
+        "Marakwet west"
+      ]
+    },
+    {
+      county: "Embu",
+      capital: "Embu",
+      code: 14,
+      subCounty: [
+        "Manyatta",
+        "Mbeere north",
+        "Mbeere south",
+        "Runyenjes"
+      ]
+    },
+    {
+      county: "Garissa",
+      capital: "Garissa",
+      code: 7,
+      subCounty: [
+        "Daadab",
+        "Fafi",
+        "Garissa",
+        "Hulugho",
+        "Ijara",
+        "Lagdera balambala"
+      ]
+    },
+    {
+      county: "Homa Bay",
+      capital: "Homa Bay",
+      code: 43,
+      subCounty: [
+        "Homabay town",
+        "Kabondo",
+        "Karachwonyo",
+        "Kasipul",
+        "Mbita",
+        "Ndhiwa",
+        "Rangwe",
+        "Suba"
+      ]
+    },
+    {
+      county: "Isiolo",
+      capital: "Isiolo",
+      code: 11,
+      subCounty: [
+        "Isiolo",
+        "Garba tula",
+        "Merit"
+      ]
+    },
+    {
+      county: "Kajiado",
+      code: 34,
+      subCounty: [
+        "Isinya",
+        "Kajiado Central",
+        "Kajiado North",
+        "Loitokitok",
+        "Mashuuru"
+      ]
+    },
+    {
+      county: "Kakamega",
+      capital: "Kakamega",
+      code: 37,
+      subCounty: [
+        "Butere",
+        "Kakamega central",
+        "Kakamega east",
+        "Kakamega north",
+        "Kakamega south",
+        "Khwisero",
+        "Lugari",
+        "Lukuyani",
+        "Lurambi",
+        "Matete",
+        "Mumias",
+        "Mutungu",
+        "Navakholo"
+      ]
+    },
+    {
+      county: "Kericho",
+      capital: "Kericho",
+      code: 35,
+      subCounty: [
+        "Ainamoi",
+        "Belgut",
+        "Bureti",
+        "Kipkelion east",
+        "Kipkelion west",
+        "Soin sigowet"
+      ]
+    },
+    {
+      county: "Kiambu",
+      capital: "Kiambu",
+      code: 22,
+      subCounty: [
+        "Gatundu north",
+        "Gatundu south",
+        "Githunguri",
+        "Juja",
+        "Kabete",
+        "Kiambaa",
+        "Kiambu",
+        "Kikuyu",
+        "Limuru",
+        "Ruiru",
+        "Thika town",
+        "lari"
+      ]
+    },
+    {
+      county: "Kilifi",
+      capital: "Kilifi",
+      code: 3,
+      subCounty: [
+        "Genzw",
+        "Kaloleni",
+        "Kilifi north",
+        "Kilifi south",
+        "Magarini",
+        "Malindi",
+        "Rabai"
+      ]
+    },
+    {
+      county: "Kirinyaga",
+      capital: "Kerugoya/Kutus",
+      code: 20,
+      subCounty: [
+        "Kirinyaga central",
+        "Kirinyaga east",
+        "Kirinyaga west",
+        "Mwea east",
+        "Mwea west"
+      ]
+    },
+    {
+      county: "Kisii",
+      capital: "Kisii",
+      code: 45,
+      subCounty: [
+        'Etago',
+        'Gucha',
+        'Gucha South',
+        'Kenyenya',
+        'Kisii Central',
+        'Kisii South ',
+        'Kitutu Central', 
+        'Marani',
+        'Masaba South',
+        'Nyamache',
+        'Sameta '
+      ]
+    },
+    {
+      county: "Kisumu",
+      capital: "Kisumu",
+      code: 42,
+      subCounty: [
+        "Kisumu central",
+        "Kisumu east ",
+        "Kisumu west",
+        "Mohoroni",
+        "Nyakach",
+        "Nyando",
+        "Seme"
+      ]
+    },
+    {
+      county: "Kitui",
+      capital: "Kitui",
+      code: 15,
+      subCounty: [
+        "Ikutha",
+        "Katulani",
+        "Kisasi",
+        "Kitui central",
+        "Kitui west ",
+        "Lower yatta",
+        "Matiyani",
+        "Migwani",
+        "Mutitu",
+        "Mutomo",
+        "Muumonikyusu",
+        "Mwingi central",
+        "Mwingi east",
+        "Nzambani",
+        "Tseikuru"
+      ]
+    },
+    {
+      county: "Kwale",
+      capital: "Kwale",
+      code: 2,
+      subCounty: [
+        "Kinango",
+        "Lungalunga",
+        "Msambweni",
+        "Mutuga"
+      ]
+    },
+    {
+      county: "Laikipia",
+      capital: "Rumuruti",
+      code: 31,
+      subCounty: [
+        "Laikipia central",
+        "Laikipia east",
+        "Laikipia north",
+        "Laikipia west ",
+        "Nyahururu"
+      ]
+    },
+    {
+      county: "Lamu",
+      capital: "Lamu",
+      code: 5,
+      subCounty: [
+        "Lamu East",
+        "Lamu West"
+      ]
+    },
+    {
+      county: "Machakos",
+      capital: "Machakos",
+      code: 16,
+      subCounty: [
+        "Kathiani",
+        "Machakos town",
+        "Masinga",
+        "Matungulu",
+        "Mavoko",
+        "Mwala",
+        "Yatta"
+      ]
+    },
+    {
+      county: "Makueni",
+      capital: "Wote",
+      code: 17,
+      subCounty: [
+        "Kaiti",
+        "Kibwei west",
+        "Kibwezi east",
+        "Kilome",
+        "Makueni",
+        "Mbooni"
+      ]
+    },
+    {
+      county: "Mandera",
+      capital: "Mandera",
+      code: 9,
+      subCounty: [
+        "Banissa",
+        "Lafey",
+        "Mandera East",
+        "Mandera North",
+        "Mandera South",
+        "Mandera West"
+      ]
+    },
+    {
+      county: "Marsabit",
+      capital: "Marsabit",
+      code: 10,
+      subCounty: [
+        "Laisamis",
+        "Moyale",
+        "North hor",
+        "Saku"
+      ]
+    },
+    {
+      county: "Meru",
+      capital: "Meru",
+      code: 12,
+      subCounty: [
+        "Buuri",
+        "Igembe central",
+        "Igembe north",
+        "Igembe south",
+        "Imenti central",
+        "Imenti north",
+        "Imenti south",
+        "Tigania east",
+        "Tigania west"
+      ]
+    },
+    {
+      county: "Migori",
+      capital: "Migori",
+      code: 44,
+      subCounty: [
+        "Awendo",
+        "Kuria east",
+        "Kuria west",
+        "Mabera",
+        "Ntimaru",
+        "Rongo",
+        "Suna east",
+        "Suna west",
+        "Uriri"
+      ]
+    },
+    {
+      county: "Mombasa",
+      capital: "Mombasa City",
+      code: 1,
+      subCounty: [
+        "Changamwe",
+        "Jomvu",
+        "Kisauni",
+        "Likoni",
+        "Mvita",
+        "Nyali"
+      ]
+    },
+    {
+      county: "Murang'a",
+      capital: "Murang'a",
+      code: 21,
+      subCounty: [
+        "Gatanga",
+        "Kahuro",
+        "Kandara",
+        "Kangema",
+        "Kigumo",
+        "Kiharu",
+        "Mathioya",
+        "Murang’a south"
+      ]
+    },
+    {
+      county: "Nairobi",
+      capital: "Nairobi City",
+      code: 47,
+      subCounty: [
+        "Dagoretti North Sub County",
+        "Dagoretti South Sub County ",
+        "Embakasi Central Sub Count",
+        "Embakasi East Sub County",
+        "Embakasi North Sub County ",
+        "Embakasi South Sub County",
+        "Embakasi West Sub County",
+        "Kamukunji Sub County",
+        "Kasarani Sub County ",
+        "Kibra Sub County ",
+        "Lang'ata Sub County ",
+        "Makadara Sub County",
+        "Mathare Sub County ",
+        "Roysambu Sub County ",
+        "Ruaraka Sub County ",
+        "Starehe Sub County ",
+        "Westlands Sub County "
+      ]
+    },
+    {
+      county: "Nakuru",
+      capital: "Nakuru",
+      code: 32,
+      subCounty: [
+        "Bahati",
+        "Gilgil",
+        "Kuresoi north",
+        "Kuresoi south",
+        "Molo",
+        "Naivasha",
+        "Nakuru town east",
+        "Nakuru town west",
+        "Njoro",
+        "Rongai",
+        "Subukia"
+      ]
+    },
+    {
+      county: "Nandi",
+      capital: "Kapsabet",
+      code: 29,
+      subCounty: [
+        "Aldai",
+        "Chesumei",
+        "Emgwen",
+        "Mosop",
+        "Namdi hills",
+        "Tindiret"
+      ]
+    },
+    {
+      county: "Narok",
+      capital: "Narok",
+      code: 33,
+      subCounty: [
+        "Narok east",
+        "Narok north",
+        "Narok south",
+        "Narok west",
+        "Transmara east",
+        "Transmara west"
+      ]
+    },
+    {
+      county: "Nyamira",
+      capital: "Nyamira",
+      code: 46,
+      subCounty: [
+        "Borabu",
+        "Manga",
+        "Masaba north",
+        "Nyamira north",
+        "Nyamira south"
+      ]
+    },
+    {
+      county: "Nyandarua",
+      capital: "Ol Kalou",
+      code: 18,
+      subCounty: [
+        "Kinangop",
+        "Kipipiri",
+        "Ndaragwa",
+        "Ol Kalou",
+        "Ol joro orok"
+      ]
+    },
+    {
+      county: "Nyeri",
+      capital: "Nyeri",
+      code: 19,
+      subCounty: [
+        "Kieni east",
+        "Kieni west",
+        "Mathira east",
+        "Mathira west",
+        "Mkurweni",
+        "Nyeri town",
+        "Othaya",
+        "Tetu"
+      ]
+    },
+    {
+      county: "Samburu",
+      capital: "Maralal",
+      code: 25,
+      subCounty: [
+        "Samburu east",
+        "Samburu north",
+        "Samburu west"
+      ]
+    },
+    {
+      county: "Siaya",
+      capital: "Siaya",
+      code: 41,
+      subCounty: [
+        "Alego usonga",
+        "Bondo",
+        "Gem",
+        "Rarieda",
+        "Ugenya",
+        "Unguja"
+      ]
+    },
+    {
+      county: "Taita-Taveta",
+      capital: "Voi",
+      code: 6,
+      subCounty: [
+        "Mwatate",
+        "Taveta",
+        "Voi",
+        "Wundanyi"
+      ]
+    },
+    {
+      county: "Tana River",
+      capital: "Hola",
+      code: 4,
+      subCounty: [
+        "Bura",
+        "Galole",
+        "Garsen"
+      ]
+    },
+    {
+      county: "Tharaka-Nithi",
+      capital: "Chuka",
+      code: 13,
+      subCounty: [
+        "Chuka",
+        "Igambangobe",
+        "Maara",
+        "Muthambi",
+        "Tharak north",
+        "Tharaka south"
+      ]
+    },
+    {
+      county: "Trans-Nzoia",
+      capital: "Kitale",
+      code: 26,
+      subCounty: [
+        "Cherangany",
+        "Endebess",
+        "Kiminini",
+        "Kwanza",
+        "Saboti"
+      ]
+    },
+    {
+      county: "Turkana",
+      capital: "Lodwar",
+      code: 23,
+      subCounty: [
+        "Loima",
+        "Turkana central",
+        "Turkana east",
+        "Turkana north",
+        "Turkana south"
+      ]
+    },
+    {
+      county: "Uasin Gishu",
+      capital: "Eldoret",
+      code: 27,
+      subCounty: [
+        "Ainabkoi",
+        "Kapseret",
+        "Kesses",
+        "Moiben",
+        "Soy",
+        "Turbo"
+      ]
+    },
+
+    {
+    county: 'Nairobi',
+      capital: 'Mbale',
+      code: 38,
+      subCounty: [
+
+      ]
+    },
+  
+    {
+      county: "Wajir",
+      capital: "Wajir",
+      code: 8,
+      subCounty: [
+        "Eldas",
+        "Tarbaj",
+        "Wajir East",
+        "Wajir North",
+        "Wajir South",
+        "Wajir West"
+      ]
+    },
+    {
+      county: "West Pokot",
+      capital: "Kapenguria",
+      code: 24,
+      subCounty: [
+        "Central Pokot",
+        "North Pokot",
+        "Pokot South",
+        "West Pokot"
+      ]
+    }
+  ];
+
+  ngOnInit() {
+    this.loadDashboardData();
+  }
+
+  loadDashboardData() {
+    // STEP 1: Fetch the CDE Profile
+    this.http.get<any>('http://localhost:5215/api/county-education/profile').subscribe({
+      next: (profile) => {
+        // Construct the display name: e.g., "NAIROBI CDE"
+        this.dashboardData.fullName = `${profile.county} CDE`;
+        this.dashboardData.county = profile.county;
+
+        // Load subcounties
+        const countyObj = this.countiesData.find(c => c.county.toLowerCase() === profile.county.toLowerCase());
+        if (countyObj) this.subCounty = countyObj.subCounty;
+
+        // STEP 2: Fetch schools using the county from the profile
+        this.fetchSchools(profile.county);
+      },
+      error: (err) => {
+        console.error('Failed to load profile', err);
+        this.dashboardData.county = 'Nairobi'; // Fallback for testing
+        this.fetchSchools('Nairobi');
+      }
+    });
+  }
+  
+    fetchSchools(countyName: string) {
+    // We pass 'All' or omit status to get EVERY school in the county
+    this.http.get<any>(`http://localhost:5215/api/county-education/institutions?county=${countyName}`).subscribe({
+      next: (res) => {
+        const schools = res.schools || [];
+
+        // 🔥 THE LIVE TALLY 🔥
+        let approved = 0;
+        let rejected = 0;
+        let pending = 0;
+        let totalLearners = 0;
+
+        schools.forEach((school: any) => {
+          // 1. Tally the statuses
+          if (school.status === 'approved') {
+            approved++;
+          } else if (school.status === 'rejected' || school.status === 'denied') {
+            rejected++;
+          } else if (school.status === 'pending' || school.status === 'under_review') {
+            pending++;
+          }
+
+          // 2. Tally the learners
+          // If totalLearners is null or undefined, it adds 0
+          totalLearners += (school.totalLearners || 0);
+        });
+
+        // 3. Update the UI object
+        this.dashboardData.stats = {
+          approved: approved,
+          rejected: rejected,
+          pending: pending,
+          appeals: 0, // Hardcoded for now
+          totalLearners: totalLearners
+        };
+
+        this.dashboardData.approvalBreakdown = {
+          approved: approved,
+          pending: pending,
+          rejected: rejected
+        };
+
+        // 4. Update the donut chart (assuming all are regular for now)
+        this.dashboardData.categories.regular = {
+          count: schools.length,
+          percentage: 100
+        };
+
+        // 5. Force Angular to render the new numbers
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Failed to load schools', err)
+    });
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+}

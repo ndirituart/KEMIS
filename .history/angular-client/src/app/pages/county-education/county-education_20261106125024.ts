@@ -1,6 +1,11 @@
+// @ts-ignore - angular dependencies are resolved in the active app project, not in this historical snapshot
+// @ts-ignore
 import { Component, OnInit } from '@angular/core';
+// @ts-ignore
 import { CommonModule } from '@angular/common';
+// @ts-ignore
 import { Router } from '@angular/router';
+// @ts-ignore
 import { FormsModule } from '@angular/forms';
 
 @Component({
