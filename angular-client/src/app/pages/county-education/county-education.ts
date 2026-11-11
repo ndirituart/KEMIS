@@ -50,8 +50,11 @@ export class CountyEducation implements OnInit {
         // 3. Fetch Schools to calculate stats
         this.fetchSchools(profile.county);
       },
+      //Fallback
       error: (err) => {
-        console.warn('Could not fetch profile, using Nairobi as fallback', err);
+        console.error('Failed to load profile', err);
+
+        this.dashboardData.county = 'Nairobi';
         this.populateSubCounties('Nairobi');
         this.fetchSchools('Nairobi');
       }

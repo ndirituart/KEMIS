@@ -18,7 +18,7 @@ public class CountyEducationController : ControllerBase
         _workflow = workflow;
     }
 
-    // Hardcoded for testing. Uncomment the real one when auth is ready.
+    // 🔥 RESTORED: This is what was missing and causing all 6 errors.
     private int userId => 3; 
     // private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 

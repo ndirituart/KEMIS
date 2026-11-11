@@ -686,7 +686,7 @@ export class CountyEducation implements OnInit {
 
    loadDashboardData() {
     // STEP 1: Fetch the CDE Profile
-    this.http.get<any>('http://localhost:5215/api/CountyEducation/profile').subscribe({
+    this.http.get<any>('http://localhost:5215/api/county-education/profile').subscribe({
       next: (profile) => {
         this.dashboardData.county= profile.fullName;
         this.dashboardData.county = profile.county;

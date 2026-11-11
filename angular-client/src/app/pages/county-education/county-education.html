@@ -3,11 +3,11 @@
   <!-- SIDEBAR           -->
    <aside class="sidebar">
     <div class="sidebar-logo">
-    <img [src]="'assets/counties/' + dashboardData.county.toLowerCase() + '.png'" 
-        alt="County Logo" 
-        onerror="this.src='assets/counties/default.png'" />
-         <!-- Fallback if image missing -->
-   </div>
+  <img *ngIf="dashboardData.county && dashboardData.county !== 'Loading...'"
+       [src]="'assets/counties/' + dashboardData.county.toLowerCase() + '.png'"
+       alt="County Logo"
+       onerror="this.src='assets/counties/default.png'" />
+</div>
         <nav class="sidebar-nav">
       <!-- 1. Dashboard (Default) -->
       <a class="nav-item active">
@@ -189,7 +189,7 @@
               <div class="progress-label"><span class="dot blue"></span> Approved</div>
               <div class="progress-bar-bg">
                 <!-- Width calculated dynamically based on total -->
-                <div class="progress-bar-fill blue" style="width: 75%;"></div>
+                <div class="progress-bar-fill blue" style="width: 0%;"></div>
               </div>
               <div class="progress-value">{{ dashboardData.approvalBreakdown.approved }}</div>
             </div>
@@ -197,7 +197,7 @@
             <div class="progress-row">
               <div class="progress-label"><span class="dot yellow"></span> Pending</div>
               <div class="progress-bar-bg">
-                <div class="progress-bar-fill yellow" style="width: 25%;"></div>
+                <div class="progress-bar-fill yellow" style="width: 100%;"></div>
               </div>
               <div class="progress-value">{{ dashboardData.approvalBreakdown.pending }}</div>
             </div>

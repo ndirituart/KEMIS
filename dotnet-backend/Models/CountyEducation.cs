@@ -7,7 +7,7 @@ namespace dotnet_backend.Models;
 public class CountyEducation
 {
     [Key]
-    public int countyEducationId { get; set; }
+    public int cdeId { get; set; }
 
     // Foreign Key 
     public int? userId { get; set; } 
