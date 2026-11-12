@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using dotnet_backend.Models; //To access the models for AssignedSchool, Report, and SubmitReportRequest
+using dotnet_backend.Services; //To import InstutionService to get CDE Profile
 
 namespace KemisOnboarding.Api.Controllers;
 
@@ -12,21 +13,30 @@ namespace KemisOnboarding.Api.Controllers;
 public class SubCountyEducationController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly InstitutionWorkflowService _workflow;
 
-    public SubCountyEducationController(ApplicationDbContext context)
+    public SubCountyEducationController(ApplicationDbContext context, InstitutionWorkflowService workflow)
     {
         _context = context;
+        _workflow = workflow;
     }
 
-    private int CurrentUserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int userId => 4; 
+    
+    // When you are ready for production, delete the line above and uncomment the line below:
+    // private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+   // 0. Get SCDE Profile details
+   [HttpGet("profile")]
+    public Task<SubCountyEducation> GetProfile(CancellationToken ct) =>
+        _workflow.GetScdeProfileAsync(userId, ct);
 
     // 1. Fetches all schools that the CDE has assigned to this specific SCDE
-    // 1. Get assigned schools
     [HttpGet("assigned-schools")]
     public async Task<IActionResult> GetAssignedSchools()
     {
         var schools = await _context.InstitutionAssignments
-            .Where(a => a.assigneeId == CurrentUserId)
+            .Where(a => a.assigneeId ==  userId)
             .Join(_context.BasicEducations,
                 a => a.institutionId,
                 s => s.institutionId,
@@ -57,7 +67,7 @@ public class SubCountyEducationController : ControllerBase
         // Create the report
         var report = new Report // Make sure you are using your Report model
         {
-            scdeId = CurrentUserId,
+            scdeId =  userId,
             institutionId = request.institutionId,
             institutionName = school.institutionName,
             summary = request.summary,
@@ -70,7 +80,7 @@ public class SubCountyEducationController : ControllerBase
         
         // Update assignment
         var assignment = await _context.InstitutionAssignments
-            .FirstOrDefaultAsync(a => a.institutionId == request.institutionId && a.assigneeId == CurrentUserId);
+            .FirstOrDefaultAsync(a => a.institutionId == request.institutionId && a.assigneeId ==  userId);
         if (assignment != null) assignment.hasReport = true;
 
         // Update school status
@@ -88,7 +98,7 @@ public class SubCountyEducationController : ControllerBase
     {
         var reports = await _context.Reports
             .AsNoTracking()
-            .Where(r => r.scdeId == CurrentUserId)
+            .Where(r => r.scdeId ==  userId)
             .OrderByDescending(r => r.createdAt)
             .Select(r => new Report
             {

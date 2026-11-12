@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS "CountyEducation" (
-    "countyEducationId" SERIAL PRIMARY KEY,
+    "cdeId" SERIAL PRIMARY KEY,
     "county" VARCHAR(100) NOT NULL,
     "countyCode" VARCHAR(10) NOT NULL,
     "officeAddress" VARCHAR(255) NULL,

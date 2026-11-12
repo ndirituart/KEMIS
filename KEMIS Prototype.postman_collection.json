@@ -1,0 +1,704 @@
+{
+  "info": {
+    "_postman_id": "b041b880-332b-44da-b602-6e827f3c71bd",
+    "name": "KEMIS Prototype",
+    "description": "To help testing:  \n1\\. Login/Registration of admin users  \n2\\. Institution Onboarding (primary-highschool-tvets-higher education)\n\n3\\. Admin approving/disapproving schools.\n\n4\\. Learner registration",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "36022122"
+  },
+  "item": [
+    {
+      "name": "System Users",
+      "item": [
+        {
+          "name": "Add a System User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"emailId\": \"new.tester@kemis.go.ke\",\r\n  \"fullName\": \"New Tester Onyango\",\r\n  \"mobileNo\": \"+254799887766\",\r\n  \"password\": \"Password@123\",\r\n  \"role\": \"IT Officer\",\r\n  \"nationalId\": \"30000001\",\r\n  \"county\": \"Nairobi\",\r\n  \"subCounty\": \"Embakasi\",\r\n  \"constituency\": \"Embakasi West\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5215/api/User/CreateNewUser",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "User",
+                "CreateNewUser"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login a User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"emailId\": \"admin@kemis.go.ke\",\r\n    \"password\": \"123bghi45!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5215/api/User/Login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "User",
+                "Login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"emailId\": \"test@kemis.go.ke\",\r\n  \"fullName\": \"Test User\",\r\n  \"mobileNo\": \"+254700000001\",\r\n  \"password\": \"Password@123\",\r\n  \"role\": \"Admin\",\r\n  \"nationalId\": \"12345678\",\r\n  \"county\": \"Nairobi\",\r\n  \"subCounty\": \"Starehe\",\r\n  \"constituency\": \"Starehe\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5215/api/User/GetUsers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "User",
+                "GetUsers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5215/api/User/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "User",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by Role",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5215/api/User/role/Admin",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "User",
+                "role",
+                "Admin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UPDATE User Details",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\" : \"active\" //from \"softdeleted\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5215/api/User/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "User",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User's Passowrd",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"currentPassword\": \"bNmKdEfG2\",\r\n    \"newPassword\": \"IL0veT0Re@d\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5215/api/User/2/password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "User",
+                "2",
+                "password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign a School to a User",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"institutionId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5215/api/User/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "User",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete a User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5215/api/User/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "User",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hard Delete a User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5215/api/User/11/permanent",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "User",
+                "11",
+                "permanent"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Basic Education",
+      "item": [
+        {
+          "name": "Register a School",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "institutionName",
+                  "value": "Nairobi Primary School",
+                  "type": "text"
+                },
+                {
+                  "key": "institutionType",
+                  "value": "Mixed School",
+                  "type": "text"
+                },
+                {
+                  "key": "emailId",
+                  "value": "info@nairobiprimary.ac.ke",
+                  "type": "text"
+                },
+                {
+                  "key": "mobileNo",
+                  "value": "+254711000111",
+                  "type": "text"
+                },
+                {
+                  "key": "headOfInstitution",
+                  "value": "Mr. Paul Ndirangu",
+                  "type": "text"
+                },
+                {
+                  "key": "postalAddressHoi",
+                  "value": "P.O Box 14567-00100",
+                  "type": "text"
+                },
+                {
+                  "key": "county",
+                  "value": "Nairobi",
+                  "type": "text"
+                },
+                {
+                  "key": "subCounty",
+                  "value": "Starehe",
+                  "type": "text"
+                },
+                {
+                  "key": "constituency",
+                  "value": "Starehe East",
+                  "type": "text"
+                },
+                {
+                  "key": "postalAddressInstitution",
+                  "value": "P.O Box 12012-00100",
+                  "type": "text"
+                },
+                {
+                  "key": "applicationType",
+                  "value": "Regular School",
+                  "type": "text"
+                },
+                {
+                  "key": "institutionLevel",
+                  "value": "Primary",
+                  "type": "text"
+                },
+                {
+                  "key": "certificateValid",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "certificatePdf",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/Pashie/Downloads/Star Academy Certificate.pdf"
+                  ]
+                },
+                {
+                  "key": "certificateNumber",
+                  "value": "CERT-00156",
+                  "type": "text"
+                },
+                {
+                  "key": "totalLearners",
+                  "value": "450",
+                  "type": "text"
+                },
+                {
+                  "key": "latitude",
+                  "value": "1.283757",
+                  "type": "text"
+                },
+                {
+                  "key": "longitude",
+                  "value": "36.811407",
+                  "type": "text"
+                },
+                {
+                  "key": "accomodationType",
+                  "value": "Day",
+                  "type": "text"
+                },
+                {
+                  "key": "schoolCategory",
+                  "value": "Private",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5215/api/BasicEducation/CreateNewSchool",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "BasicEducation",
+                "CreateNewSchool"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get ALL schools",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5215/api/BasicEducation/GetSchools",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "BasicEducation",
+                "GetSchools"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get School by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5215/api/BasicEducation/GetSchool/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "BasicEducation",
+                "GetSchool",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Updating School Details",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"postalAddressHoi\": \"P.O Box 12345-00100\",\n    \"constituency\": \"Kangemi\",\n    \"postalAddressInstitution\": \"P.O Box 10102\",\n    \"latitude\": \"-1.28379\",\n    \"longitude\": \"36.80942\",\n    \"accomodationType\": \"Day\",\n    \"schoolCategory\": \"Public\",\n    \"userId\": 2,\n    \"certificateNumber\": \"CERT-102345\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5215/api/BasicEducation/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "BasicEducation",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Testing how to :  \n1\\. Register a school by HOI eg Principal. Vice Chancellor or Board of Managers  \n2\\. Approve/Reject schools by CDE  \n3\\. Check status of schools through routine checks and mark as \"inactive\" done by QCASOs"
+    },
+    {
+      "name": "County Education (CDE)",
+      "item": [
+        {
+          "name": "CDE Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "county",
+                "value": "Nairobi",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5215/api/county-education/institutions?county=Nairobi",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "county-education",
+                "institutions"
+              ],
+              "query": [
+                {
+                  "key": "county",
+                  "value": "Nairobi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CDE Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5215/api/county-education/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "county-education",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Schools by County",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response time is less than 7000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(7000);\n});\n\npm.test(\"Response body has correct structure\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData).to.have.property(\"county\", \"Alameda\");\n    pm.expect(jsonData).to.have.property(\"schools\").that.is.an(\"array\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5215/api/county-education/institutions?county=Nairobi",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "county-education",
+                "institutions"
+              ],
+              "query": [
+                {
+                  "key": "county",
+                  "value": "Nairobi"
+                }
+              ]
+            },
+            "description": "Get schools in a perticular county when county parameter is set to a county name eg Nairobi or Nakuru"
+          },
+          "response": []
+        },
+        {
+          "name": "Get School by institutionId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5215/api/county-education/institutions/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "county-education",
+                "institutions",
+                "1"
+              ]
+            },
+            "description": "CDE to View a school but should be updated to show ALL details"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Institutions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5215/api/county-education/institutions?county=Nairobi&status=pending",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "county-education",
+                "institutions"
+              ],
+              "query": [
+                {
+                  "key": "county",
+                  "value": "Nairobi"
+                },
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Approved Schools",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5215/api/county-education/institutions?county=Nairobi&status=approved",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5215",
+              "path": [
+                "api",
+                "county-education",
+                "institutions"
+              ],
+              "query": [
+                {
+                  "key": "county",
+                  "value": "Nairobi"
+                },
+                {
+                  "key": "status",
+                  "value": "approved"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for a CDE to approve/deny schools.\n\nView ALL schools in a county.\n\nView ALL learners in a county.\n\nRegister a new system admin user.\n\nCertificate issuance recommendation.\n\nUpdate school details eg email or phone number.\n\nApprove/Deny learner transfer., e.g.,"
+    }
+  ]
+}

@@ -66,6 +66,18 @@ public class InstitutionWorkflowService
         };
     }
 
+    // Get SCDE Profile
+    public async Task<SubCountyEducation> GetScdeProfileAsync(int userId, CancellationToken ct)
+    {
+        var scdeMapping = await _context.SubCountyEducations
+            .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
+
+        if (scdeMapping == null) 
+            throw new Exception("SCDE profile not found for this user.");
+
+        return scdeMapping;
+    }
+
 
     // ==========================================
     // 2. SPECIFIC SCHOOL METHODS
@@ -105,17 +117,18 @@ public class InstitutionWorkflowService
             .ToListAsync(ct);
     }
 
-    // Assign a School to an SCDE
+       // 8. Assign a School to an SCDE
     public async Task<InstitutionDetail> AssignAsync(int id, int userId, AssignRequest req, CancellationToken ct)
     {
         var school = await _context.BasicEducations.FindAsync(id);
         if (school == null) throw new Exception("School not found");
 
+        // 1. Save the assignment record
         var assignment = new InstitutionAssignment
         {
             institutionId = id,
-            assigneeId = req.assigneeId,
-            assignerId = userId,
+            assigneeId = req.assigneeId, // The SCDE
+            assignerId = userId,         // The CDE
             status = "pending",
             hasReport = false,
             assignedAt = DateTime.UtcNow.ToString("o")
@@ -123,9 +136,12 @@ public class InstitutionWorkflowService
         
         _context.InstitutionAssignments.Add(assignment);
         
-        school.status = "under_review";
+        //Update it wasn't updating the user table nor the school table
+        school.status = "Assigned SCDE";       // Update status
+        school.supervisorId = req.assigneeId;  // Set the SCDE as the supervisor
         school.updatedAt = DateTime.UtcNow.ToString("o");
         
+        // 3. Save everything
         await _context.SaveChangesAsync(ct);
 
         return await GetDetailAsync(id, userId, ct);

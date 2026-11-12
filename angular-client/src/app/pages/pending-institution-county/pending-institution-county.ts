@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { SearchPipe } from '../../pipes/search.pipe';
+import { NotificationService } from '../../services/notifications.service';
+
 
 @Component({
   selector: 'app-pending-institution-county',
@@ -12,8 +14,11 @@ import { SearchPipe } from '../../pipes/search.pipe';
   styleUrl: './pending-institution-county.css'
 })
 export class PendingInstitutionCounty implements OnInit {
+
+  private readonly notification = inject(NotificationService);
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
+
 
   // --- Filters ---
   subCounties = [
@@ -39,28 +44,24 @@ export class PendingInstitutionCounty implements OnInit {
   tableSearch = '';
 
   // --- Live Data ---
-  allInstitutions: any[] = []; // Raw data from backend
-  institutions: any[] = [];    // Filtered data for the table
+  allInstitutions: any[] = [];
+  institutions: any[] = [];
 
   ngOnInit() {
     this.fetchPendingSchools();
   }
 
   fetchPendingSchools() {
-    // Fetch only pending schools in Nairobi
     this.http.get<any>('http://localhost:5215/api/county-education/institutions?county=Nairobi&status=pending').subscribe({
       next: (res) => {
         this.allInstitutions = res.schools || [];
         this.institutions = [...this.allInstitutions];
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Failed to fetch pending schools', err);
-      }
+      error: (err) => this.notification.showError('Fails to fetch schools, Server down try again later',err)
     });
   }
 
-  // --- Filtering Logic ---
   onSearch() {
     let filtered = this.allInstitutions;
 
@@ -82,40 +83,22 @@ export class PendingInstitutionCounty implements OnInit {
   selectedInstitution: any = null;
   selectedSCDE = '';
 
-  // Hardcoded Assignees (Will be replaced by API call later)
-  scdeList = ['Scde Number 1', 'Scde Number 2', 'Scde Number 3'];
+  // Fetch all SCDE users
+  scdeList: any[] = [];
 
-  // Tabs inside View Modal
-  activeViewTab = 'form'; // 'form' | 'reports' | 'actions'
+  activeViewTab = 'form';
 
-  // Hardcoded View Data
-  viewData = {
-    institutionType: 'Mixed School',
-    institutionName: 'Nairobi Primary School',
-    headOfInstitution: 'Mr. Paul Ndirangu',
-    email: 'info@nairobiprimary.ac.ke',
-    mobileNo: '+254711000111',
-    onboardingDate: '30-07-2026',
-    applicationType: 'Regular School',
-    educationalPathway: 'Age Based',
-    institutionLevel: 'Primary School',
-    hasCert: 'YES',
-    certNo: 'CERT-12345',
-    sneBoys: 0,
-    sneGirls: 0,
-    totalLearners: 450,
-    coordinates: '-1.28379, 36.80942',
-    county: 'Nairobi',
-    subCounty: 'Starehe',
-    constituency: 'Starehe',
-    postalCode: '00100',
-    schoolCategory: 'Public',
-    postalLocation: 'P.O Box 12345',
+  // View and fetches live
+  viewData: any = {
+    institutionType: '', institutionName: '', headOfInstitution: '', email: '', mobileNo: '',
+    onboardingDate: '', applicationType: '', educationalPathway: '', institutionLevel: '',
+    hasCert: '', certNo: '', sneBoys: 0, sneGirls: 0, totalLearners: 0, coordinates: '',
+    county: '', subCounty: '', constituency: '', postalCode: '', schoolCategory: '', postalLocation: '',
     scdeComments: 'No SCDE comments available.',
     scqasoComments: 'No SCQASO comments available.',
     cqasoComments: 'No CQASO comments available.',
-    scqasoReport: 'QASO_Inspection_Report_FRIENDS SCHOOL.pdf',
-    cqasoReport: 'CQASO_Inspection_Report_FRIENDS SCHOOL.pdf'
+    scqasoReport: 'QASO_Inspection_Report.pdf',
+    cqasoReport: 'CQASO_Inspection_Report.pdf'
   };
 
   // --- Actions ---
@@ -124,12 +107,50 @@ export class PendingInstitutionCounty implements OnInit {
     this.selectedInstitution = inst;
     this.selectedSCDE = '';
     this.showAssignModal = true;
+
+    // Fetch SCDEs dynamically from the database
+    this.http.get<any[]>('http://localhost:5215/api/county-education/assignees?role=SCDE').subscribe({
+      next: (res) => {
+        this.scdeList = res;
+        this.notification.showSuccess('Sucessfully assigned a SCDE!');
+      },
+       error: (err) => this.notification.showError('Failed to load SCDEs',err)
+    });
+
   }
+
+
 
   openViewModal(inst: any) {
     this.selectedInstitution = inst;
-    this.activeViewTab = 'form'; // Reset to first tab
+    this.activeViewTab = 'form';
     this.showViewModal = true;
+
+    // Fetch school details dynamically based on institutionId
+    this.http.get<any>(`http://localhost:5215/api/county-education/institutions/${inst.institutionId}`).subscribe({
+      next: (res) => {
+        // Map the backend response to viewData
+        this.viewData = {
+          ...this.viewData,
+          institutionType: res.institutionType || 'N/A',
+          institutionName: res.institutionName || 'N/A',
+          headOfInstitution: res.headOfInstitution || 'N/A',
+          email: res.emailId || 'N/A',
+          mobileNo: res.mobileNo || 'N/A',
+          onboardingDate: res.createdAt || 'N/A',
+          institutionLevel: res.institutionLevel || 'N/A',
+          certNo: res.certificateNumber || 'N/A',
+          totalLearners: res.totalLearners || 0,
+          county: res.county || 'N/A',
+          subCounty: res.subCounty || 'N/A',
+          constituency: res.constituency || 'N/A',
+          schoolCategory: res.schoolCategory || 'N/A',
+        };
+        this.cdr.detectChanges();
+      },
+
+       error: (err) => this.notification.showError('Failed to fetch school details',err)
+    });
   }
 
   closeModals() {
@@ -140,24 +161,35 @@ export class PendingInstitutionCounty implements OnInit {
 
   submitAssignment() {
     if (!this.selectedSCDE) {
-      alert('Please select an SCDE first.');
+      this.notification.showError('Please select an SCDE first.');
       return;
     }
-    console.log(`Assigned school ${this.selectedInstitution.institutionName} to ${this.selectedSCDE}`);
-    alert(`Successfully assigned to ${this.selectedSCDE}`);
-    this.closeModals();
+
+    const payload = {
+      assigneeId: this.selectedSCDE // The SCDE's userId
+    };
+
+    this.http.post(`http://localhost:5215/api/county-education/institutions/${this.selectedInstitution.institutionId}/assign`, payload).subscribe({
+      next: () => {
+        this.notification.showSuccess('Sucessfully assigned a SCDE!');
+        this.selectedInstitution.status = 'Assigned SCDE'; // Instantly update UI
+        this.fetchPendingSchools(); // Refresh table
+        this.closeModals();
+      },
+       error: (err) => {
+        this.notification.showError('Failed to assign. Please try again.');
+        console.error(err);
+      }
+    });
   }
 
-  // Final Decision Actions
   approveSchool() {
-    console.log(`Approved: ${this.selectedInstitution?.institutionName}`);
-    alert('School Approved successfully!');
+    this.notification.showSuccess('School approved successfully!');
     this.closeModals();
   }
 
   rejectSchool() {
-    console.log(`Rejected: ${this.selectedInstitution?.institutionName}`);
-    alert('School Rejected!');
+    this.notification.showSuccess('School rejected  successful!');
     this.closeModals();
   }
 }

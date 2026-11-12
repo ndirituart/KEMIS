@@ -170,9 +170,10 @@
         </div>
         <div class="modal-body">
           <label class="form-label fw-bold text-muted">SCDE</label>
+          <!--Updating this assign SCDE Modal to be dynamic and fetch SCDEs in same county as CDE-->
           <select class="form-select" [(ngModel)]="selectedSCDE">
             <option value="" disabled selected>Select an SCDE...</option>
-            <option *ngFor="let scde of scdeList" [value]="scde">{{ scde }}</option>
+             <option *ngFor="let scde of scdeList" [value]="scde.userId">{{ scde.fullName }}</option>
           </select>
         </div>
         <div class="modal-footer">

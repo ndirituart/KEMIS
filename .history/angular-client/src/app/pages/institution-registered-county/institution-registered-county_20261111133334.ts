@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { SearchPipe } from '../../pipes/search.pipe';
+import { NotificationService } from '../../services/notifications.service'; //pop up notifications
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 

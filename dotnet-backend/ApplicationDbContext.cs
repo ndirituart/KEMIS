@@ -9,10 +9,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     //2. Object two Schools
     public DbSet<BasicEducation> BasicEducations => Set<BasicEducation>();
-    //3. Object three CDE Reports
+    //3. Object three CDE 
     public DbSet<CountyEducation> CountyEducations => Set<CountyEducation>();
-    //4. Object four SCDE Reports
-    public DbSet<SubCountyEducation> SubCountyEducations => Set<SubCountyEducation>();
+    //4. Object four SCDE 
+   public DbSet<SubCountyEducation> SubCountyEducations { get; set; }
     //5. Object five Institution Workflow
     public DbSet<InstitutionAssignment> InstitutionAssignments => Set<InstitutionAssignment>();
     //6. Object six Institution Comments
