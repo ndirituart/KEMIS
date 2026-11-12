@@ -31,8 +31,8 @@ export class PendingInstitutionCounty implements OnInit {
   ];
 
   statusList = [
-    'Select', 'Pending', 'Pending Assigning SCDE', 'Approved', 'Rejected',
-    'SCDE Recommended', 'Assigned SCDE', 'Assigned CQASO', 'CQASO Recommended'
+    'Select', 'Pending', 'Approved', 'Rejected',
+    'SCDE Recommended', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended'
   ];
 
   filter = {
@@ -51,31 +51,48 @@ export class PendingInstitutionCounty implements OnInit {
     this.fetchPendingSchools();
   }
 
-  fetchPendingSchools() {
-    this.http.get<any>('http://localhost:5215/api/county-education/institutions?county=Nairobi&status=pending').subscribe({
+    // Change this to take a status parameter from the dropdown button
+  fetchPendingSchools(status: string = 'pending') {
+    this.http.get<any>(`http://localhost:5215/api/county-education/institutions?county=Nairobi&status=${status}`).subscribe({
       next: (res) => {
+        this.notification.showSuccess('Schools fetched successfully!');
         this.allInstitutions = res.schools || [];
         this.institutions = [...this.allInstitutions];
         this.cdr.detectChanges();
       },
-      error: (err) => this.notification.showError('Fails to fetch schools, Server down try again later',err)
+      error: (err) => console.error('Failed to fetch schools', err)
     });
   }
 
   onSearch() {
-    let filtered = this.allInstitutions;
+    let statusParam = this.filter.status;
 
-    if (this.filter.subCounty !== 'All') {
-      filtered = filtered.filter(inst => inst.subCounty === this.filter.subCounty);
+    // If they select 'Select', we want to fetch ALL schools
+    if (statusParam === 'Select') {
+      statusParam = 'All';
+    } else if (statusParam === 'Pending') {
+      statusParam = 'Pending';
+    } else if (statusParam === 'Assigned SCDE') {
+      statusParam = 'Assigned SCDE';
+    } else if (statusParam === 'Assigned SCQASO') {
+      statusParam = 'Assigned SCQASO';
+    } else if (statusParam === 'SCQASO Recommended') {
+      statusParam = 'SCQASO Recommended';
+    } else if (statusParam === 'SCDE Recommended') {
+      statusParam = 'SCDE Recommended';
+    } else if (statusParam === 'Approved') {
+      statusParam = 'Approved';
+    } else if (statusParam === 'Rejected') {
+      statusParam = 'Rejected';
     }
 
-    if (this.filter.status && this.filter.status !== 'Select') {
-      filtered = filtered.filter(inst => inst.status.toLowerCase() === this.filter.status.toLowerCase());
-    }
+    // Fetch the new data
+    this.fetchPendingSchools(statusParam);
 
-    this.institutions = filtered;
-    this.cdr.detectChanges();
+    // 2. (Optional) If you still want to filter by Sub-County locally
+    // You don't need to do anything here because fetchPendingSchools already updates the UI.
   }
+
 
   // --- Modals State ---
   showAssignModal = false;
@@ -111,8 +128,8 @@ export class PendingInstitutionCounty implements OnInit {
     // Fetch SCDEs dynamically from the database
     this.http.get<any[]>('http://localhost:5215/api/county-education/assignees?role=SCDE').subscribe({
       next: (res) => {
-        this.scdeList = res;
         this.notification.showSuccess('Sucessfully assigned a SCDE!');
+        this.scdeList = res;
       },
        error: (err) => this.notification.showError('Failed to load SCDEs',err)
     });

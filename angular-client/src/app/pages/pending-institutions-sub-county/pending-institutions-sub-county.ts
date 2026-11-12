@@ -13,6 +13,8 @@ import { NotificationService } from '../../services/notifications.service'; //po
   styleUrl: './pending-institutions-sub-county.css',
 })
 export class PendingInstitutionsSubCounty implements OnInit {
+
+  private notification = inject(NotificationService);
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
 

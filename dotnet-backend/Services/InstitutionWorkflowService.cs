@@ -31,13 +31,14 @@ public class InstitutionWorkflowService
     }
 
     // Get Schools by County
-    public async Task<object> GetSchoolsByCountyAsync(string county, string? status, CancellationToken ct)
+        public async Task<object> GetSchoolsByCountyAsync(string county, string? status, CancellationToken ct)
     {
         var query = _context.BasicEducations.Where(s => s.county == county);
 
-        if (!string.IsNullOrEmpty(status) && status != "All")
+        // If the user selects a specific status (e.g., "Pending" or "Assigned SCDE"), filter by it
+        if (!string.IsNullOrEmpty(status) && status != "All" && status != "Select")
         {
-            query = query.Where(s => s.status == status.ToLower());
+            query = query.Where(s => s.status == status);
         }
 
         var schools = await query.ToListAsync(ct);
@@ -49,19 +50,13 @@ public class InstitutionWorkflowService
             {
                 s.institutionId,
                 s.institutionName,
-                s. institutionType, //to classify between "Regular" and "SNE" schools
-                s.institutionLevel, //to classify "Primary Schools", "Junior High Schools", "Senior High Schools" etc
-                s.status, //to get "Pending", "Approved" or "Rejected" schools
-                s.cluster, //to classify with cluster later on
+                s.status,
                 s.subCounty,
-                s.constituency,
                 s.totalLearners,
                 s.createdAt,
                 s.certificateNumber,
-                s.mobileNo,
-                s.emailId,
-                s.headOfInstitution,
-
+                s.cluster,
+                s.headOfInstitution
             }).ToList()
         };
     }
@@ -123,24 +118,26 @@ public class InstitutionWorkflowService
         var school = await _context.BasicEducations.FindAsync(id);
         if (school == null) throw new Exception("School not found");
 
-        // 1. Save the assignment record
-        var assignment = new InstitutionAssignment
-        {
-            institutionId = id,
-            assigneeId = req.assigneeId, // The SCDE
-            assignerId = userId,         // The CDE
-            status = "pending",
-            hasReport = false,
-            assignedAt = DateTime.UtcNow.ToString("o")
-        };
-        
-        _context.InstitutionAssignments.Add(assignment);
-        
-        //Update it wasn't updating the user table nor the school table
-        school.status = "Assigned SCDE";       // Update status
-        school.supervisorId = req.assigneeId;  // Set the SCDE as the supervisor
+        // 1. Update the main BasicEducation table
+        school.status = "Assigned SCDE";       
+        school.supervisorId = req.assigneeId;  
         school.updatedAt = DateTime.UtcNow.ToString("o");
         
+        // 2. Save to your new AssignedSchools table
+        var assignedSchool = new AssignedSchool
+        {
+            institutionId = id,
+            assigneeId = req.assigneeId,
+            assignerId = userId,
+            institutionName = school.institutionName,
+            county = school.county,
+            subCounty = school.subCounty,
+            status = "pending", // Status for the SCDE to see
+            hasReport = false,
+            createdDate = DateTime.UtcNow.ToString("o")
+        };
+        _context.AssignedSchools.Add(assignedSchool);
+
         // 3. Save everything
         await _context.SaveChangesAsync(ct);
 

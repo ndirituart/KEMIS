@@ -21,6 +21,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<InstitutionDecision> InstitutionDecisions => Set<InstitutionDecision>();
     //8. Object eight Reports by SCQASO, SCDE and CDE
     public DbSet<Report> Reports { get; set; }
+    //Assinged Schools
+    public DbSet<AssignedSchool> AssignedSchools {get; set;}
 
   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
