@@ -1,0 +1,175 @@
+<div class="dashboard-wrapper">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <nav class="sidebar-nav">
+      <a class="nav-item active">
+        <i class="bi bi-grid-fill"></i>
+        <span>Dashboard</span>
+      </a>
+      <a class="nav-item">
+        <i class="bi bi-search"></i>
+        <span>Menu Search</span>
+      </a>
+
+      <!-- KEMIS Reports -->
+      <div class="nav-parent has-children">
+        <a class="nav-item">
+          <i class="bi bi-clipboard-check"></i>
+          <span>KEMIS Reports</span>
+        </a>
+        <ul class="nav-children">
+          <li><a href="../institution-registered-county">Institutions onboarded in the County</a></li>
+          <li><a href="/learners-registered-county">Learner list in the County</a></li>
+          <li><a href="/learners-per-grade-county">Learners Per Grade in the County</a></li>
+          <li><a href="/pending-institution-county">Pending Institutions onboarding</a></li>
+          <li><a href="/institutions-onboarded-per-cluster">Institution Onboarding per Cluster</a></li>
+          <li><a href="/learners-registered-per-cluster">Learners Registered Per Cluster</a></li>
+        </ul>
+      </div>
+
+      <!-- Registration -->
+      <div class="nav-parent has-children">
+        <a class="nav-item">
+          <i class="bi bi-pencil-square"></i>
+          <span>Registration</span>
+        </a>
+        <ul class="nav-children">
+          <li><a href="#">Learner Transfer approval</a></li>
+          <li><a href="#">Learner Admissions</a></li>
+          <li><a href="#">Institution Update Request</a></li>
+          <li><a href="#">User Registration</a></li>
+        </ul>
+      </div>
+
+      <a class="nav-item text-danger mt-4">
+        <i class="bi bi-book"></i>
+        <span>Escalations</span>
+      </a>
+
+      <div class="nav-parent has-children">
+        <a class="nav-item">
+          <i class="bi bi-pencil-square"></i>
+          <span>Registration</span>
+        </a>
+        <ul class="nav-children">
+          <li><a href="#">Institution Approval</a></li>
+          <li><a href="#">Learner Transfer Appeal</a></li>
+          <li><a href="#">System Admin User Registration</a></li>
+          <li><a href="#">Certificate Issuance recommendation</a></li>
+          <li><a href="#">Institution Details Update Approval</a></li>
+          <li><a href="#">Institution Email Update</a></li>
+        </ul>
+      </div>
+
+      <a class="nav-item text-danger mt-4">
+        <i class="bi bi-book"></i>
+        <span>User Manual</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT (Moved INSIDE the dashboard-wrapper) -->
+  <main class="main-content">
+    <div class="page-container">
+      <!-- Page Title -->
+      <div class="page-header">
+        <h2>List of institutions onboarded per county</h2>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="filter-section">
+        <div class="filter-grid">
+          <!-- Institution Level -->
+          <div class="filter-group">
+            <label>Institution Level</label>
+            <select class="form-select" [(ngModel)]="filter.institutionLevel">
+              <option *ngFor="let level of institutionLevels" [value]="level">{{ level }}</option>
+            </select>
+          </div>
+
+          <!-- From Date -->
+          <div class="filter-group">
+            <label>From</label>
+            <input type="date" class="form-control" [(ngModel)]="filter.fromDate">
+          </div>
+
+          <!-- To Date -->
+          <div class="filter-group">
+            <label>To</label>
+            <input type="date" class="form-control" [(ngModel)]="filter.toDate">
+          </div>
+
+          <!-- County -->
+          <div class="filter-group">
+            <label>County</label>
+            <select class="form-select bg-light" [(ngModel)]="filter.county">
+              <option *ngFor="let c of county" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+
+          <!-- Subcounty -->
+          <div class="filter-group">
+            <label>Subcounty</label>
+            <select class="form-select" [(ngModel)]="filter.subCounty">
+              <option *ngFor="let sub of subCounty" [value]="sub">{{ sub }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-row">
+          <button class="btn-download" (click)="onDownload()">
+            Download <i class="bi bi-caret-down-fill ms-1"></i>
+          </button>
+          <button class="btn-search" (click)="onSearch()">
+            Search
+          </button>
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <div class="table-section">
+        <!-- Table Search Bar -->
+        <div class="table-search-row">
+          <input type="text" class="form-control search-input" placeholder="Search" [(ngModel)]="tableSearch">
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>S. No</th>
+                <th>Institution Certificate Number</th>
+                <th>Institution Type</th>
+                <th>Institution Name</th>
+                <th>Institution Telephone Number/Landline</th>
+                <th>Institution Level</th>
+                <th>Sub County</th>
+                <th>Created Date</th>
+                <th>Created By</th>
+                <th>Constituency</th>
+                <th>Institution Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let inst of institutions | search: tableSearch">
+                <td class="text-center">{{ inst.institutionId }}</td>
+                <td>{{ inst.certificateNumber }}</td>
+                <td>{{ inst.institutionType }}</td>
+                <td>{{ inst.institutionName }}</td>
+                <td>{{ inst.mobileNo }}</td>
+                <td>{{ inst.institutionLevel }}</td>
+                <td>{{ inst.subCounty }}</td>
+                <td>{{ inst.createdAt }}</td>
+                <td>{{ inst.headOfInstitution }}</td>
+                <td>{{ inst.constituency }}</td>
+                <td>{{ inst.emailId }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

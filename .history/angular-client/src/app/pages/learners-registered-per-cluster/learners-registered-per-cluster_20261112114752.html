@@ -1,0 +1,186 @@
+<div class="dashboard-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <nav class="sidebar-nav">
+      <!-- 1. Dashboard -->
+      <a class="nav-item active">
+        <i class="bi bi-grid-fill"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <!-- 2. Menu Search -->
+      <a class="nav-item">
+        <i class="bi bi-search"></i>
+        <span>Menu Search</span>
+      </a>
+
+      <!-- 3. KEMIS Reports -->
+      <div class="nav-parent has-children">
+        <a class="nav-item">
+          <i class="bi bi-clipboard-check"></i>
+          <span>KEMIS Reports</span>
+        </a>
+        <ul class="nav-children">
+          <li><a href="/institution-registered-county">Institutions onboarded in the County</a></li>
+          <li><a href="/learners-registered-county">Learner list in the County</a></li>
+          <li><a href="/learners-per-grade-county">Learners Per Grade in the County</a></li>
+          <li><a href="/pending-institution-county">Pending Institutions onboarding</a></li>
+          <li><a href="/institutions-onboarded-per-cluster">Institution Onboarding per Cluster</a></li>
+          <li><a href="/learners-registered-per-cluster">Learners Registered Per Cluster</a></li>
+        </ul>
+      </div>
+
+      <!-- 4. Registration -->
+      <div class="nav-parent has-children">
+        <a class="nav-item">
+          <i class="bi bi-pencil-square"></i>
+          <span>Registration</span>
+        </a>
+        <ul class="nav-children">
+          <li><a href="#">Learner Transfer approval</a></li>
+          <li><a href="#">Learner Admissions</a></li>
+          <li><a href="#">Institution Update Request</a></li>
+          <li><a href="#">User Registration</a></li>
+        </ul>
+      </div>
+
+      <!-- 5. Escalations -->
+      <a class="nav-item text-danger mt-4">
+        <i class="bi bi-book"></i>
+        <span>Escalations</span>
+      </a>
+
+      <!-- 6. Admin Registration -->
+      <div class="nav-parent has-children">
+        <a class="nav-item">
+          <i class="bi bi-pencil-square"></i>
+          <span>Registration</span>
+        </a>
+        <ul class="nav-children">
+          <li><a href="#">Institution Approval</a></li>
+          <li><a href="#">Learner Transfer Appeal</a></li>
+          <li><a href="#">System Admin User Registration</a></li>
+          <li><a href="#">Certificate Issuance recommendation</a></li>
+          <li><a href="#">Institution Details Update Approval</a></li>
+          <li><a href="#">Institution Email Update</a></li>
+        </ul>
+      </div>
+
+      <!-- 7. User Manual -->
+      <a class="nav-item text-danger mt-4">
+        <i class="bi bi-book"></i>
+        <span>User Manual</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="main-content">
+    <div class="page-container">
+
+      <!-- Page Title -->
+      <div class="page-header">
+        <h2>List of learners registered per Cluster</h2>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="filter-section">
+        <div class="filter-grid">
+
+          <!-- Row 1 -->
+          <div class="filter-group">
+            <label>Institution Level</label>
+            <select class="form-select bg-light" [(ngModel)]="filter.institutionLevel">
+              <option *ngFor="let level of institutionLevels" [value]="level">{{ level }}</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>Select Cluster</label>
+            <select class="form-select" [(ngModel)]="filter.cluster">
+              <option *ngFor="let c of clusters" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="filter-group">
+            <label>From</label>
+            <input type="date" class="form-control" [(ngModel)]="filter.fromDate">
+          </div>
+
+          <div class="filter-group">
+            <label>To</label>
+            <input type="date" class="form-control" [(ngModel)]="filter.toDate">
+          </div>
+
+          <!-- Row 3 -->
+          <div class="filter-group">
+            <label>County</label>
+            <select class="form-select bg-light" [(ngModel)]="filter.county">
+              <option *ngFor="let county of counties" [value]="county">{{ county }}</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>Subcounty</label>
+            <select class="form-select" [(ngModel)]="filter.subCounty">
+              <option *ngFor="let sub of subCounties" [value]="sub">{{ sub }}</option>
+            </select>
+          </div>
+
+          <!-- Search Button (Centered in the grid) -->
+          <div class="filter-group search-btn-group">
+            <button class="btn-search" (click)="onSearch()">Search</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <div class="table-section">
+
+        <!-- Table Search Bar -->
+        <div class="table-search-row">
+          <input type="text" class="form-control search-input" placeholder="Search" [(ngModel)]="tableSearch" [disabled]="learners.length === 0">
+        </div>
+
+        <!-- Data Table (Only shows if there is data) -->
+        <div class="table-responsive" *ngIf="learners.length > 0; else noDataTpl">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Institution ID</th>
+                <th>Institution Name</th>
+                <th>Cluster</th>
+                <th>Sub County</th>
+                <th>Head of Institution</th>
+                <th>Status</th>
+                <th>Created At</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let inst of learners | search: tableSearch">
+                <td>{{ inst.institutionId }}</td>
+                <td>{{ inst.institutionName }}</td>
+                <td>{{ inst.cluster }}</td>
+                <td>{{ inst.subCounty }}</td>
+                <td>{{ inst.headOfInstitution }}</td>
+                <td>
+                  <span class="badge-status">{{ inst.status }}</span>
+                </td>
+                <td>{{ inst.createdAt | date:'dd-MM-yyyy' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State Template -->
+        <ng-template #noDataTpl>
+          <div class="no-data-message">
+            No Records to display
+          </div>
+        </ng-template>
+
+      </div>
+    </div>

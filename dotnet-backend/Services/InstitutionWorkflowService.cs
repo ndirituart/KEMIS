@@ -49,11 +49,19 @@ public class InstitutionWorkflowService
             {
                 s.institutionId,
                 s.institutionName,
-                s.status,
+                s. institutionType, //to classify between "Regular" and "SNE" schools
+                s.institutionLevel, //to classify "Primary Schools", "Junior High Schools", "Senior High Schools" etc
+                s.status, //to get "Pending", "Approved" or "Rejected" schools
+                s.cluster, //to classify with cluster later on
                 s.subCounty,
+                s.constituency,
                 s.totalLearners,
                 s.createdAt,
-                s.certificateNumber
+                s.certificateNumber,
+                s.mobileNo,
+                s.emailId,
+                s.headOfInstitution,
+
             }).ToList()
         };
     }

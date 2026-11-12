@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SearchPipe } from '../../pipes/search.pipe'; //for filtering
+import { HttpClient } from '@angular/common/http';
+import { SearchPipe } from '../../pipes/search.pipe';
 
 @Component({
   selector: 'app-pending-institution-county',
@@ -10,32 +11,22 @@ import { SearchPipe } from '../../pipes/search.pipe'; //for filtering
   templateUrl: './pending-institution-county.html',
   styleUrl: './pending-institution-county.css'
 })
-export class PendingInstitutionCounty {
-  
-  // --- Main Table Data ---
-   subCounties = [
-          'All',
-          "Dagoretti North Sub County",
-          "Dagoretti South Sub County ",
-          "Embakasi Central Sub Count",
-          "Embakasi East Sub County",
-          "Embakasi North Sub County ",
-          "Embakasi South Sub County",
-          "Embakasi West Sub County",
-          "Kamukunji Sub County",
-          "Kasarani Sub County ",
-          "Kibra Sub County ",
-          "Lang'ata Sub County ",
-          "Makadara Sub County",
-          "Mathare Sub County ",
-          "Roysambu Sub County ",
-          "Ruaraka Sub County ",
-          "Starehe Sub County ",
-          "Westlands Sub County "
-   ];
-          
+export class PendingInstitutionCounty implements OnInit {
+  private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
+
+  // --- Filters ---
+  subCounties = [
+    'All',
+    "Dagoretti North Sub County", "Dagoretti South Sub County", "Embakasi Central Sub Count",
+    "Embakasi East Sub County", "Embakasi North Sub County", "Embakasi South Sub County",
+    "Embakasi West Sub County", "Kamukunji Sub County", "Kasarani Sub County", "Kibra Sub County",
+    "Lang'ata Sub County", "Makadara Sub County", "Mathare Sub County", "Roysambu Sub County",
+    "Ruaraka Sub County", "Starehe Sub County", "Westlands Sub County"
+  ];
+
   statusList = [
-    'Select', 'Pending', 'Pending Assigning SCDE', 'Approved', 'Rejected', 
+    'Select', 'Pending', 'Pending Assigning SCDE', 'Approved', 'Rejected',
     'SCDE Recommended', 'Assigned SCDE', 'Assigned CQASO', 'CQASO Recommended'
   ];
 
@@ -47,58 +38,84 @@ export class PendingInstitutionCounty {
 
   tableSearch = '';
 
-  // Hardcoded Table Data
-  institutions = [
-    { institutionId: 1, certificateNumber: 'null', institutionName: 'Nairobi Primary School', createdAt: '2026-10-22', subCounty: 'Starehe', status: 'Pending' },
-    { institutionId: 2, certificateNumber: 'CERT-00234', institutionName: 'Star Academy', createdAt: '2026-10-29', subCounty: 'Embakasi East', status: 'Pending' },
-    { institutionId: 3, certificateNumber: 'CERT-101', institutionName: 'Dagoretti North Primary School', createdAt: '2026-01-10', subCounty: 'Dagoretti North', status: 'Pending' },
-    { institutionId: 4, certificateNumber: 'CERT-102', institutionName: 'Dagoretti North Junior School', createdAt: '2026-01-11', subCounty: 'Dagoretti North', status: 'Pending' },
-    { institutionId: 5, certificateNumber: 'CERT-103', institutionName: 'Dagoretti North Senior School', createdAt: '2026-01-12', subCounty: 'Dagoretti North', status: 'Pending' },
-    { institutionId: 6, certificateNumber: 'CERT-104', institutionName: 'Dagoretti South Primary School', createdAt: '2026-01-13', subCounty: 'Dagoretti South', status: 'Pending' }
+  // --- Live Data ---
+  allInstitutions: any[] = []; // Raw data from backend
+  institutions: any[] = [];    // Filtered data for the table
 
-  ];
+  ngOnInit() {
+    this.fetchPendingSchools();
+  }
+
+  fetchPendingSchools() {
+    // Fetch only pending schools in Nairobi
+    this.http.get<any>('http://localhost:5215/api/county-education/institutions?county=Nairobi&status=pending').subscribe({
+      next: (res) => {
+        this.allInstitutions = res.schools || [];
+        this.institutions = [...this.allInstitutions];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to fetch pending schools', err);
+      }
+    });
+  }
+
+  // --- Filtering Logic ---
+  onSearch() {
+    let filtered = this.allInstitutions;
+
+    if (this.filter.subCounty !== 'All') {
+      filtered = filtered.filter(inst => inst.subCounty === this.filter.subCounty);
+    }
+
+    if (this.filter.status && this.filter.status !== 'Select') {
+      filtered = filtered.filter(inst => inst.status.toLowerCase() === this.filter.status.toLowerCase());
+    }
+
+    this.institutions = filtered;
+    this.cdr.detectChanges();
+  }
 
   // --- Modals State ---
   showAssignModal = false;
   showViewModal = false;
-  selectedInstitution: any = null; // The school being viewed/assigned
+  selectedInstitution: any = null;
   selectedSCDE = '';
-  
-  // Hardcoded Assignees
+
+  // Hardcoded Assignees (Will be replaced by API call later)
   scdeList = ['Scde Number 1', 'Scde Number 2', 'Scde Number 3'];
 
-  // Tabs insinstitutionIde View Modal
+  // Tabs inside View Modal
   activeViewTab = 'form'; // 'form' | 'reports' | 'actions'
 
   // Hardcoded View Data
-  //1	""	"Mixed School"	"info@nairobiprimary.ac.ke"	"+254711000111"	"Mr. Paul Ndirangu"		"Nairobi"	"Starehe"			"Regular School"	"Primary"	true	"/uploads/4509c6c1-e621-4875-bc10-b108bbdc2806_Star Academy Certificate.pdf"		450					true	"pending"	"2026-10-22T10:36:37.9116918Z"			
   viewData = {
     institutionType: 'Mixed School',
     institutionName: 'Nairobi Primary School',
     headOfInstitution: 'Mr. Paul Ndirangu',
-    email: 'finfo@nairobiprimary.ac.ke',
+    email: 'info@nairobiprimary.ac.ke',
     mobileNo: '+254711000111',
     onboardingDate: '30-07-2026',
     applicationType: 'Regular School',
     educationalPathway: 'Age Based',
     institutionLevel: 'Primary School',
     hasCert: 'YES',
-    certNo: 'null',
+    certNo: 'CERT-12345',
     sneBoys: 0,
     sneGirls: 0,
     totalLearners: 450,
-    coordinates: 'null, null',
+    coordinates: '-1.28379, 36.80942',
     county: 'Nairobi',
     subCounty: 'Starehe',
     constituency: 'Starehe',
-    postalCode: 'null',
+    postalCode: '00100',
     schoolCategory: 'Public',
-    postalLocation: 'null',
-    scdeComments: 'certificateNumber SCDE comments available.',
-    scqasoComments: 'certificateNumber SCQASO comments available.',
-    cqasoComments: 'certificateNumber CQASO comments available.',
-    scqasoReport: 'QASO_Inspection_Report_FRIENDS SCHOOL KAIMOSI SPECIAL FOR MH.pdf',
-    cqasoReport: 'CQASO_Inspection_Report_FRIENDS SCHOOL KAIMOSI SPECIAL FOR MH.pdf'
+    postalLocation: 'P.O Box 12345',
+    scdeComments: 'No SCDE comments available.',
+    scqasoComments: 'No SCQASO comments available.',
+    cqasoComments: 'No CQASO comments available.',
+    scqasoReport: 'QASO_Inspection_Report_FRIENDS SCHOOL.pdf',
+    cqasoReport: 'CQASO_Inspection_Report_FRIENDS SCHOOL.pdf'
   };
 
   // --- Actions ---
@@ -133,13 +150,13 @@ export class PendingInstitutionCounty {
 
   // Final Decision Actions
   approveSchool() {
-    console.log(`Approved: ${this.selectedInstitution.institutionName}`);
+    console.log(`Approved: ${this.selectedInstitution?.institutionName}`);
     alert('School Approved successfully!');
     this.closeModals();
   }
 
   rejectSchool() {
-    console.log(`Rejected: ${this.selectedInstitution.institutionName}`);
+    console.log(`Rejected: ${this.selectedInstitution?.institutionName}`);
     alert('School Rejected!');
     this.closeModals();
   }

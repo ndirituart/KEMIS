@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchPipe } from '../../pipes/search.pipe'; //for filtering
+import { RouterLink, RouterLinkActive } from '@angular/router'; //nav links
 
 @Component({
   selector: 'app-learners-registered-county',
   standalone: true,
-  imports: [CommonModule, FormsModule, SearchPipe],
+  imports: [CommonModule, FormsModule, SearchPipe, RouterLink, RouterLinkActive],
   templateUrl: './learners-registered-county.html',
   styleUrl: './learners-registered-county.css'
 })
