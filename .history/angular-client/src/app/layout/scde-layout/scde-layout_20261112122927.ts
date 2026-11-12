@@ -1,0 +1,35 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-scde-layout',
+  imports: [],
+  templateUrl: './scde-layout.html',
+  styleUrl: './scde-layout.css',
+})
+export class ScdeLayout {
+
+  //SCDE Dashboard data
+  // Static data mapping to the screenshot
+  dashboardData = {
+    subCountyName: 'Embakasi East',
+    userRole: 'SCDE',
+    stats: {
+      totalApplications: 1,
+      totalInstitutions: 1,
+      schoolsReceived: 0,
+      totalLearners: 0,
+      subjectCombinations: 0
+    },
+    submissionStatus: {
+      completed: 0,
+      inProgress: 0,
+      pending: 0
+    },
+    gender: {
+      total: 0,
+      male: 0, // Estimated from the 50/50 visual in the screenshot
+      female: 0
+    }
+  };
+  
+}
