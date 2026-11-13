@@ -13,7 +13,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 40px;
-  background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);
+  background: var(--kemis-blue); /*Correction to have uniform header color*/
   color: var(--kemis-white);
   font-size: 0.85rem;
 }

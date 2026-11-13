@@ -21,8 +21,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<InstitutionDecision> InstitutionDecisions => Set<InstitutionDecision>();
     //8. Object eight Reports by SCQASO, SCDE and CDE
     public DbSet<Report> Reports { get; set; }
-    //Assinged Schools
+    //9. Object nine Assinged Schools
     public DbSet<AssignedSchool> AssignedSchools {get; set;}
+    //10. Object ten Learners
+    public DbSet<Learner> Learners { get; set; }
 
   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
