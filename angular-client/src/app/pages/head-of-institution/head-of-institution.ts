@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 export class HeadOfInstitution implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef); 
+  private cdr = inject(ChangeDetectorRef);
 
   isLoading = true;
 
@@ -34,7 +34,7 @@ export class HeadOfInstitution implements OnInit {
     const instId = localStorage.getItem('institutionId');
 
     if (instId) {
-      this.http.get<any>(`http://localhost:5215/api/county-education/institutions/all/GetSchools/${instId}`).subscribe({
+      this.http.get<any>(`http://localhost:5215/api/county-education/institutions/all/GetSchool/${instId}`).subscribe({
         next: (res) => {
           console.log('School Data from API:', res);
 

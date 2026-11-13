@@ -11,7 +11,9 @@ import { BasicEducation } from './pages/basic-education/basic-education';
 import { Tvet } from './pages/tvet/tvet';
 import { HigherEducation } from './pages/higher-education/higher-education';
 import { SchoolDashboard } from './pages/school-dashboard/school-dashboard';
+//1. System User HOI and their child routes
 import { HeadOfInstitution } from './pages/head-of-institution/head-of-institution';
+import { LearnersInstitution } from './pages/learners-institution/learners-institution';
 // 2. System User CDE and their child routes
 import { CountyEducation } from './pages/county-education/county-education';
 import {InstitutionRegisteredCounty} from './pages/institution-registered-county/institution-registered-county';
@@ -57,10 +59,12 @@ export const routes: Routes = [
   { path: 'faqs', component: Faqs },
   { path: 'institution-onboarding', component: InstitutionOnboardingComponent},
   { path: 'basic-education', component: BasicEducation},
-  { path: 'tvet', component: Tvet},
+  { path: 'tvet', component: Tvet },
   { path: 'higher-education', component: HigherEducation },
+  //HOI Children pages
   { path: 'school-dashboard', component: SchoolDashboard, canActivate: [schoolDashboardGuard], data:{ allowedRoles: ['IT Officer', 'Deputy Principal', 'Teacher'] }  },
   { path: 'head-of-institution', component: HeadOfInstitution, canActivate: [hOIGuard], data: { allowedRoles: 'Head of Institution (HOI)'} },
+  { path: 'learners-institution', component: LearnersInstitution, canActivate: [hOIGuard], data: { allowedRoles: 'Head of Institution (HOI)'}},
   //CDE children pages
   { path: 'county-education', component: CountyEducation, canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
   { path: 'institution-registered-county', component: InstitutionRegisteredCounty,canActivate:[cDEGuard], data:{ allowedRoles: 'County Director of Education (CDE)'} },
