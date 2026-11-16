@@ -107,6 +107,42 @@ public class InstitutionWorkflowService
         };
     }
 
+        // Get schools by Sub-County (For SCDEs)
+    public async Task<object> GetSchoolsBySubCountyAsync(string subCounty, string? status, CancellationToken ct)
+    {
+        var query = _context.BasicEducations.Where(s => s.subCounty == subCounty);
+
+        if (!string.IsNullOrEmpty(status) && status != "All" && status != "Select")
+        {
+            query = query.Where(s => s.status == status);
+        }
+
+        var schools = await query.ToListAsync(ct);
+
+        return new
+        {
+            subCounty = subCounty,
+            schools = schools.Select(s => new
+            {
+                s.institutionId,
+                s.institutionName,
+                s.institutionType,
+                s.status,
+                s.subCounty,
+                s.constituency,
+                s.institutionLevel,
+                s.certificateNumber,
+                s.emailId,
+                s.mobileNo,
+                s.createdAt,
+                s.supervisorId,
+                s.totalLearners
+            }).ToList()
+        };
+    }
+
+
+
 
     // ==========================================
     // 2. SPECIFIC SCHOOL METHODS

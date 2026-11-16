@@ -65,7 +65,13 @@ public class SubCountyEducationController : ControllerBase
         return Ok(await _workflow.GetScdeDashboardStatsAsync(userId, ct));
     }
 
-    // 2. Fetches all schools that the CDE has assigned to this specific SCDE
+    //2. Get schools by Sub-County
+    [HttpGet("institutions")]
+    public Task<object> GetSchoolsBySubCounty([FromQuery] string subCounty, [FromQuery] string? status, CancellationToken ct) =>
+        _workflow.GetSchoolsBySubCountyAsync(subCounty, status, ct);
+        
+
+    // 3. Fetches all schools that the CDE has assigned to this specific SCDE
     [HttpGet("assigned-schools")]
     public async Task<IActionResult> GetAssignedSchools()
     {

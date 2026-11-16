@@ -50,6 +50,9 @@ public class UserController : ControllerBase
     [HttpPost("Login")]
   public IActionResult Login([FromBody] UserLogin userLogin)
   {
+
+    //To allow console debugging
+     Console.WriteLine($"Login attempt for: {userLogin.emailId}");
       // Check if email address exists and edited to check institutionId too
       var user = _context.Users.AsNoTracking().FirstOrDefault(u => u.emailId == userLogin.emailId);
       int? realinstitutionId = _context.Entry(user!).Property(u => u.institutionId).CurrentValue; //check in PostgreSQL Admin
@@ -57,6 +60,8 @@ public class UserController : ControllerBase
       // Authentication
       if (user == null || user.password != userLogin.password) 
       {
+        //Allow console debugging
+          Console.WriteLine("User not found or password mismatch.");
           return Unauthorized(new { message = "Invalid email or password." });
       }
 

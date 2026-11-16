@@ -202,7 +202,7 @@
      <!--Removed the phrase [disabled]="!myForm.valid || isLoading" because Angular's ngForm
       will automatically prevent submission if the form is invalid because you have required on your inputs.-->
     <div class="d-grid gap-2 mt-4">
-      <button type="submit" class="submit-btn" [disabled]="isLoading">
+      <button type="submit" class="submit-btn">
         <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
         {{ isLoading ? 'Submitting...' : 'Register School' }}
       </button>

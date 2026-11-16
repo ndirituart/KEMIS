@@ -156,7 +156,7 @@
         </div>
       </div>
 
-      <button type="submit" class="submit-btn" [disabled]="isLoading">
+      <button type="submit" class="submit-btn">
         <span class="btn-text" *ngIf="!isLoading">Register</span>
         <span class="spinner" *ngIf="isLoading"><i class="fas fa-spinner fa-spin"></i></span>
       </button>
@@ -170,7 +170,7 @@
         <label for="twofa-code">Verification Code:</label>
         <input type="text" id="twofa-code" name="twofaCode" [(ngModel)]="twoFaModel.code" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" />
       </div>
-      <button type="submit" class="submit-btn" [disabled]="isLoading">
+      <button type="submit" class="submit-btn">
         <span class="btn-text" *ngIf="!isLoading">Verify Code</span>
         <span class="spinner" *ngIf="isLoading"><i class="fas fa-spinner fa-spin"></i></span>
       </button>
