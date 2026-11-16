@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using dotnet_backend.Models; //To access the models for AssignedSchool, Report, and SubmitReportRequest
 using dotnet_backend.Services; //To import Instutio
 
-namespace KemisOnboarding.Api.Controllers;
+namespace dotnet_backend.Controllers;
 
 [ApiController]
 [Route("api/scde")]

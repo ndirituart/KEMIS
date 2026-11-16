@@ -14,7 +14,7 @@ export class SubCountyEducation {
 
   // Static data mapping to the screenshot
   dashboardData = {
-    subCountyName: 'Embakasi East',
+    subCountyName: 'Embakasi',
     userRole: 'SCDE',
     stats: {
       totalApplications: 1,

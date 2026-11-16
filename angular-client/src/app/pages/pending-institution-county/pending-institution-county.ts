@@ -24,7 +24,7 @@ export class PendingInstitutionCounty implements OnInit {
   subCounties = [
     'All',
     "Dagoretti North Sub County", "Dagoretti South Sub County", "Embakasi Central Sub Count",
-    "Embakasi East Sub County", "Embakasi North Sub County", "Embakasi South Sub County",
+    "Embakasi Sub County", "Embakasi North Sub County", "Embakasi South Sub County",
     "Embakasi West Sub County", "Kamukunji Sub County", "Kasarani Sub County", "Kibra Sub County",
     "Lang'ata Sub County", "Makadara Sub County", "Mathare Sub County", "Roysambu Sub County",
     "Ruaraka Sub County", "Starehe Sub County", "Westlands Sub County"

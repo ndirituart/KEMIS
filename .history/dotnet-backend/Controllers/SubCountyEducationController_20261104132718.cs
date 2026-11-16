@@ -6,7 +6,7 @@ using KemisOnboarding.Api.Dto;
 using KemisOnboarding.Api.Models;
 using dotnet_backend.Models;
 
-namespace KemisOnboarding.Api.Controllers;
+namespace dotnet_backend.Controllers;
 
 [ApiController]
 [Route("api/scde")]

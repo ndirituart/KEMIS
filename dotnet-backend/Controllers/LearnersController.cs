@@ -5,7 +5,7 @@ using dotnet_backend.Models;
 namespace dotnet_backend.Controllers;
 
 [ApiController]
-[Route("api/learners")]
+[Route("api/Learners")]
 public class LearnersController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -16,7 +16,7 @@ public class LearnersController : ControllerBase
     }
 
     // 1. CREATE LEARNER (Auto-fills School Data)
-    [HttpPost("create")]
+    [HttpPost("CreateALearner")]
     public async Task<IActionResult> CreateLearner([FromBody] Learner learner)
     {
         if (learner == null) return BadRequest("Invalid data.");
@@ -29,7 +29,7 @@ public class LearnersController : ControllerBase
         learner.institutionName = school.institutionName;
         learner.county = school.county;
         learner.subCounty = school.subCounty;
-        learner.cluster = school.Cluster ?? "Unclassified";
+        learner.cluster = school.cluster ?? "Unclassified";
 
         // 3. Generate the ULI
         learner.uli = await GenerateUniqueLearnerIdentifier(learner.isSne);
@@ -44,10 +44,10 @@ public class LearnersController : ControllerBase
         return Ok(new { message = "Learner created and classified successfully!", learner });
     }
 
-    // Helper Method to Generate ULI
+    //Generate ULI
     private async Task<string> GenerateUniqueLearnerIdentifier(bool isSne)
     {
-        string typeCode = isSne ? "SPE" : "REG";
+        string typeCode = isSne ? "SPE" : "REG"; //special students 
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         var random = new Random();
         string randomChars = new string(Enumerable.Repeat(chars, 3)
@@ -61,7 +61,7 @@ public class LearnersController : ControllerBase
     }
 
     // 2. UPDATE DETAILS
-    [HttpPut("update/{id:int}")]
+    [HttpPut("Update/{id:int}")]
     public async Task<IActionResult> UpdateLearner(int id, [FromBody] Learner updateData)
     {
         var learner = await _context.Learners.FindAsync(id);
@@ -80,7 +80,7 @@ public class LearnersController : ControllerBase
     }
 
     // 3. TRANSFER SCHOOL (Updates Classification)
-    [HttpPut("transfer/{id:int}")]
+    [HttpPut("Transfer/{id:int}")]
     public async Task<IActionResult> TransferLearner(int id, [FromQuery] int newInstitutionId)
     {
         var learner = await _context.Learners.FindAsync(id);
@@ -94,7 +94,7 @@ public class LearnersController : ControllerBase
         learner.institutionName = newSchool.institutionName;
         learner.county = newSchool.county;
         learner.subCounty = newSchool.subCounty;
-        learner.cluster = newSchool.Cluster ?? "Unclassified";
+        learner.cluster = newSchool.cluster ?? "Unclassified";
         
         learner.status = "transferred"; 
         learner.updatedAt = DateTime.UtcNow.ToString("o");
@@ -104,7 +104,7 @@ public class LearnersController : ControllerBase
     }
 
     // 4. DEACTIVATE
-    [HttpPut("deactivate/{id:int}")]
+    [HttpPut("Deactivate/{id:int}")]
     public async Task<IActionResult> DeactivateLearner(int id)
     {
         var learner = await _context.Learners.FindAsync(id);
@@ -130,28 +130,28 @@ public class LearnersController : ControllerBase
     }
 
     // Get by County (CDE)
-    [HttpGet("county/{countyName}")]
-    public async Task<IActionResult> GetByCounty(string countyName)
+    [HttpGet("county/{county}")]
+    public async Task<IActionResult> GetByCounty(string county)
     {
         var learners = await _context.Learners
-            .Where(l => l.county == countyName && l.status == "active")
+            .Where(l => l.county == county && l.status == "active")
             .ToListAsync();
         return Ok(learners);
     }
 
     // Get by SubCounty (SCDE)
-    [HttpGet("subcounty/{subCountyName}")]
-    public async Task<IActionResult> GetBySubCounty(string subCountyName)
+    [HttpGet("subcounty/{subCounty}")]
+    public async Task<IActionResult> GetBySubCounty(string subCounty)
     {
         var learners = await _context.Learners
-            .Where(l => l.subCounty == subCountyName && l.status == "active")
+            .Where(l => l.subCounty == subCounty && l.status == "active")
             .ToListAsync();
         return Ok(learners);
     }
 
-    // Get by Cluster
+    // Get by cluster
     [HttpGet("cluster/{clusterName}")]
-    public async Task<IActionResult> GetByCluster(string clusterName)
+    public async Task<IActionResult> GetBycluster(string clusterName)
     {
         var learners = await _context.Learners
             .Where(l => l.cluster == clusterName && l.status == "active")

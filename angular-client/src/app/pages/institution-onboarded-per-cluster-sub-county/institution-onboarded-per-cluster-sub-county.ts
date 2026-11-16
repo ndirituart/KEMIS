@@ -15,7 +15,7 @@ export class InstitutionOnboardedPerClusterSubCounty {
   institutionLevels = ['All', 'Pre-Primary', 'Primary', 'Junior School', 'Pre-Vocational', 'Vocational'];
   clusters = ['All', 'Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4', 'Private'];
   counties = [ 'Nairobi', ]; //default
-  subCounties = ["Embakasi East Sub County",];
+  subCounties = ["Embakasi Sub County",];
 
   // --- Filter Model ---
   filter = {

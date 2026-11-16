@@ -19,7 +19,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   // Hardcoded for now, but this should come from LocalStorage after login
-  private readonly subCountyName = 'Embakasi East Sub County';
+  private readonly subCountyName = 'Embakasi Sub County';
 
   // --- Main Table Data ---
   subCounties = [this.subCountyName];

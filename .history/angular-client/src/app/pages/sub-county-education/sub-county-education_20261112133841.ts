@@ -62,7 +62,7 @@ export class SubCountyEducation implements OnInit {
       error: (err) => {
         console.error('Failed to load SCDE profile', err);
         // Fallback for UI testing
-        this.dashboardData.subCountyName = 'Embakasi East';
+        this.dashboardData.subCountyName = 'Embakasi';
         this.cdr.detectChanges();
       }
     });

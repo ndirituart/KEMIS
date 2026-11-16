@@ -5,7 +5,7 @@ using KemisOnboarding.Api.Dto;
 using KemisOnboarding.Api.Models;
 using KemisOnboarding.Api.Services;
 
-namespace KemisOnboarding.Api.Controllers;
+namespace dotnet_backend.Controllers;
 
 [ApiController]
 [Route("api/county-education")]

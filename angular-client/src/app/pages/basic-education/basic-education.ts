@@ -513,7 +513,7 @@ export class BasicEducation {
         "Dagoretti North Sub County",
         "Dagoretti South Sub County ",
         "Embakasi Central Sub Count",
-        "Embakasi East Sub County",
+        "Embakasi Sub County",
         "Embakasi North Sub County ",
         "Embakasi South Sub County",
         "Embakasi West Sub County",

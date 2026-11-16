@@ -61,16 +61,50 @@ public class InstitutionWorkflowService
         };
     }
 
-    // Get SCDE Profile
     public async Task<SubCountyEducation> GetScdeProfileAsync(int userId, CancellationToken ct)
     {
-        var scdeMapping = await _context.SubCountyEducations
+        var scdeMapping = await _context.SubCountyEducation
             .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
 
         if (scdeMapping == null) 
             throw new Exception("SCDE profile not found for this user.");
 
         return scdeMapping;
+    }
+
+    // 2. Get SCDE Dashboard Stats
+    public async Task<object> GetScdeDashboardStatsAsync(int userId, CancellationToken ct)
+    {
+        var scde = await _context.SubCountyEducation
+            .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
+
+        if (scde == null) 
+            return new { error = "SCDE not found" };
+
+        var subCounty = scde.subCounty;
+
+        var schools = await _context.BasicEducations
+            .Where(s => s.subCounty == subCounty)
+            .ToListAsync(ct);
+
+        var pendingSCDE = schools.Count(s => s.status == "Pending" || s.status == "pending");
+        var recommended = schools.Count(s => s.status == "SCDE Recommended" || s.status == "SCQASO Recommended");
+        
+        var assigned = await _context.InstitutionAssignments
+            .CountAsync(a => a.status == "pending" && _context.BasicEducations.Any(s => s.institutionId == a.institutionId && s.subCounty == subCounty), ct);
+
+        return new
+        {
+            subCountyName = subCounty,
+            stats = new
+            {
+                totalApplications = pendingSCDE,
+                totalInstitutions = recommended,
+                schoolsReceived = assigned,
+                totalLearners = schools.Sum(s => s.totalLearners),
+                subjectCombinations = 0
+            }
+        };
     }
 
 

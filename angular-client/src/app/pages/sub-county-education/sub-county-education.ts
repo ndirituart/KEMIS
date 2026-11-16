@@ -18,7 +18,7 @@ export class SubCountyEducation implements OnInit {
 
   // Initialize with loading state
   dashboardData = {
-    subCountyName: 'Loading...',
+    subCounty: 'Loading...',
     userRole: 'SCDE',
     stats: {
       totalApplications: 0,
@@ -44,27 +44,42 @@ export class SubCountyEducation implements OnInit {
 
   ngOnInit() {
     this.loadScdeProfile();
+    this.loadDashboardStats();
   }
 
   loadScdeProfile() {
-    // Fetch the profile from the backend using the userId hardcoded in the controller
-    this.http.get<any>('http://localhost:5215/api/subcounty-education/profile').subscribe({
+    this.http.get<any>('http://localhost:5215/api/sub-county-education/profile').subscribe({
       next: (profile) => {
-        // 🔥 Dynamically set the Sub-County name from the database!
-        this.dashboardData.subCountyName = profile.subCounty;
-
-        // Update the dropdown to match
+        this.dashboardData.subCounty = profile.subCounty;
         this.selectedSubCounty = profile.subCounty;
-
-        // Optional: You can also fetch the stats for this specific subcounty here later
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to load SCDE profile', err);
-        // Fallback for UI testing
-        this.dashboardData.subCountyName = 'Embakasi East';
+        this.dashboardData.subCounty = 'Embakasi';
         this.cdr.detectChanges();
       }
+    });
+  }
+
+  loadDashboardStats() {
+    this.http.get<any>('http://localhost:5215/api/sub-county-education/dashboard-stats').subscribe({
+      next: (res) => {
+        if (res.stats) {
+          // 🔥 Map the backend stats to the UI
+          this.dashboardData.stats = res.stats;
+
+          // 🔥 Calculate Gender Distribution from the totalLearners
+          // (Since the backend doesn't split male/female yet, we can fake it for now
+          // or wait until your colleague adds the gender stats to the endpoint)
+          this.dashboardData.gender.total = res.stats.totalLearners;
+          this.dashboardData.gender.male = Math.floor(res.stats.totalLearners / 2);
+          this.dashboardData.gender.female = Math.ceil(res.stats.totalLearners / 2);
+
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => console.error('Failed to load stats', err)
     });
   }
 

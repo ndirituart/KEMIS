@@ -20,7 +20,7 @@ export class LearnersInstitution implements OnInit {
   genders = ['All', 'Male', 'Female'];
   grades = ['All', 'PP1', 'PP2', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'];
   counties = ['All', 'Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Kwale', 'Siaya', 'Nyeri'];
-  subCounties = ['All', 'Embakasi East', 'Westlands', 'Kibra', 'Kinango', 'Bondo', 'Nyeri Town'];
+  subCounties = ['All', 'Embakasi', 'Westlands', 'Kibra', 'Kinango', 'Bondo', 'Nyeri Town'];
 
   // --- Filter Model ---
   filter = {

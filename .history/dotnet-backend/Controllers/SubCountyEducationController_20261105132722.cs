@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using dotnet_backend.Models; //To access the models for AssignedSchool, Report, and SubmitReportRequest
 
-namespace KemisOnboarding.Api.Controllers;
+namespace dotnet_backend.Controllers;
 
 [ApiController]
 [Route("api/scde")]

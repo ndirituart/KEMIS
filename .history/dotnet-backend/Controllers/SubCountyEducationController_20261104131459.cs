@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using KemisOnboarding.Api.Dto;
 using KemisOnboarding.Api.Models;
 
-namespace KemisOnboarding.Api.Controllers;
+namespace dotnet_backend.Controllers;
 
 [ApiController]
 [Route("api/scde")]
