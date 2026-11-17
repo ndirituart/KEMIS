@@ -76,7 +76,7 @@ export class CountyEducation implements OnInit {
         schools.forEach((school: any) => {
           if (school.status === 'approved') approved++;
           else if (school.status === 'rejected' || school.status === 'denied') rejected++;
-          else if (school.status === 'pending' || school.status === 'under_review') pending++;
+          else if (school.status === 'pending' || school.status === 'SCQASO Recommended') pending++;
 
           totalLearners += (school.totalLearners || 0);
         });

@@ -59,7 +59,7 @@ export class CountyEducation implements OnInit {
         const schools = res.schools;
         const approved = schools.filter((s: any) => s.status === 'approved').length;
         const rejected = schools.filter((s: any) => s.status === 'rejected' || s.status === 'denied').length;
-        const pending = schools.filter((s: any) => s.status === 'pending' || s.status === 'under_review').length;
+        const pending = schools.filter((s: any) => s.status === 'pending' || s.status === 'SCQASO Recommended').length;
         const totalLearners = schools.reduce((sum: number, s: any) => sum + (s.totalLearners || 0), 0);
 
         // 3. Update the UI Stats

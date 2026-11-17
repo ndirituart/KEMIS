@@ -41,6 +41,7 @@
             <th>Subcounty</th>
             <th>Status</th>
             <th>Assigned SCDE</th>
+            <th>Assigned SCQASO</th>
             <th>Assign SCQASO</th> <!-- Renamed to Assign -->
             <th>View Details</th>
           </tr>
@@ -50,10 +51,6 @@
             <td>{{ inst.institutionId }}</td>
             <td>{{ inst.certificateNumber }}</td>
             <td>{{ inst.institutionName }}</td>
-            <td>{{ inst.subCounty }}</td>
-            <td>{{ inst.status }}</td>
-            <td>{{ inst.supervisorId || 'Unassigned' }}</td>
-            <td>{{ inst.assigneeId || 'None' }}</td>
             <td>{{ inst.createdAt | date:'dd-MM-yyyy' }}</td>
             <td>{{ inst.subCounty }}</td>
             <td>
@@ -61,14 +58,15 @@
               <span class="badge-status" [ngClass]="{
                 'badge-pending': inst.status === 'Pending' || inst.status === 'pending',
                 'badge-assigned': inst.status === 'Assigned SCDE' || inst.status === 'Assigned SCQASO',
-                'badge-recommended': inst.status === 'SCDE Recommended' || inst.status === 'SCQASO Recommended',
+                'badge-recommended': inst.status === 'SCDE Recommended',
                 'badge-rejected': inst.status === 'Rejected' || inst.status === 'rejected',
-                'badge-review': inst.status === 'under_review'
+                'badge-review': inst.status === 'SCQASO Recommended'
               }">
                 {{ inst.status }}
               </span>
             </td>
-            <td>{{ inst.supervisorId || 'Unassigned' }}</td>
+            <td>{{ inst.supervisorId || 'Logged in SCDE' }}</td>
+            <td>{{ inst.assigneeId || 'None' }}</td>
             <td>
               <!-- Changed to openAssignSCQASOModal -->
               <button class="btn-outline-gray" (click)="openAssignSCQASOModal(inst)">Assign</button>

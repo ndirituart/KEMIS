@@ -178,7 +178,7 @@ VALUES -- 1. Dagoretti North
         'Day & Boarding',
         'Private',
         TRUE,
-        'under_review',
+        'SCQASO Recommended',
         '2026-01-15T10:00:00.000Z',
         13
     ),
@@ -415,7 +415,7 @@ VALUES -- 1. Dagoretti North
         'Boarding',
         'Private',
         TRUE,
-        'under_review',
+        'SCQASO Recommended',
         '2026-01-24T10:00:00.000Z',
         13
     ),
@@ -652,7 +652,7 @@ VALUES -- 1. Dagoretti North
         'Boarding',
         'Private',
         TRUE,
-        'under_review',
+        'SCQASO Recommended',
         '2026-02-02T10:00:00.000Z',
         13
     ),
@@ -784,7 +784,7 @@ VALUES -- 1. Dagoretti North
         'Day',
         'Private',
         TRUE,
-        'under_review',
+        'SCQASO Recommended',
         '2026-02-07T09:00:00.000Z',
         13
     ),
@@ -968,7 +968,7 @@ VALUES -- 1. Dagoretti North
         'Day',
         'Public',
         TRUE,
-        'under_review',
+        'SCQASO Recommended',
         '2026-02-14T10:00:00.000Z',
         13
     ),
@@ -1153,7 +1153,7 @@ VALUES -- 1. Dagoretti North
         'Day',
         'Public',
         TRUE,
-        'under_review',
+        'SCQASO Recommended',
         '2026-02-21T08:00:00.000Z',
         13
     ),
@@ -1363,7 +1363,7 @@ VALUES -- 1. Dagoretti North
         'Boarding',
         'Private',
         TRUE,
-        'under_review',
+        'SCQASO Recommended',
         '2026-03-01T10:00:00.000Z',
         13
     );

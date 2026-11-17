@@ -171,7 +171,7 @@ public async Task<List<PendingInstitution>> GetAllAsync(int userId, Cancellation
         _context.InstitutionAssignments.Add(assignment);
         
         // Update school status to show it is being reviewed
-        school.status = "under_review";
+        school.status = "SCQASO Recommended";
         school.updatedAt = DateTime.UtcNow.ToString("o");
         
         await _context.SaveChangesAsync(ct);

@@ -18,9 +18,9 @@ export class PendingInstitutionsSubCounty implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   subCounties = ['All', "Embakasi East Sub County"];
-  statusList = ['Select', 'Pending', 'Rejected', 'SCDE Recommended', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended'];
+  statusList = ['All', 'Pending', 'Rejected', 'SCDE Recommended', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended'];
 
-  filter = { onboardingType: 'New Onboarding', subCounty: 'All', status: 'Pending' };
+  filter = { onboardingType: 'New Onboarding', subCounty: 'All', status: 'All' };
   tableSearch = '';
 
   allInstitutions: any[] = [];
@@ -62,11 +62,8 @@ export class PendingInstitutionsSubCounty implements OnInit {
     });
   }
 
-  fetchInstitutions(status: string = 'Pending') {
-    let paramStatus = status === 'Select' ? 'All' : status;
-
-    // Dynamic link to get schools for the Subcounty the SCDE belongs to
-    this.http.get<any>(`http://localhost:5215/api/sub-county-education/institutions?subCounty=${this.scdeSubCounty}&status=${paramStatus}`).subscribe({
+   fetchInstitutions(status: string = 'Select') {
+    this.http.get<any>(`http://localhost:5215/api/sub-county-education/institutions?subCounty=${this.scdeSubCounty}&status=${status}`).subscribe({
       next: (res) => {
         this.allInstitutions = res.schools || [];
         this.institutions = [...this.allInstitutions];

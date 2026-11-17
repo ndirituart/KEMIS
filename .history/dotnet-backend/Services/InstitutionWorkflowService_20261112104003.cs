@@ -122,7 +122,7 @@ public class InstitutionWorkflowService
         
         _context.InstitutionAssignments.Add(assignment);
         
-        school.status = "under_review";
+        school.status = "SCQASO Recommended";
         school.updatedAt = DateTime.UtcNow.ToString("o");
         
         await _context.SaveChangesAsync(ct);

@@ -145,7 +145,7 @@ public class InstitutionWorkflowService
         
         _context.InstitutionAssignments.Add(assignment);
         
-        school.status = "under_review";
+        school.status = "SCQASO Recommended";
         school.updatedAt = DateTime.UtcNow.ToString("o");
         
         await _context.SaveChangesAsync(ct);
@@ -279,7 +279,7 @@ public class InstitutionWorkflowService
         // 3. Calculate stats
         var approved = schools.Count(s => s.status == "approved");
         var rejected = schools.Count(s => s.status == "rejected" || s.status == "denied");
-        var pending = schools.Count(s => s.status == "pending" || s.status == "under_review");
+        var pending = schools.Count(s => s.status == "pending" || s.status == "SCQASO Recommended");
         var totalLearners = schools.Sum(s => s.totalLearners);
 
         return new

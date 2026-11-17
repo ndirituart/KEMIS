@@ -87,7 +87,7 @@ export class CountyEducation implements OnInit {
             approved++;
           } else if (school.status === 'rejected' || school.status === 'denied') {
             rejected++;
-          } else if (school.status === 'pending' || school.status === 'under_review') {
+          } else if (school.status === 'pending' || school.status === 'SCQASO Recommended') {
             pending++;
           }
 

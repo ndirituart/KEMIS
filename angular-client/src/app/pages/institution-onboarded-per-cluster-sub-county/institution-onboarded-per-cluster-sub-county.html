@@ -17,12 +17,14 @@
         </select>
       </div>
 
+      <!-- Cluster Filter -->
       <div class="filter-group">
-        <label>Select Cluster</label>
+        <label>Cluster</label>
         <select class="form-select" [(ngModel)]="filter.cluster">
           <option *ngFor="let c of clusters" [value]="c">{{ c }}</option>
         </select>
       </div>
+
 
       <!-- Row 2 -->
       <div class="filter-group">
@@ -35,20 +37,6 @@
         <input type="date" class="form-control" [(ngModel)]="filter.toDate">
       </div>
 
-      <!-- Row 3 -->
-      <div class="filter-group">
-        <label>County</label>
-        <select class="form-select bg-light" [(ngModel)]="filter.county">
-          <option *ngFor="let county of counties" [value]="county">{{ county }}</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label>Subcounty</label>
-        <select class="form-select" [(ngModel)]="filter.subCounty">
-          <option *ngFor="let sub of subCounties" [value]="sub">{{ sub }}</option>
-        </select>
-      </div>
 
       <!-- Search Button (Centered in the grid) -->
       <div class="filter-group search-btn-group">

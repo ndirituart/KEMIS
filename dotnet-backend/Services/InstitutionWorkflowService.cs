@@ -106,26 +106,26 @@ public class InstitutionWorkflowService
     }
 
     // 4. Get schools by Sub-County (For SCDEs)
-       public async Task<object> GetSchoolsBySubCountyAsync(string subCounty, string? status, CancellationToken ct)
+        public async Task<object> GetSchoolsBySubCountyAsync(string subCounty, string? status, CancellationToken ct)
     {
-        // make this both Uppercase and Lowercase
         var query = _context.BasicEducations
             .Where(s => s.subCounty.ToLower().Contains(subCounty.ToLower()));
 
-        //ignore case sensitivity for status
-        if (!string.IsNullOrEmpty(status) && status != "All" && status != "Select")
+        if (string.IsNullOrEmpty(status) || status == "Select" || status == "All")
         {
-            var lowerStatus = status.ToLower();
-            query = query.Where(s => s.status.ToLower() == lowerStatus);
+           
+            query = query.Where(s => s.status.ToLower() != "approved");
         }
+        else
+        {
 
+            query = query.Where(s => s.status.ToLower() == status.ToLower());
+        }
 
         var schools = await query.ToListAsync(ct);
 
         // Fetch assignments to map the SCQASO ID
         var schoolIds = schools.Select(s => s.institutionId).ToList();
-        
-        // Look in InstitutionAssignments for the SCQASO
         var assignments = await _context.InstitutionAssignments
             .Where(a => schoolIds.Contains(a.institutionId))
             .OrderByDescending(a => a.assignmentId)
@@ -147,8 +147,8 @@ public class InstitutionWorkflowService
                     s.createdAt,
                     s.subCounty,
                     s.status,
-                    s.supervisorId, // The SCDE (from BasicEducation)
-                    assigneeId = latestAssignment?.assigneeId, // The SCQASO (from InstitutionAssignments)
+                    s.supervisorId, // SCDE
+                    assigneeId = latestAssignment?.assigneeId, // SCQASO
                     s.institutionType,
                     s.institutionLevel,
                     s.totalLearners,
@@ -156,16 +156,13 @@ public class InstitutionWorkflowService
                     s.emailId,
                     s.mobileNo,
                     s.constituency,
-                    s.schoolCategory
+                    s.schoolCategory,
+                    s.cluster 
                 };
             }).ToList()
         };
     }
-
-
-
-
-    //FETCHING SCHOOLS
+            //FETCHING SCHOOLS
 
     // 1. Get School Details
     public async Task<InstitutionDetail> GetDetailAsync(int id, int userId, CancellationToken ct)
