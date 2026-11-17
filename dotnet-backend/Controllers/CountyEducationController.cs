@@ -57,9 +57,9 @@ public class CountyEducationController : ControllerBase
         _workflow.GetAssigneesAsync(userId, role, ct);
 
     // Assign a school to an SCDE
-    [HttpPost("institutions/{id:int}/assign")]
+        [HttpPost("institutions/{id:int}/assign")]
     public Task<InstitutionDetail> Assign(int id, [FromBody] AssignRequest req, CancellationToken ct) =>
-        _workflow.AssignAsync(id, userId, req, ct);
+        _workflow.AssignScdeAsync(id, userId, req, ct);
 
     // Add a comment to a school
     [HttpPost("institutions/{id:int}/comments")]

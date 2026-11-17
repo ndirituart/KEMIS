@@ -64,7 +64,7 @@ public class InstitutionWorkflowService
     // Get SCDE Profile
     public async Task<SubCountyEducation> GetScdeProfileAsync(int userId, CancellationToken ct)
     {
-        var scdeMapping = await _context.SubCountyEducations
+        var scdeMapping = await _context.SubCountyEducation
             .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
 
         if (scdeMapping == null) 
@@ -78,7 +78,7 @@ public class InstitutionWorkflowService
     public async Task<object> GetScdeDashboardStatsAsync(int userId, CancellationToken ct)
     {
         // 1. Find the SCDE's SubCounty
-        var scde = await _context.SubCountyEducations
+        var scde = await _context.SubCountyEducation
             .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
 
         if (scde == null) return new { error = "SCDE not found" };

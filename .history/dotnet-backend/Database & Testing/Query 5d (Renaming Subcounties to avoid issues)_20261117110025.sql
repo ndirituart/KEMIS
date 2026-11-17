@@ -1,0 +1,2 @@
+SELECT * FROM "SubCountyEducation" WHERE "subCounty" LIKE '%Embakasi%';
+

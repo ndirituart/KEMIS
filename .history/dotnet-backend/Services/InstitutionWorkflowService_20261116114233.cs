@@ -65,7 +65,7 @@ public class InstitutionWorkflowService
     public async Task<object> GetScdeDashboardStatsAsync(int userId, CancellationToken ct)
     {
         // 1. Link SCDE to Subcounty
-        var scde = await _context.SubCountyEducations
+        var scde = await _context.SubCountyEducation
             .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
 
         if (scde == null) return new { error = "SCDE not found" };

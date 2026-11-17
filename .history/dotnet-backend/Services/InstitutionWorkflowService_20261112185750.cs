@@ -36,7 +36,7 @@ public class InstitutionWorkflowService
     // Get SCDE Profile
     public async Task<SubCountyEducation> GetScdeProfileAsync(int userId, CancellationToken ct)
     {
-        var scdeMapping = await _context.SubCountyEducations
+        var scdeMapping = await _context.SubCountyEducation
             .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
 
         if (scdeMapping == null) 

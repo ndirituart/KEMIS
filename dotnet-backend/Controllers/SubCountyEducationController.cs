@@ -94,7 +94,31 @@ public class SubCountyEducationController : ControllerBase
         return Ok(schools);
     }
 
-    // 3. Submit a report
+    // 3. Assign a school to a SCQASO
+       [HttpGet("scqasos")]
+    public async Task<IActionResult> GetScqasos(CancellationToken ct)
+    {
+        var scde = await _context.SubCountyEducation.FirstOrDefaultAsync(s => s.userId == userId, ct);
+        if (scde == null) return NotFound("SCDE not found.");
+
+        // To make it case-insensitive and forgiving
+        var scqasos = await _context.Users
+            .Where(u => u.role == "Sub-County Quality Assurance and Standards Officer (SCQASO)" 
+                     && u.subCounty.ToLower().Contains(scde.subCounty.ToLower()) // Case insensitive
+                     && u.status == "active")
+            .Select(u => new { u.userId, u.fullName, u.role })
+            .ToListAsync();
+
+        return Ok(scqasos);
+    }
+
+    // 4. Assign a SCQASO
+        [HttpPost("institutions/{id:int}/assign-scqaso")]
+    public Task<InstitutionDetail> AssignSCQASO(int id, [FromBody] AssignRequest req, CancellationToken ct) =>
+        _workflow.AssignScqasoAsync(id, userId, req, ct);
+
+
+    // 5.   Submit a report
     [HttpPost("reports")]
     public async Task<IActionResult> SubmitReport([FromBody] SubmitReportRequest request)
     {

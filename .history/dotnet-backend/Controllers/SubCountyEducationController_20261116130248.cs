@@ -32,7 +32,7 @@ public class SubCountyEducationController : ControllerBase
         if (!string.IsNullOrEmpty(subCounty))
         {
             // If testing with a specific subcounty, look it up in the DB
-            var profile = await _context.SubCountyEducations
+            var profile = await _context.SubCountyEducation
                 .FirstOrDefaultAsync(s => s.subCounty.ToLower().Contains(subCounty.ToLower()), ct);
             if (profile == null) return NotFound($"Subcounty {subCounty} not found.");
             return Ok(profile);

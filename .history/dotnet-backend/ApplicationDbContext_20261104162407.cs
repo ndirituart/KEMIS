@@ -12,7 +12,7 @@ public class ApplicationDbContext : DbContext
     //3. Object three CDE Reports
     public DbSet<CountyEducation> CountyEducations => Set<CountyEducation>();
     public DbSet<CountyEducation> CountyEducations { get; set; }
-    public DbSet<SubCountyEducation> SubCountyEducations { get; set; }
+    public DbSet<SubCountyEducation> SubCountyEducation { get; set; }
     public DbSet<InstitutionAssignment> InstitutionAssignments { get; set; }
     public DbSet<InstitutionComment> InstitutionComments { get; set; }
     public DbSet<InstitutionDecision> InstitutionDecisions { get; set; }

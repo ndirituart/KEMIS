@@ -11,7 +11,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<BasicEducation> BasicEducations => Set<BasicEducation>();
     //3. Object three CDE
     public DbSet<CountyEducation> CountyEducations { get; set; }
-    public DbSet<SubCountyEducation> SubCountyEducations { get; set; }
+    public DbSet<SubCountyEducation> SubCountyEducation { get; set; }
     public DbSet<InstitutionAssignment> InstitutionAssignments { get; set; }
     public DbSet<InstitutionComment> InstitutionComments { get; set; }
     public DbSet<InstitutionDecision> InstitutionDecisions { get; set; }

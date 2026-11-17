@@ -13,15 +13,13 @@ public class InstitutionWorkflowService
         _context = context;
     }
 
-    // ==========================================
-    // 1. DASHBOARD METHODS (Used by Controller)
-    // ==========================================
+   //A. DASHBOARD METHODS
 
-    // Get CDE Profile (Returns the CountyEducation model with the User loaded)
+    //1.  Get CDE Profile (Returns the CountyEducation model with the User loaded)
     public async Task<CountyEducation> GetCdeProfileAsync(int userId, CancellationToken ct)
     {
         var cdeMapping = await _context.CountyEducations
-            .Include(c => c.User) // Loads the User (CDE)
+            .Include(c => c.User) // Loads the UserId after login
             .FirstOrDefaultAsync(c => c.userId == userId && c.isActive, ct);
 
         if (cdeMapping == null) 
@@ -30,7 +28,7 @@ public class InstitutionWorkflowService
         return cdeMapping;
     }
 
-    // Get Schools by County
+    // 2. Get Schools by County
         public async Task<object> GetSchoolsByCountyAsync(string county, string? status, CancellationToken ct)
     {
         var query = _context.BasicEducations.Where(s => s.county == county);
@@ -72,7 +70,7 @@ public class InstitutionWorkflowService
         return scdeMapping;
     }
 
-    // 2. Get SCDE Dashboard Stats
+    // 3. Get SCDE Dashboard Stats
     public async Task<object> GetScdeDashboardStatsAsync(int userId, CancellationToken ct)
     {
         var scde = await _context.SubCountyEducation
@@ -107,36 +105,59 @@ public class InstitutionWorkflowService
         };
     }
 
-        // Get schools by Sub-County (For SCDEs)
-    public async Task<object> GetSchoolsBySubCountyAsync(string subCounty, string? status, CancellationToken ct)
+    // 4. Get schools by Sub-County (For SCDEs)
+       public async Task<object> GetSchoolsBySubCountyAsync(string subCounty, string? status, CancellationToken ct)
     {
-        var query = _context.BasicEducations.Where(s => s.subCounty == subCounty);
+        // make this both Uppercase and Lowercase
+        var query = _context.BasicEducations
+            .Where(s => s.subCounty.ToLower().Contains(subCounty.ToLower()));
 
+        //ignore case sensitivity for status
         if (!string.IsNullOrEmpty(status) && status != "All" && status != "Select")
         {
-            query = query.Where(s => s.status == status);
+            var lowerStatus = status.ToLower();
+            query = query.Where(s => s.status.ToLower() == lowerStatus);
         }
 
+
         var schools = await query.ToListAsync(ct);
+
+        // Fetch assignments to map the SCQASO ID
+        var schoolIds = schools.Select(s => s.institutionId).ToList();
+        
+        // Look in InstitutionAssignments for the SCQASO
+        var assignments = await _context.InstitutionAssignments
+            .Where(a => schoolIds.Contains(a.institutionId))
+            .OrderByDescending(a => a.assignmentId)
+            .ToListAsync(ct);
 
         return new
         {
             subCounty = subCounty,
-            schools = schools.Select(s => new
+            schools = schools.Select(s => 
             {
-                s.institutionId,
-                s.institutionName,
-                s.institutionType,
-                s.status,
-                s.subCounty,
-                s.constituency,
-                s.institutionLevel,
-                s.certificateNumber,
-                s.emailId,
-                s.mobileNo,
-                s.createdAt,
-                s.supervisorId,
-                s.totalLearners
+                // Find the latest SCQASO assignment
+                var latestAssignment = assignments.FirstOrDefault(a => a.institutionId == s.institutionId);
+                
+                return new
+                {
+                    s.institutionId,
+                    s.institutionName,
+                    s.certificateNumber,
+                    s.createdAt,
+                    s.subCounty,
+                    s.status,
+                    s.supervisorId, // The SCDE (from BasicEducation)
+                    assigneeId = latestAssignment?.assigneeId, // The SCQASO (from InstitutionAssignments)
+                    s.institutionType,
+                    s.institutionLevel,
+                    s.totalLearners,
+                    s.headOfInstitution,
+                    s.emailId,
+                    s.mobileNo,
+                    s.constituency,
+                    s.schoolCategory
+                };
             }).ToList()
         };
     }
@@ -144,11 +165,9 @@ public class InstitutionWorkflowService
 
 
 
-    // ==========================================
-    // 2. SPECIFIC SCHOOL METHODS
-    // ==========================================
+    //FETCHING SCHOOLS
 
-    // Get School Details
+    // 1. Get School Details
     public async Task<InstitutionDetail> GetDetailAsync(int id, int userId, CancellationToken ct)
     {
         var school = await _context.BasicEducations.FindAsync(id);
@@ -167,11 +186,9 @@ public class InstitutionWorkflowService
         return new InstitutionDetail(school.institutionId, school.institutionName, school.county, school.status, comments, decisions);
     }
 
-    // ==========================================
-    // 3. WORKFLOW METHODS (Assign, Comment, Decide)
-    // ==========================================
+   //SCHOOLS WORKFLOW FROM HOI, CDE, SCDE, SCQASO
 
-    // Get Assignees (SCDEs)
+    //1.  Get Assignees (SCDEs)
     public async Task<List<UserSummary>> GetAssigneesAsync(int userId, AssignmentRole role, CancellationToken ct)
     {
         string roleName = role == AssignmentRole.SCDE ? "Sub-County Director of Education (SCDE)" : "County Quality Assurance and Standards Officer (CQASO)";
@@ -181,19 +198,19 @@ public class InstitutionWorkflowService
             .Select(u => new UserSummary(u.userId, u.fullName, u.role))
             .ToListAsync(ct);
     }
-
-       // 8. Assign a School to an SCDE
-    public async Task<InstitutionDetail> AssignAsync(int id, int userId, AssignRequest req, CancellationToken ct)
+    
+    //2. Assign an SCDE (Done by CDE)
+    public async Task<InstitutionDetail> AssignScdeAsync(int id, int userId, AssignRequest req, CancellationToken ct)
     {
         var school = await _context.BasicEducations.FindAsync(id);
         if (school == null) throw new Exception("School not found");
 
-        // 1. Update the main BasicEducation table
-        school.status = "Assigned SCDE";       
-        school.supervisorId = req.assigneeId;  
+        // Update BasicEducation table, created a separate row to track the assignee though SupervisorId
+        school.status = "Assigned SCDE";
+        school.supervisorId = req.assigneeId; // SCDE becomes supervisor
         school.updatedAt = DateTime.UtcNow.ToString("o");
-        
-        // 2. Save to your new AssignedSchools table
+
+        //Save to AssignedSchools table
         var assignedSchool = new AssignedSchool
         {
             institutionId = id,
@@ -202,19 +219,44 @@ public class InstitutionWorkflowService
             institutionName = school.institutionName,
             county = school.county,
             subCounty = school.subCounty,
-            status = "pending", // Status for the SCDE to see
+            status = "pending",
             hasReport = false,
             createdDate = DateTime.UtcNow.ToString("o")
         };
         _context.AssignedSchools.Add(assignedSchool);
 
-        // 3. Save everything
         await _context.SaveChangesAsync(ct);
-
         return await GetDetailAsync(id, userId, ct);
     }
 
-    // Add a Comment
+    //3. Assign SCQASO (Called by SCDE)
+    public async Task<InstitutionDetail> AssignScqasoAsync(int id, int userId, AssignRequest req, CancellationToken ct)
+    {
+        var school = await _context.BasicEducations.FindAsync(id);
+        if (school == null) throw new Exception("School not found");
+
+        // Update BasicEducation. Again another separate row from supervisorId called assineeId
+        school.status = "Assigned SCQASO";
+        school.updatedAt = DateTime.UtcNow.ToString("o");
+
+        // 2. Save to InstitutionAssignments table
+        var assignment = new InstitutionAssignment
+        {
+            institutionId = id,
+            assigneeId = req.assigneeId, // SCQASO
+            assignerId = userId,         // SCDE
+            status = "pending",
+            hasReport = false,
+            assignedAt = DateTime.UtcNow.ToString("o")
+        };
+        _context.InstitutionAssignments.Add(assignment);
+
+        await _context.SaveChangesAsync(ct);
+        return await GetDetailAsync(id, userId, ct);
+    }
+
+
+    // 4. Add a Comment (Done by SCQASO)
     public async Task<InstitutionDetail> AddCommentAsync(int id, int userId, CommentRequest req, CancellationToken ct)
     {
         var comment = new InstitutionComment
@@ -230,7 +272,7 @@ public class InstitutionWorkflowService
         return await GetDetailAsync(id, userId, ct);
     }
 
-    // Make the final decision (CDE)
+    // 5.  Make the final decision (CDE)
     public async Task<InstitutionDetail> FinalDecisionAsync(int id, int userId, DecisionRequest req, CancellationToken ct)
     {
         var school = await _context.BasicEducations.FindAsync(id);

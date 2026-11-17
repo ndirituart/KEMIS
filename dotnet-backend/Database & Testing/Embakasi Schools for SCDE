@@ -1,0 +1,6 @@
+"scdeId","subCounty","county","countyCode","officeAddress","userId","isActive","status","createdAt","updatedAt","deletedAt"
+12,"Embakasi","Nairobi","047","County Education Office Embakasi East",4,True,"active","2026-01-01T08:00:00Z",NULL,NULL
+10,"Embakasi","Nairobi","047","County Education Office Embakasi",NULL,True,"active","2026-01-01T08:00:00Z",NULL,NULL
+9,"Embakasi","Nairobi","047","County Education Office Embakasi",NULL,True,"active","2026-01-01T08:00:00Z",NULL,NULL
+13,"Embakasi","Nairobi","047","County Education Office Embakasi",NULL,True,"active","2026-01-01T08:00:00Z",NULL,NULL
+11,"Embakasi","Nairobi","047","County Education Office Embakasi",NULL,True,"active","2026-01-01T08:00:00Z",NULL,NULL
