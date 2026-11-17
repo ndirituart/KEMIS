@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS "AssignedSchools" (
     "assignmentId" SERIAL PRIMARY KEY,
     -- Foreign Keys
     "institutionId" INT NOT NULL,
-    -- 🔥 BOTH POINT TO THE USERS TABLE 🔥
+    -- BOTH POINT TO THE USERS TABLE 🔥
     "assigneeId" INT NOT NULL,
     -- The SCDE (User)
     "assignerId" INT NOT NULL,

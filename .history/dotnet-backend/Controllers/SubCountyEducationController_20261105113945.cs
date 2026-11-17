@@ -64,7 +64,7 @@ public async Task<IActionResult> SubmitReport([FromBody] SubmitReportRequest req
     };
     _context.SubCountyEducation.Add(report);
     
-    // 3. 🔥 LINK: Update the assignment to show the report is done
+    // 3. LINK: Update the assignment to show the report is done
     var assignment = await _context.InstitutionAssignments
         .FirstOrDefaultAsync(a => a.institutionId == request.institutionId && a.assigneeId == CurrentUserId);
         

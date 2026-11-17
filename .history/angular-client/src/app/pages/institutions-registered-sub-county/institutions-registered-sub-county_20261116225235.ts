@@ -64,7 +64,7 @@ export class InstitutionsRegisteredSubCounty implements OnInit {
   }
 
   fetchApprovedInstitutions(subCountyName: string) {
-    // 🔥 Notice we are now using the /api/sub-county-education/ endpoint!
+    // Notice we are now using the /api/sub-county-education/ endpoint!
     this.http.get<any>(`http://localhost:5215/api/sub-county-education/institutions?subCounty=${subCountyName}&status=approved`).subscribe({
       next: (res) => {
         this.institutions = res.schools || [];

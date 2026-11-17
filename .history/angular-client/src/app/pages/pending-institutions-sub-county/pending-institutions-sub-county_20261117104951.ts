@@ -137,7 +137,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
 
     const payload = { assigneeId: this.selectedSCQASO };
 
-    // 🔥 Notice the URL change here
+    // Notice the URL change here
     this.http.post(`http://localhost:5215/api/sub-county-education/institutions/${this.selectedInstitution.institutionId}/assign-scqaso`, payload).subscribe({
       next: () => {
         this.notification.showSuccess('Assigned to SCQASO successfully.');

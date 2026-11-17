@@ -71,7 +71,7 @@ public class UserController : ControllerBase
     return Ok(new { 
         token = token,
         role = user.role,
-        institutionId = user.institutionId, // 🔥 CRITICAL: Must send this!
+        institutionId = user.institutionId, // CRITICAL: Must send this!
         userId = user.userId
     });
   }

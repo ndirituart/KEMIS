@@ -66,10 +66,10 @@ export class SubCountyEducation implements OnInit {
     this.http.get<any>('http://localhost:5215/api/sub-county-education/dashboard-stats').subscribe({
       next: (res) => {
         if (res.stats) {
-          // 🔥 Map the backend stats to the UI
+          // Map the backend stats to the UI
           this.dashboardData.stats = res.stats;
 
-          // 🔥 Calculate Gender Distribution from the totalLearners
+          // Calculate Gender Distribution from the totalLearners
           // (Since the backend doesn't split male/female yet, we can fake it for now
           // or wait until your colleague adds the gender stats to the endpoint)
           this.dashboardData.gender.total = res.stats.totalLearners;

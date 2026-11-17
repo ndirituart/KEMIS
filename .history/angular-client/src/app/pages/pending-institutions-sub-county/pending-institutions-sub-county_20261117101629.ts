@@ -65,7 +65,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
   fetchInstitutions(status: string = 'Pending') {
     let paramStatus = status === 'Select' ? 'All' : status;
 
-    // 🔥 Notice how we use 'this.scdeSubCounty' instead of hardcoding Embakasi
+    // Notice how we use 'this.scdeSubCounty' instead of hardcoding Embakasi
     this.http.get<any>(`http://localhost:5215/api/sub-county-education/institutions?subCounty=${this.scdeSubCounty}&status=${paramStatus}`).subscribe({
       next: (res) => {
         this.allInstitutions = res.schools || [];

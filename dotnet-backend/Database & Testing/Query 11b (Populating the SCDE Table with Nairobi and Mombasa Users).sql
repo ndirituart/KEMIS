@@ -120,7 +120,7 @@ VALUES -- NAIROBI (17)
     'active',
     '2026-01-01T08:00:00Z'
   ),
-  -- 🔥 HERE IS THE ACTIVE USER
+  -- HERE IS THE ACTIVE USER
   (
     'Embakasi Sub County',
     'Nairobi',

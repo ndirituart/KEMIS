@@ -53,7 +53,7 @@ export class PendingInstitutionCounty implements OnInit {
 
     // Change this to take a status parameter from the dropdown button
   fetchPendingSchools(status: string = 'pending') {
-    // 🔥 Notice how we pass the status variable into the URL
+    // Notice how we pass the status variable into the URL
     this.http.get<any>(`http://localhost:5215/api/county-education/institutions?county=Nairobi&status=${status}`).subscribe({
       next: (res) => {
         this.allInstitutions = res.schools || [];

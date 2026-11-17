@@ -47,7 +47,7 @@ export class HeadOfInstitution implements OnInit {
           // 2. Turn off loading
           this.isLoading = false;
 
-          // 3. 🔥 THE MAGIC FIX: Force Angular to re-render the HTML immediately
+          // 3. ERROR RESOLVED: Force Angular to re-render the HTML immediately
           this.cdr.detectChanges();
         },
         error: (err) => {

@@ -202,7 +202,7 @@ public class InstitutionWorkflowService
         school.supervisorId = req.assigneeId;  // This sets it to the SCQASO's ID
         school.updatedAt = DateTime.UtcNow.ToString("o");
         
-        // 🔥 SAVE TO INSTITUTION ASSIGNMENTS TABLE
+        // SAVE TO INSTITUTION ASSIGNMENTS TABLE
         var assignment = new InstitutionAssignment
         {
             institutionId = id,

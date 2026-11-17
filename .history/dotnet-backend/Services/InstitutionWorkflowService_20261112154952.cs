@@ -136,7 +136,7 @@ public class InstitutionWorkflowService
         
         _context.InstitutionAssignments.Add(assignment);
         
-        // 2. 🔥 UPDATE THE SCHOOL TABLE 🔥
+        // 2. UPDATE THE SCHOOL TABLE 🔥
         school.status = "Assigned SCDE";       // Update status
         school.supervisorId = req.assigneeId;  // Set the SCDE as the supervisor
         school.updatedAt = DateTime.UtcNow.ToString("o");

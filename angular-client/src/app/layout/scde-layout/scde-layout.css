@@ -123,11 +123,12 @@
 
 .top-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   background: var(--kemis-white, #ffffff);
   padding: 1rem 2rem;
   height: 80px;
+  border-bottom: 1px solid var(--kemis-border, #dee2e6); /* Optional: adds a nice line */
 }
 
 .header-left { display: flex; align-items: center; gap: 10px; }
@@ -146,6 +147,7 @@
   color: #333;
   background-color: #fff;
 }
+
 .header-select-icon {
   width: 50px;
   border-radius: 6px;

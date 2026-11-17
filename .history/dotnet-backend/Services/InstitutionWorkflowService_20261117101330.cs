@@ -132,8 +132,8 @@ public class InstitutionWorkflowService
                 s.subCounty,
                 s.status,
                 s.supervisorId,       
-                s.institutionType,    // 🔥 Add this for the View Modal
-                s.institutionLevel,   // 🔥 Add this for the View Modal
+                s.institutionType,    // Add this for the View Modal
+                s.institutionLevel,   // Add this for the View Modal
                 s.totalLearners,
                 s.headOfInstitution,
                 s.emailId,

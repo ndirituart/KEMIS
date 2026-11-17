@@ -6,7 +6,7 @@
   background-color: #f4f7f9;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   
-  /* 🔥 CHANGE THIS: Hide overflow on the wrapper */
+  /* CHANGE THIS: Hide overflow on the wrapper */
   overflow: hidden; 
 }
 
@@ -20,7 +20,7 @@
   align-items: center;
   padding-top: 1rem;
   
-  /* 🔥 CHANGE THIS: This stops the dropdowns from being cut off */
+  /* CHANGE THIS: This stops the dropdowns from being cut off */
   overflow: visible !important; 
   z-index: 1000;
 }

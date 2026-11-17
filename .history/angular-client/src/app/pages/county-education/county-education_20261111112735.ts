@@ -54,7 +54,7 @@ export class CountyEducation implements OnInit {
       error: (err) => {
         console.error('Failed to load profile', err);
 
-        // 🔥 FALLBACK: If the backend fails, default to Nairobi so the UI works!
+        // FALLBACK: If the backend fails, default to Nairobi so the UI works!
         this.dashboardData.county = 'Nairobi';
         this.dashboardData.fullName = 'NAIROBI CDE';
         this.populateSubCounties('Nairobi');

@@ -13,7 +13,7 @@ public class Report
     
     public int institutionId { get; set; }
     
-    // 🔥 CRITICAL: Who wrote this report?
+    // CRITICAL: Who wrote this report?
     public int scdeId { get; set; } 
     
     public string institutionName { get; set; } = string.Empty;

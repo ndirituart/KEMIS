@@ -101,7 +101,7 @@ public class SubCountyEducationController : ControllerBase
         var scde = await _context.SubCountyEducations.FirstOrDefaultAsync(s => s.userId == userId, ct);
         if (scde == null) return NotFound("SCDE not found.");
 
-        // 🔥 Make it case-insensitive and forgiving
+        // Make it case-insensitive and forgiving
         var scqasos = await _context.Users
             .Where(u => u.role == "Sub-County Quality Assurance and Standards Officer (SCQASO)" 
                      && u.subCounty.ToLower().Contains(scde.subCounty.ToLower()) // Case insensitive

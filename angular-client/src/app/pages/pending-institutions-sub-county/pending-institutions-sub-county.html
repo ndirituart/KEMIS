@@ -16,12 +16,6 @@
 
     <div class="row mt-4">
       <div class="col-md-6">
-        <label class="form-label fw-bold">Sub County:</label>
-        <select class="form-select" [(ngModel)]="filter.subCounty">
-          <option *ngFor="let sub of subCounties" [value]="sub">{{ sub }}</option>
-        </select>
-      </div>
-      <div class="col-md-6">
         <label class="form-label fw-bold">Status:</label>
         <select class="form-select" [(ngModel)]="filter.status">
           <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
@@ -63,7 +57,16 @@
             <td>{{ inst.createdAt | date:'dd-MM-yyyy' }}</td>
             <td>{{ inst.subCounty }}</td>
             <td>
-              <span class="badge-status bg-warning text-dark">{{ inst.status }}</span>
+              <!-- Dynamic badge colors based on status -->
+              <span class="badge-status" [ngClass]="{
+                'badge-pending': inst.status === 'Pending' || inst.status === 'pending',
+                'badge-assigned': inst.status === 'Assigned SCDE' || inst.status === 'Assigned SCQASO',
+                'badge-recommended': inst.status === 'SCDE Recommended' || inst.status === 'SCQASO Recommended',
+                'badge-rejected': inst.status === 'Rejected' || inst.status === 'rejected',
+                'badge-review': inst.status === 'under_review'
+              }">
+                {{ inst.status }}
+              </span>
             </td>
             <td>{{ inst.supervisorId || 'Unassigned' }}</td>
             <td>

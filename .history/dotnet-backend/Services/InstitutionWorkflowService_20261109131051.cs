@@ -281,7 +281,7 @@ public class InstitutionWorkflowService
 
         // 2. Query BasicEducation for ONLY that specific county
         var query = _context.BasicEducations
-            .Where(s => s.county == cdeMapping.county); // 🔥 Narrowed down here!
+            .Where(s => s.county == cdeMapping.county); // Narrowed down here!
 
         // 3. Apply the optional status filter
         if (!string.IsNullOrEmpty(status) && status != "All")

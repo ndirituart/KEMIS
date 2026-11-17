@@ -709,7 +709,7 @@ export class CountyEducation implements OnInit {
       next: (res) => {
         const schools = res.schools || [];
 
-        // 🔥 THE LIVE TALLY 🔥
+        // THE LIVE TALLY 🔥
         let approved = 0;
         let rejected = 0;
         let pending = 0;

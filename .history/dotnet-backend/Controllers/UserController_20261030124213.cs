@@ -71,7 +71,7 @@ public IActionResult Login([FromBody] UserLogin userLogin)
     return Ok(new { 
         token = token,
         role = user.role,
-        institutionId = user.institutionId, // 🔥 CRITICAL: Must send this!
+        institutionId = user.institutionId, // CRITICAL: Must send this!
         userId = user.userId
     });
 }

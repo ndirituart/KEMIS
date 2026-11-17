@@ -88,7 +88,7 @@ export class PendingInstitutionCounty implements OnInit {
 
   activeViewTab = 'form';
 
-  // 🔥 Dynamic View Data
+  // Dynamic View Data
   viewData: any = {
     institutionType: '', institutionName: '', headOfInstitution: '', email: '', mobileNo: '',
     onboardingDate: '', applicationType: '', educationalPathway: '', institutionLevel: '',

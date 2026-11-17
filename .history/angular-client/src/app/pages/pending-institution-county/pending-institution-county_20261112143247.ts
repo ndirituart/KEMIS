@@ -79,12 +79,12 @@ export class PendingInstitutionCounty implements OnInit {
   selectedInstitution: any = null;
   selectedSCDE = '';
 
-  // 🔥 Dynamic Lists
+  // Dynamic Lists
   scdeList: any[] = [];
 
   activeViewTab = 'form';
 
-  // 🔥 Dynamic View Data
+  // Dynamic View Data
   viewData: any = {
     institutionType: '', institutionName: '', headOfInstitution: '', email: '', mobileNo: '',
     onboardingDate: '', applicationType: '', educationalPathway: '', institutionLevel: '',

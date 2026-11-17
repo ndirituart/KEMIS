@@ -18,7 +18,7 @@ public class CountyEducationController : ControllerBase
         _workflow = workflow;
     }
 
-    // 🔥 FOR TESTING: Hardcoded userId. 
+    // FOR TESTING: Hardcoded userId. 
     // FOR PRODUCTION: Uncomment the line below and delete the hardcoded one.
     private int userId => 3; 
     // private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

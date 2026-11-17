@@ -108,7 +108,7 @@ public class InstitutionWorkflowService
     // 4. Get schools by Sub-County (For SCDEs)
        public async Task<object> GetSchoolsBySubCountyAsync(string subCounty, string? status, CancellationToken ct)
     {
-        // 🔥 Check if the string is contained anywhere, ignoring case
+        // Check if the string is contained anywhere, ignoring case
         var query = _context.BasicEducations
             .Where(s => s.subCounty.ToLower().Contains(subCounty.ToLower()));
 

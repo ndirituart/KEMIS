@@ -131,9 +131,9 @@ public class InstitutionWorkflowService
                 s.createdAt,
                 s.subCounty,
                 s.status,
-                s.supervisorId,       // 🔥 Add this so the table isn't empty
-                s.institutionType,    // 🔥 Add this for the View Modal
-                s.institutionLevel,   // 🔥 Add this for the View Modal
+                s.supervisorId,       // Add this so the table isn't empty
+                s.institutionType,    // Add this for the View Modal
+                s.institutionLevel,   // Add this for the View Modal
                 s.totalLearners,
                 s.headOfInstitution,
                 s.emailId,

@@ -116,7 +116,7 @@
    BASE LAYOUT
    ============================================ */
 .main-content {
-  flex-grow: 1; /* 🔥 THIS IS THE MAGIC FIX - It takes up all remaining space */
+  flex-grow: 1; /* THIS IS ERROR RESOLVED - It takes up all remaining space */
   height: 100vh;
   overflow-y: auto;
 }

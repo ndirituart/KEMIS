@@ -19,10 +19,44 @@
 .custom-table th { padding: 0.8rem 1rem; text-align: left; font-size: 0.85rem; border-right: 1px solid rgba(255,255,255,0.2); }
 .custom-table td { padding: 0.8rem 1rem; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-size: 0.9rem; }
 
-/* --- Badges & Buttons --- */
-.badge-status { padding: 0.4rem 0.8rem; border-radius: 12px; font-weight: 600; font-size: 0.75rem; display: inline-block;}
-.bg-warning { background-color: #ffc107 !important; color: #333 !important; }
-.bg-info { background-color: #00b4d8 !important; }
+/* Default Badge Style */
+.badge-status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-block;
+}
+
+/* 1. Pending (Yellow/Warning) */
+.badge-pending {
+  background-color: #ffc107; /* --kemis-warning */
+  color: #333;
+}
+
+/* 2. Assigned (Blue/Info) */
+.badge-assigned {
+  background-color: #3fbeeb; /* --kemis-primary */
+  color: #fff;
+}
+
+/* 3. Recommended (Dark Blue) */
+.badge-recommended {
+  background-color: #1e40af; /* --kemis-blue */
+  color: #fff;
+}
+
+/* 4. Rejected (Red/Danger) */
+.badge-rejected {
+  background-color: #dc143c; /* --kemis-red */
+  color: #fff;
+}
+
+/* 5. Under Review (Green) */
+.badge-review {
+  background-color: #28a745; /* --kemis-success */
+  color: #fff;
+}
 
 .btn-outline-gray { background: transparent; border: 1px solid #ccc; color: #555; padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.85rem; transition: 0.2s; }
 .btn-outline-gray:hover:not(:disabled) { background: #f8f9fa; }

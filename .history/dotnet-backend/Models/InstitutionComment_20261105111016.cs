@@ -12,6 +12,6 @@ public class InstitutionComment
     public int commentId { get; set; }   
     public int institutionId { get; set; }    public int userId { get; set; } // Who originally wrote it   public string commentText { get; set; } = string.Empty;   public string createdAt { get; set; } = DateTime.UtcNow.ToString("o");   public string? updatedAt { get; set; } 
     
-    // 🔥 Changed from string to int? to match the Users table
+    // Changed from string to int? to match the Users table
     public int? updatedBy { get; set; } 
 }

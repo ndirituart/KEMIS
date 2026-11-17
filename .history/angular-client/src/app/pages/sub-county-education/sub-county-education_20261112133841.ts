@@ -50,7 +50,7 @@ export class SubCountyEducation implements OnInit {
     // Fetch the profile from the backend using the userId hardcoded in the controller
     this.http.get<any>('http://localhost:5215/api/subcounty-education/profile').subscribe({
       next: (profile) => {
-        // 🔥 Dynamically set the Sub-County name from the database!
+        // Dynamically set the Sub-County name from the database!
         this.dashboardData.subCountyName = profile.subCounty;
 
         // Update the dropdown to match

@@ -91,7 +91,7 @@ export class Login {
       next: (res) => {
         this.isLoading = false;
         
-        // 🔥 LOOK AT YOUR BROWSER CONSOLE FOR THIS 🔥
+        // LOOK AT YOUR BROWSER CONSOLE FOR THIS 🔥
         console.log("FULL BACKEND RESPONSE:", res); 
 
         localStorage.setItem('token', res.token);

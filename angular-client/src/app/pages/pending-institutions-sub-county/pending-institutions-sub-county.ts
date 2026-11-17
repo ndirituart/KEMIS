@@ -18,7 +18,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   subCounties = ['All', "Embakasi East Sub County"];
-  statusList = ['Select', 'Pending', 'Approved', 'Rejected', 'SCDE Recommended', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended'];
+  statusList = ['Select', 'Pending', 'Rejected', 'SCDE Recommended', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended'];
 
   filter = { onboardingType: 'New Onboarding', subCounty: 'All', status: 'Pending' };
   tableSearch = '';

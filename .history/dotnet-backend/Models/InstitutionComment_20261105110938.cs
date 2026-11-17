@@ -21,6 +21,6 @@ public class InstitutionComment
     
     public string? updatedAt { get; set; } 
     
-    // 🔥 Changed from string to int? to match the Users table
+    // Changed from string to int? to match the Users table
     public int? updatedBy { get; set; } 
 }
