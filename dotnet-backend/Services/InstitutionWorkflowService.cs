@@ -162,8 +162,59 @@ public class InstitutionWorkflowService
             }).ToList()
         };
     }
-            //FETCHING SCHOOLS
 
+    //5.  Get SCQASO Profile
+    public async Task<SubCountyQualityAssurance> GetScqasoProfileAsync(int userId, CancellationToken ct)
+    {
+    
+        var scqasoMapping = await _context.SubCountyQualityAssurances
+            .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
+
+        if (scqasoMapping == null) 
+            throw new Exception("SCQASO profile not found for this user.");
+
+        return scqasoMapping;
+    }
+
+    //6. Get SCQASO Dashboard Stats
+    public async Task<object> GetScqasoDashboardStatsAsync(int userId, CancellationToken ct)
+    {
+        var scqaso = await _context.Users.FindAsync(userId);
+        if (scqaso == null) return new { error = "SCQASO not found" };
+
+        // 1. Get only the schools assigned to THIS SCQASO
+        var assignedSchoolIds = await _context.InstitutionAssignments
+            .Where(a => a.assigneeId == userId)
+            .Select(a => a.institutionId)
+            .ToListAsync(ct);
+
+        // 2. Fetch the details of those specific schools
+        var schools = await _context.BasicEducations
+            .Where(s => assignedSchoolIds.Contains(s.institutionId))
+            .ToListAsync(ct);
+
+        // 3. Calculate dynamic stats
+        var inspectionsDone = schools.Count(s => s.status == "SCQASO Recommended");
+        var schedulePending = schools.Count(s => s.status == "Assigned SCQASO");
+        var underEvaluation = schools.Count(s => s.status == "SCDE Recommended"); 
+        var recPending = schools.Count(s => s.status == "Pending");
+        var sendBack = schools.Count(s => s.status == "Rejected");
+
+        return new
+        {
+            subCountyName = scqaso.subCounty,
+            stats = new
+            {
+                inspectionsDone = inspectionsDone,
+                schedulePending = schedulePending,
+                underEvaluation = underEvaluation,
+                recPending = recPending,
+                sendBack = sendBack
+            }
+        };
+    }
+   
+   //FETCHING SCHOOLS
     // 1. Get School Details
     public async Task<InstitutionDetail> GetDetailAsync(int id, int userId, CancellationToken ct)
     {

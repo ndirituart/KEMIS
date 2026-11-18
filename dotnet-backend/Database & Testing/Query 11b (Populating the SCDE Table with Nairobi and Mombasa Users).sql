@@ -11,7 +11,7 @@ INSERT INTO "SubCountyEducation" (
   )
 VALUES -- NAIROBI (17)
   (
-    'Westlands Sub County',
+    'Westlands ',
     'Nairobi',
     '047',
     'County Education Office Westlands',
@@ -21,7 +21,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Dagoretti North Sub County',
+    'Dagoretti North ',
     'Nairobi',
     '047',
     'County Education Office Dagoretti',
@@ -31,7 +31,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Dagoretti South Sub County',
+    'Dagoretti South ',
     'Nairobi',
     '047',
     'County Education Office Dagoretti',
@@ -41,7 +41,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Lang''ata Sub County',
+    'Lang''ata ',
     'Nairobi',
     '047',
     'County Education Office Langata',
@@ -51,7 +51,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Kibra Sub County',
+    'Kibra ',
     'Nairobi',
     '047',
     'County Education Office Kibra',
@@ -61,7 +61,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Roysambu Sub County',
+    'Roysambu ',
     'Nairobi',
     '047',
     'County Education Office Roysambu',
@@ -71,7 +71,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Kasarani Sub County',
+    'Kasarani ',
     'Nairobi',
     '047',
     'County Education Office Kasarani',
@@ -81,7 +81,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Ruaraka Sub County',
+    'Ruaraka ',
     'Nairobi',
     '047',
     'County Education Office Ruaraka',
@@ -91,7 +91,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Embakasi South Sub County',
+    'Embakasi South ',
     'Nairobi',
     '047',
     'County Education Office Embakasi',
@@ -101,7 +101,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Embakasi North Sub County',
+    'Embakasi North ',
     'Nairobi',
     '047',
     'County Education Office Embakasi',
@@ -111,7 +111,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Embakasi Central Sub County',
+    'Embakasi Central ',
     'Nairobi',
     '047',
     'County Education Office Embakasi',
@@ -122,7 +122,7 @@ VALUES -- NAIROBI (17)
   ),
   -- HERE IS THE ACTIVE USER
   (
-    'Embakasi Sub County',
+    'Embakasi ',
     'Nairobi',
     '047',
     'County Education Office Embakasi',
@@ -132,7 +132,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Embakasi West Sub County',
+    'Embakasi West ',
     'Nairobi',
     '047',
     'County Education Office Embakasi',
@@ -142,7 +142,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Makadara Sub County',
+    'Makadara ',
     'Nairobi',
     '047',
     'County Education Office Makadara',
@@ -152,7 +152,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Kamukunji Sub County',
+    'Kamukunji ',
     'Nairobi',
     '047',
     'County Education Office Kamukunji',
@@ -162,7 +162,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Starehe Sub County',
+    'Starehe ',
     'Nairobi',
     '047',
     'County Education Office Starehe',
@@ -172,7 +172,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Mathare Sub County',
+    'Mathare ',
     'Nairobi',
     '047',
     'County Education Office Mathare',
@@ -183,7 +183,7 @@ VALUES -- NAIROBI (17)
   ),
   -- MOMBASA (6)
   (
-    'Changamwe Sub County',
+    'Changamwe ',
     'Mombasa',
     '001',
     'County Education Office Changamwe',
@@ -193,7 +193,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Jomvu Sub County',
+    'Jomvu ',
     'Mombasa',
     '001',
     'County Education Office Jomvu',
@@ -203,7 +203,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Kisauni Sub County',
+    'Kisauni ',
     'Mombasa',
     '001',
     'County Education Office Kisauni',
@@ -213,7 +213,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Nyali Sub County',
+    'Nyali ',
     'Mombasa',
     '001',
     'County Education Office Nyali',
@@ -223,7 +223,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Likoni Sub County',
+    'Likoni ',
     'Mombasa',
     '001',
     'County Education Office Likoni',
@@ -233,7 +233,7 @@ VALUES -- NAIROBI (17)
     '2026-01-01T08:00:00Z'
   ),
   (
-    'Mvita Sub County',
+    'Mvita ',
     'Mombasa',
     '001',
     'County Education Office Mvita',
