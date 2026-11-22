@@ -1,0 +1,43 @@
+[33m96bfae4e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Creating logic for SCQASO and fixing the duplicate valeus where there were multiple SCQASOs belonging to 'Embakasi' but accidentally broke the dashboard logic, let me fix that
+[33mba514ebe[m Found issues with fetching other schools status in PendingInstitutionsSubCounty. Issues was naming in HTML, declaring 'Pending' as default status and issues with InstituionWorkflowService and how it rendered the function to fetch schools in subcounty
+[33m97451a44[m Fixes some issues on PendingInstitutionsSubCounty page (except seeing other statuses other than Pending) and InstitutionsOnboardedPerClister in subcounty working perfectly
+[33m0020cbc2[m Queries to fix typos because of PostgreSQL case sensitivity and confusing names eg 'Embakasi Sub county' is not the same as subCounty 'Embakasi'. Fixing the pending schools in SubCounty to fetch all schools, Approved Schools to pick all schools in subcounty and Dashboard is live to fetch data from subcounty institutions as well as learners
+[33mda6db39a[m The ApprovedSchools in Subcounty works dynamically, wow
+[33m0455928d[m Finishing work on SCDE dashboard, creating Queries to populate users table with different CDEs, SCDEs, CQASO and SCQASO for testing. Fixing issue with login because I accidentally deleted appsetting.json so I lacked a JWT Token. Fixing pages to download KEMIS reports in Sub County Director of Education dashboard
+[33mcfa2c476[m Head of Institution can see learners in their school
+[33m43b86cdb[m Correcting header and theme colors as per corrections and initializing Learners table so that I can have dynamic pages in learner registration, fetching for HOI/CDE/SCDE and in future initialize learner transfer
+[33m591f440c[m Fixing small small issues here and there eg typos and importing NotifiationsService correctly. The workflow from CDE to SCDE is complete backend but hapo frontend, yayeeee. An CDE assigns a School to SCDE and it created an entry in 'AssignedSchools' table while updating 'supervisorId' in school to the userId of SCDE assigned. Finally makes sense
+[33me7a6145d[m Implementing notification banners in the PendingInstitutionCounty when an CDE is selecting an SCDE and submitting the assignment to inspect a school
+[33mdb387024[m Creating SCDE Layout component so that the profile head and sidebar are visible to all pages and reduce the workload I have done on CDE page
+[33m49ca9df5[m All report pages are fetching details live
+[33m215aaddd[m Live dashboard yeyyyyyyyyyyy!
+[33m931e5d2f[m Restored the CDE Controller to fetch schools per county
+[33md251b237[m Going back to the original code of calling countyName and not CDE fullName, resolved all failing errors
+[33mfa202bd0[m Creating remaining child pages for SCDE which are PendingInstitutionsSubCounty, OprhanLearnersSubCounty, InstitutionsOnboardingPerClusterSubCounty and LearnersRegisteresPerClusterSubCounty
+[33m1f70d92c[m Backend finally running but issues with having a live CDE and SCDE dashboard
+[33m224989a0[m Creating LearnersRegisteredSubCounty page which is similar to LearnersRegisteredCounty and just changed all 'county' to 'subCounty' where applicable
+[33mc62df36a[m Creating InstitutionsRegisteredSubCounty page to fetch schools, same UI as county just borrowed it and changed every 'county' to 'subcounty'
+[33mc15fc5d9[m Fixig issues with BasicEducationController, Users and linking the two, includes some SQL queries done to update the tables
+[33ma5b106ed[m Fixing issues to get the backend running in InstitutionWorkflowService, WorkflowModels, BasicEducationController, CountyEducationController but all other models were perfect
+[33mdf5f5e01[m Creating LearnersRegisteredPerCluster backend is not even done because it is failing on frontned so idk what's up with that. Even the running model inafail hii page and there is NO documentation wth
+[33m12f3cfac[m Creating InstitutionsOnboardedPerCluster backend is not even done because it is failing on frontned so idk what's up with that. Even the running model inafail hii page and there is NO documentation wth
+[33m24bdb518[m Creating component for PendingInstitutionsCounty which fetches pending schools, has functions to assign SCDE, assign SCQASO, view reports/recommendations and make the final decision (approve/deny)
+[33m890125c3[m Starting LearnersRegisteredCounty where I can see learners in the whole county. Filters available are institutionLevels, gender and grades
+[33m79a4cc14[m Creating page for LearnersPerGradeCounty where we should see learners in the county per grade and per institution level eg Primary, Junior or Secondary page. Empty table because learners logic is not done
+[33mdeecc1e9[m Starting LearnersPerGradeCounty component and adding minor imports in all Test files to remove red errors for (describe, beforeEach, it and expect) functions
+[33mbf365449[m Creating InstitutionRegisteredCounty component where a CDE can see schools in the county and each constituency. Fully frontend, not connected to backend, also later will need to make a universal layout for all CDE components
+[33me0d9adc3[m Working on CDE,SCDE backend fails a lot. New entitites to handle reports and school approvals; AssignedSchools, CountyEducation (CDE), InstitutionAssignment, InstitutionComment, InstitutionDecision, Reports, SubCountyEducation (SCDE), SubmitReportRequest and finally WorkflowModels. SQL Queries to create or alter existing tables included with foreign keys relationships
+[33mcdd329a2[m The CDE page is dynamic, the county data and subcounty data to choose schools in each subcounty
+[33mfc02eff7[m Resolving issues with JWT token that was failing routing, checking Roles to mark routing based on RBK, using EntityFramework to redirect user after login token is created and adjusting variables in HTML to take dynamic data. A HOI can login directly to their school, if it exists and if not, it takes them to Institution Onboarding page to create a school
+[33m4be718cc[m Updating UI for Head of Institution dashboard
+[33m3952b627[m Head of Institution page is able to fetch school data and user data (Finally linked the two, yeyyyyy). Dropdown menus from KEMIS reports and Registration will work on the pages later
+[33m9a45fcbf[m Updating CDE, SCDE and HOI pages to fit the data in backend
+[33mea442eef[m Role based access from login page to specific pages based on role
+[33m0a629711[m Creating an office for SCQASO they do all the inspections that probe the approval/denial of schools, check conditions and validate real institutions. They also whistleblow on ghost institutions
+[33m042f4bd8[m Creating page for Sub-County Director of Education does tasks assigned by CDE,can send a SCQASO to inspect a school before they can approve or deny schools in their sub-county ONLY that the CDE will make the final decision
+[33mbbc546d9[m Creating page for County Director of Education who can assign tasks to SCDE, SCQASO, approve or deny schools in their county ONLY
+[33m402e0042[m Done with Head of Institution page (HOI) which can create a school, a leaner and a user. Update learner details, request a leaner transfer and approve/deny a learner transfer
+[33m92fc3c5c[m Creating pages for different users CDE, SCDE, CQASO, SCQASO, SuperAdmin, HOI, Deputy Principal, ICT Support, Teachers
+[33mc336cd72[m Resolving issues in naming variables in form, formPayload in typescript to send data from frontend to backend because backend logic is working. Voila realized I hadn't built a screen to go to after successfully registering a school. Lmao
+[33m4f451e11[m Fixing issues that were making it impossible to create a school. Moved from 404 NOT FOUND error to 500 INTERNAL SERVER ERROR to working. Issues were missing webroot folder to upload PDFs, Table as in postgresql table instead of KEMIS table,fallback for PDF file to exist in both Model and Controller
+[33m41189323[m Working on Model and Controller to handle registring a school. Status for every school is set to pending as default until the CDE approves the school via steps in the KEMIS Model. UpdatedAt 

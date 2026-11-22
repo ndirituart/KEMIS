@@ -14,12 +14,13 @@ import { NotificationService } from '../../services/notifications.service';
 })
 export class InstitutionsRegisteredSubCounty implements OnInit {
   private http = inject(HttpClient);
+  private profileCounty = '';
   private cdr = inject(ChangeDetectorRef);
   private notification = inject(NotificationService);
 
   // Filter Options
   institutionLevels = ['All', 'Pre-Primary', 'Primary', 'Junior School', 'Secondary', 'High School'];
-  county = ['Nairobi'];
+  county: string[] = [];
   subCounty: string[] = []; // Will be populated from the logged-in SCDE profile
 
   // Filter Model
@@ -27,7 +28,7 @@ export class InstitutionsRegisteredSubCounty implements OnInit {
     institutionLevel: 'All',
     fromDate: '',
     toDate: '',
-    county: 'Nairobi',
+    county: '',
     subCounty: 'Loading...' // Default state
   };
 
@@ -49,6 +50,10 @@ export class InstitutionsRegisteredSubCounty implements OnInit {
     // 1. Fetch the SCDE's profile to get their subCounty
     this.http.get<any>('http://localhost:5215/api/sub-county-education/profile').subscribe({
       next: (profile) => {
+        this.profileCounty = profile.county;
+        this.county = [profile.county];
+        this.filter.county = profile.county;
+        this.subCounty = [profile.subCounty];
         // 2. Set the subCounty in the filter
         this.filter.subCounty = profile.subCounty;
         
@@ -57,17 +62,17 @@ export class InstitutionsRegisteredSubCounty implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load SCDE profile', err);
-        // Fallback for testing if profile fails
-        this.fetchApprovedInstitutions('Embakasi East Sub County');
+        this.notification.showError('Failed to load SCDE profile.');
       }
     });
   }
 
   fetchApprovedInstitutions(subCountyName: string) {
   //new dynamic endpoint
-    this.http.get<any>(`http://localhost:5215/api/sub-county-education/institutions?subCounty=${subCountyName}&status=approved`).subscribe({
+    this.http.get<any>('http://localhost:5215/api/sub-county-education/institutions', { params: { county: this.profileCounty, subCounty: subCountyName, status: 'approved' } }).subscribe({
       next: (res) => {
-        this.institutions = res.schools || [];
+        this.allInstitutions = res.schools || [];
+        this.institutions = [...this.allInstitutions];
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Failed to fetch institutions', err)

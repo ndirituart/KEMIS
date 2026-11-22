@@ -8,7 +8,7 @@ namespace dotnet_backend.Controllers;
 
 [ApiController]
 [Route("api/county-education")]
-//[Authorize(Roles = "County Director of Education (CDE)")] 
+[Authorize(Roles = "County Director of Education (CDE)")]
 public class CountyEducationController : ControllerBase
 {
     private readonly InstitutionWorkflowService _workflow;
@@ -19,8 +19,7 @@ public class CountyEducationController : ControllerBase
     }
 
     
-    private int userId => 3; 
-    // private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     // ==========================================
     // 1. DASHBOARD ENDPOINTS
@@ -28,10 +27,15 @@ public class CountyEducationController : ControllerBase
 
     // Get CDE Profile
     [HttpGet("profile")]
-    public Task<CountyEducation> GetProfile(CancellationToken ct) =>
-        _workflow.GetCdeProfileAsync(userId, ct);
+    public async Task<IActionResult> GetProfile(CancellationToken ct)
+    {
+        var profile = await _workflow.GetCdeProfileAsync(userId, ct);
+        if (profile == null) return NotFound("No active county profile is linked to this account.");
+        return Ok(profile);
+    }
 
     // Get ALL schools in a specific County
+    [AllowAnonymous]
     [HttpGet("institutions")]
     public Task<object> GetAllSchools([FromQuery] string county, [FromQuery] string? status, CancellationToken ct) =>
         _workflow.GetSchoolsByCountyAsync(county, status, ct);

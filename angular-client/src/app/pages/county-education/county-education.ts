@@ -16,10 +16,10 @@ export class CountyEducation implements OnInit {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
-  loggedInCounty = 'Nairobi'; // Default, but will be overwritten by API
+  loggedInCounty = '';
 
   dashboardData = {
-    county: 'Nairobi',
+    county: 'Loading...',
     role: 'CDE',
     stats: { approved: 0, rejected: 0, pending: 0, appeals: 0, totalLearners: 0 },
     approvalBreakdown: { approved: 0, pending: 0, rejected: 0 },
@@ -43,6 +43,7 @@ export class CountyEducation implements OnInit {
     this.http.get<any>('http://localhost:5215/api/county-education/profile').subscribe({
       next: (profile) => {
         this.dashboardData.county = profile.county;
+        this.loggedInCounty = profile.county;
 
         // 2. Populate Sub-Counties based on the fetched County
         this.populateSubCounties(profile.county);
@@ -54,15 +55,14 @@ export class CountyEducation implements OnInit {
       error: (err) => {
         console.error('Failed to load profile', err);
 
-        this.dashboardData.county = 'Nairobi';
-        this.populateSubCounties('Nairobi');
-        this.fetchSchools('Nairobi');
+        this.dashboardData.county = 'County profile unavailable';
+        this.cdr.detectChanges();
       }
     });
   }
 
   fetchSchools(countyName: string) {
-    this.http.get<any>(`http://localhost:5215/api/county-education/institutions?county=${countyName}`).subscribe({
+    this.http.get<any>('http://localhost:5215/api/county-education/institutions', { params: { county: countyName } }).subscribe({
       next: (res) => {
         const schools = res.schools || [];
 
@@ -72,9 +72,10 @@ export class CountyEducation implements OnInit {
         let totalLearners = 0;
 
         schools.forEach((school: any) => {
-          if (school.status === 'approved') approved++;
-          else if (school.status === 'rejected' || school.status === 'denied') rejected++;
-          else if (school.status === 'pending' || school.status === 'SCQASO Recommended') pending++;
+          const status = school.status?.trim().toLowerCase();
+          if (status === 'approved') approved++;
+          else if (status === 'rejected' || status === 'denied') rejected++;
+          else if (status === 'pending' || status === 'scqaso recommended') pending++;
 
           totalLearners += (school.totalLearners || 0);
         });

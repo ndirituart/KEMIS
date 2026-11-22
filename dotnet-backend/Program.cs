@@ -28,7 +28,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("allowCors", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200", "http://127.0.0.1:4200")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -63,16 +63,13 @@ var app = builder.Build();
 
 app.UseRouting();
 app.UseCors("allowCors");
-app.UseCors("dev");
+app.UseAuthentication();
 app.UseAuthorization();
 //see API errors
 app.UseDeveloperExceptionPage();
 app.MapControllers();
 //handle file uploads
 app.UseStaticFiles(); 
-//JWT authentication
-app.UseAuthentication(); 
-app.UseAuthorization();  
 
 
 app.Run();

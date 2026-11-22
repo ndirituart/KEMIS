@@ -9,7 +9,7 @@ namespace dotnet_backend.Controllers;
 
 [ApiController]
 [Route("api/sub-county-education")]
-// [Authorize(Roles = "Sub-County Director of Education (SCDE)")] 
+[Authorize(Roles = "Sub-County Director of Education (SCDE)")]
 public class SubCountyEducationController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -21,54 +21,30 @@ public class SubCountyEducationController : ControllerBase
         _workflow = workflow;
     }
 
-    // Hardcoded for testing
-    private int userId => 4; 
-    // private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     // 0. Get SCDE Profile details
     [HttpGet("profile")]
-    public async Task<IActionResult> GetProfile([FromQuery] string? subCounty, CancellationToken ct)
+    public async Task<IActionResult> GetProfile(CancellationToken ct)
     {
-        if (!string.IsNullOrEmpty(subCounty))
-        {
-            // If testing with a specific subcounty, look it up in the DB
-            var profile = await _context.SubCountyEducation
-                .FirstOrDefaultAsync(s => s.subCounty.ToLower().Contains(subCounty.ToLower()), ct);
-            if (profile == null) return NotFound($"Subcounty {subCounty} not found.");
-            return Ok(profile);
-        }
-
-        // Fallback to the logged-in user
-        return Ok(await _workflow.GetScdeProfileAsync(userId, ct));
+        var profile = await _workflow.GetScdeProfileAsync(userId, ct);
+        if (profile == null) return NotFound("No active sub-county profile is linked to this account.");
+        return Ok(profile);
     }
-    
-    // 1. Get Dashboard Stats
-    [HttpGet("dashboard-stats")]
-    public async Task<IActionResult> GetDashboardStats([FromQuery] string? subCounty, CancellationToken ct)
-    {
-        if (!string.IsNullOrEmpty(subCounty))
-        {
-            // Fetch stats dynamically based on the query parameter
-            var schools = await _context.BasicEducations.Where(s => s.subCounty.Contains(subCounty)).ToListAsync();
-            return Ok(new {
-                subCountyName = subCounty,
-                stats = new {
-                    totalApplications = schools.Count(s => s.status == "Pending"),
-                    totalInstitutions = schools.Count(s => s.status == "SCDE Recommended"),
-                    schoolsReceived = schools.Count(s => s.status == "Assigned SCDE"),
-                    totalLearners = schools.Sum(s => s.totalLearners),
-                    subjectCombinations = 0
-                }
-            });
-        }
 
-        return Ok(await _workflow.GetScdeDashboardStatsAsync(userId, ct));
+    [HttpGet("dashboard-stats")]
+    public async Task<IActionResult> GetDashboardStats(CancellationToken ct)
+    {
+        var stats = await _workflow.GetScdeDashboardStatsAsync(userId, ct);
+        if (stats == null) return NotFound("No active sub-county profile is linked to this account.");
+        return Ok(stats);
     }
 
     //2. Get schools by Sub-County
+    [AllowAnonymous]
     [HttpGet("institutions")]
-    public Task<object> GetSchoolsBySubCounty([FromQuery] string subCounty, [FromQuery] string? status, CancellationToken ct) =>
-        _workflow.GetSchoolsBySubCountyAsync(subCounty, status, ct);
+    public Task<object> GetSchoolsBySubCounty([FromQuery] string subCounty, [FromQuery] string? status, [FromQuery] string? county, CancellationToken ct) =>
+        _workflow.GetSchoolsBySubCountyAsync(subCounty, status, ct, county);
         
 
     // 3. Fetches all schools that the CDE has assigned to this specific SCDE

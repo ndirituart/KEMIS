@@ -15,9 +15,10 @@ import { NotificationService } from '../../services/notifications.service';
 export class PendingInstitutionsSubCounty implements OnInit {
   private notification = inject(NotificationService);
   private http = inject(HttpClient);
+  private profileCounty = '';
   private cdr = inject(ChangeDetectorRef);
 
-  subCounties = ['All', "Embakasi East Sub County"];
+  subCounties: string[] = [];
   statusList = ['All', 'Pending', 'Rejected', 'SCDE Recommended', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended'];
 
   filter = { onboardingType: 'New Onboarding', subCounty: 'All', status: 'All' };
@@ -45,6 +46,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
     // 1. Load the profile FIRST to get the subcounty
     this.http.get<any>('http://localhost:5215/api/sub-county-education/profile').subscribe({
       next: (profile) => {
+        this.profileCounty = profile.county;
         this.scdeSubCounty = profile.subCounty;
         this.subCounties = [this.scdeSubCounty];
         this.filter.subCounty = this.scdeSubCounty;
@@ -55,15 +57,13 @@ export class PendingInstitutionsSubCounty implements OnInit {
       error: (err) => {
         console.error('Failed to load profile', err);
         this.notification.showError('Failed to load SCDE profile.');
-        // Fallback for testing if profile fails
-        this.scdeSubCounty = 'Embakasi East Sub County';
-        this.onSearch();
       }
     });
   }
 
    fetchInstitutions(status: string = 'Select') {
-    this.http.get<any>(`http://localhost:5215/api/sub-county-education/institutions?subCounty=${this.scdeSubCounty}&status=${status}`).subscribe({
+    if (!this.scdeSubCounty) return;
+    this.http.get<any>('http://localhost:5215/api/sub-county-education/institutions', { params: { county: this.profileCounty, subCounty: this.scdeSubCounty, status } }).subscribe({
       next: (res) => {
         this.allInstitutions = res.schools || [];
         this.institutions = [...this.allInstitutions];

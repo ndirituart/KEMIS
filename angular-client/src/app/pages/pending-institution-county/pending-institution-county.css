@@ -145,24 +145,273 @@
 .btn-outline-red { background: #fff; border: 1px solid #dc3545; color: #dc3545; padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.85rem; transition: 0.2s; }
 .btn-outline-red:hover { background: #dc3545; color: #fff; }
 
-/* --- Modal Backdrop --- */
-.modal-backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1050; }
+/* ==========================================
+   MODAL BACKDROP & DIALOG
+   ========================================== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
 
-/* --- Modals --- */
-.modal-dialog { background: #fff; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; flex-direction: column; max-height: 90vh; width: 100%; overflow: hidden; }
-.small-modal { max-width: 500px; }
-.large-modal { max-width: 1000px; }
+.modal-dialog {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  max-height: 95vh; /* Prevents it from going off screen */
+  width: 100%;
+  overflow: hidden;
+}
 
-.modal-header { padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-.modal-header h5 { margin: 0; font-size: 1.1rem; }
-.modal-body { padding: 1.5rem; overflow-y: auto; }
-.modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 10px; }
+.large-modal {
+  max-width: 1000px;
+}
 
-/* --- Modal Tabs --- */
-.modal-tabs { display: flex; border-bottom: 1px solid #ddd; padding: 0 1.5rem; background: #fff; }
-.tab-btn { background: transparent; border: none; padding: 1rem; font-size: 0.95rem; color: #555; cursor: pointer; border-bottom: 3px solid transparent; }
-.tab-btn.active { color: #00b4d8; border-bottom: 3px solid #00b4d8; font-weight: 600; }
-.tab-btn:hover:not(.active) { background: #f8f9fa; }
+/* ==========================================
+   HEADER
+   ========================================== */
+.modal-header {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bg-info {
+  background-color: var(--kemis-primary, #00b4d8) !important;
+}
+
+.modal-header h5 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--kemis-white, #ffffff);
+}
+
+.modal-header strong {
+  font-weight: 700;
+}
+
+/* Approved/Review Badge */
+/* Default Badge Style */
+.badge-status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-block;
+}
+
+/* 1. Pending (Yellow/Warning) */
+.badge-pending {
+  background-color: #ffc107; /* --kemis-warning */
+  color: #333;
+}
+
+/* 2. Assigned (Blue/Info) */
+.badge-assigned {
+  background-color: #3fbeeb; /* --kemis-primary */
+  color: #fff;
+}
+
+/* 3. Recommended (Dark Blue) */
+.badge-recommended {
+  background-color: #1e40af; /* --kemis-blue */
+  color: #fff;
+}
+
+/* 4. Rejected (Red/Danger) */
+.badge-rejected {
+  background-color: #dc143c; /* --kemis-red */
+  color: #fff;
+}
+
+/* 5. Under Review (Green) */
+.badge-review {
+  background-color: #28a745; /* --kemis-success */
+  color: #fff;
+}
+
+
+.btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* ==========================================
+   TABS
+   ========================================== */
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--kemis-border, #dee2e6);
+  padding: 0 1.5rem;
+  background: #fff;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  padding: 1rem;
+  font-size: 0.95rem;
+  color: var(--kemis-secondary, #6c757d);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  color: var(--kemis-primary, #00b4d8);
+}
+
+.tab-btn.active {
+  color: var(--kemis-primary, #00b4d8);
+  border-bottom: 3px solid var(--kemis-primary, #00b4d8);
+  font-weight: 600;
+}
+
+/* ==========================================
+   MODAL BODY & SCROLL
+   ========================================== */
+.modal-body.scrollable-body {
+  padding: 2rem;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 1.1rem;
+  color: var(--kemis-dark, #343a40);
+  border-bottom: 1px solid var(--kemis-border, #dee2e6);
+  padding-bottom: 0.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+/* Form Labels */
+.small-label {
+  font-size: 0.8rem;
+  color: var(--kemis-secondary, #6c757d);
+  margin-bottom: 0.2rem;
+  font-weight: 500;
+}
+
+/* Read-only Inputs (Matching your screenshot) */
+.modal-body .form-control[readonly] {
+  background-color: var(--kemis-white, #ffffff);
+  border: 1px solid var(--kemis-border, #dee2e6);
+  color: var(--kemis-dark, #343a40);
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  box-shadow: none;
+}
+
+.modal-body .form-control[readonly]:focus {
+  border-color: var(--kemis-border, #dee2e6);
+  box-shadow: none;
+}
+
+/* ==========================================
+   TAB 2: COMMENTS & REPORTS
+   ========================================== */
+.comment-box {
+  background: #f8f9fa;
+  border: 1px solid var(--kemis-border, #dee2e6);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.comment-box h6 {
+  color: var(--kemis-primary, #00b4d8);
+  margin-bottom: 0.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.comment-box .text-muted {
+  font-size: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.comment-box textarea {
+  background-color: #fff !important;
+  border: 1px solid var(--kemis-border, #dee2e6);
+  color: var(--kemis-dark, #343a40);
+  font-size: 0.9rem;
+  resize: none;
+}
+
+/* Report Boxes */
+.report-box h6 {
+  color: var(--kemis-primary, #00b4d8);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.report-box .border {
+  border-color: var(--kemis-border, #dee2e6) !important;
+  background-color: #f8f9fa;
+}
+
+.report-box span {
+  font-size: 0.9rem;
+  color: var(--kemis-dark, #343a40);
+}
+
+/* ==========================================
+   TAB 3: ACTIONS (Approve/Reject)
+   ========================================== */
+.tab-content.text-center {
+  padding: 2rem 0;
+}
+
+.tab-content h4 {
+  color: var(--kemis-dark, #343a40);
+  font-weight: 700;
+}
+
+.tab-content .btn-lg {
+  font-weight: 600;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+}
+
+.btn-success {
+  background-color: var(--kemis-success, #28a745);
+  border-color: var(--kemis-success, #28a745);
+}
+
+.btn-danger {
+  background-color: var(--kemis-danger, #dc3545);
+  border-color: var(--kemis-danger, #dc3545);
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--kemis-border, #dee2e6);
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-footer .btn-danger {
+  background-color: var(--kemis-red, #dc143c);
+  border: none;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  border-radius: 6px;
+}
 
 /* --- Form inside Modal --- */
 .scrollable-body { overflow-y: auto; padding: 1.5rem 2rem; }

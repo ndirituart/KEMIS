@@ -19,22 +19,16 @@ export class InstitutionsOnboardedPerCluster implements OnInit {
   // --- Filter Options ---
   institutionLevels = ['All', 'Pre-Primary', 'Primary', 'Junior School', 'Pre-Vocational', 'Vocational'];
   clusters = ['All', 'Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4', 'Private'];
-  counties = ['Nairobi'];
-  subCounties = [
-    'All', "Dagoretti North Sub County", "Dagoretti South Sub County", "Embakasi Central Sub Count",
-    "Embakasi Sub County", "Embakasi North Sub County", "Embakasi South Sub County",
-    "Embakasi West Sub County", "Kamukunji Sub County", "Kasarani Sub County", "Kibra Sub County",
-    "Lang'ata Sub County", "Makadara Sub County", "Mathare Sub County", "Roysambu Sub County",
-    "Ruaraka Sub County", "Starehe Sub County", "Westlands Sub County"
-  ];
+  counties: string[] = [];
+  subCounties = ['All'];
 
   // --- Filter Model ---
   filter = {
-    institutionLevel: 'Pre-Vocational',
+    institutionLevel: 'All',
     cluster: 'All',
     fromDate: '',
     toDate: '',
-    county: 'Nairobi',
+    county: '',
     subCounty: 'All'
   };
 
@@ -45,14 +39,21 @@ export class InstitutionsOnboardedPerCluster implements OnInit {
   institutions: any[] = [];
 
   ngOnInit() {
-    this.fetchSchools();
+    this.http.get<{ county: string }>('http://localhost:5215/api/county-education/profile').subscribe({
+      next: ({ county }) => {
+        this.counties = [county];
+        this.filter.county = county;
+        this.fetchSchools();
+      },
+      error: (err) => console.error('Failed to load county profile', err)
+    });
   }
 
   fetchSchools() {
-    // Fetch all schools in Nairobi (no status filter so we get approved and pending)
-    this.http.get<any>(`http://localhost:5215/api/county-education/institutions?county=${this.filter.county}`).subscribe({
+    this.http.get<any>('http://localhost:5215/api/county-education/institutions', { params: { county: this.filter.county, status: 'approved' } }).subscribe({
       next: (res) => {
         this.allInstitutions = res.schools || [];
+        this.subCounties = [...new Set(['All', ...this.allInstitutions.map(school => school.subCounty).filter(Boolean)])];
         this.institutions = [...this.allInstitutions];
         this.cdr.detectChanges();
       },

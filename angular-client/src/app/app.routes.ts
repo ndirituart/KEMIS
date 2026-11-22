@@ -33,6 +33,8 @@ import { LearnersRegisteredPerClusterSubCounty } from './pages/learners-register
 import { OrphanLearnersSubCounty } from './pages/orphan-learners-sub-county/orphan-learners-sub-county';
 //4. SCQASO and their child routes
 import { SubCountyQualityAssurance } from './pages/sub-county-quality-assurance/sub-county-quality-assurance';
+import { InspectedSchools } from './pages/inspected-schools/inspected-schools';
+import { PendingInspections } from './pages/pending-inspections/pending-inspections';
 import { SuperAdmin } from './pages/super-admin/super-admin';
 //guards for routes
 import { adminGuard } from './guards/admin/admin-guard';
@@ -45,11 +47,12 @@ import { subCountyQAGuard } from './guards/subcounty-qualityassurance/sub-county
 // import { HoiLayoutComponent } from '../layouts/hoi-layout/hoi-layout';
 // import { CdeLayoutComponent } from '../layouts/cde-layout/cde-layout.';
 import { ScdeLayout } from '../app/layout/scde-layout/scde-layout';
+import { ScqasoLayout } from './layout/scqaso-layout/scqaso-layout';
 // import { AdminLayoutComponent } from '../layouts/admin-layout/admin-layout';
 
 
 export const routes: Routes = [
-  //{ path: '/', component: Layout}, //making this the default
+
   { path: 'login', component: Login },
   { path: 'home', component: Home },
   { path: 'aboutus', component: Aboutus },
@@ -73,23 +76,39 @@ export const routes: Routes = [
   { path: 'pending-institution-county', component: PendingInstitutionCounty, canActivate: [cDEGuard], data: { allowedRoles: 'County Director of Education (CDE)' } },
   { path: 'institutions-onboarded-per-cluster', component: InstitutionsOnboardedPerCluster, canActivate: [cDEGuard], data: { allowedRoles: 'County Director of Education (CDE)' } },
   { path: 'learners-registered-per-cluster', component: LearnersRegisteredPerCluster, canActivate: [cDEGuard], data: { allowedRoles: 'County Director of Education (CDE)' } },
+//SCDE Children pages
   {
-    path: '', // This applies to the base URL
+    path: 'scde', //Prefix!
     component: ScdeLayout,
-    canActivate: [sCDEGuard], // Uncomment when you add auth
+    canActivate: [sCDEGuard],
     data: { allowedRoles: ['Sub-County Director of Education (SCDE)'] },
     children: [
-      //SCDE children pages
-      { path: 'sub-county-education', component: SubCountyEducation,  },
-      { path: 'institutions-registered-sub-county', component: InstitutionsRegisteredSubCounty,  },
-      { path: 'learners-registered-sub-county', component: LearnersRegisteredSubCounty,  },
-      { path: 'pending-institutions-sub-county', component: PendingInstitutionsSubCounty,  },
-      { path: 'institutions-onboarded-per-cluster-sub-county', component: InstitutionOnboardedPerClusterSubCounty,  },
-      { path: 'learners-registered-per-cluster-sub-county', component: LearnersRegisteredPerClusterSubCounty,  },
-      { path: 'orphan-learners-sub-county', component: OrphanLearnersSubCounty,  },
+      // Redirect /scde to /scde/sub-county-education
+      { path: '', redirectTo: 'sub-county-education', pathMatch: 'full' },
+
+      { path: 'sub-county-education', component: SubCountyEducation },
+      { path: 'institutions-registered-sub-county', component: InstitutionsRegisteredSubCounty },
+      { path: 'learners-registered-sub-county', component: LearnersRegisteredSubCounty },
+      { path: 'pending-institutions-sub-county', component: PendingInstitutionsSubCounty },
+      { path: 'institutions-onboarded-per-cluster-sub-county', component: InstitutionOnboardedPerClusterSubCounty },
+      { path: 'learners-registered-per-cluster-sub-county', component: LearnersRegisteredPerClusterSubCounty },
+      { path: 'orphan-learners-sub-county', component: OrphanLearnersSubCounty },
     ],
   },
-  { path: 'sub-county-quality-assurance', component: SubCountyQualityAssurance, canActivate: [subCountyQAGuard], data: { allowedRoles: 'Sub-County Quality Assurance and Standards Officer (SCQASO)' } },
+  //SCQASO Children Pages
+  {
+    path: 'scqaso',
+    component: ScqasoLayout,
+    canActivateChild: [subCountyQAGuard],
+    data: { allowedRoles: 'Sub-County Quality Assurance and Standards Officer (SCQASO)' },
+    children: [
+      { path: '', redirectTo: 'sub-county-quality-assurance', pathMatch: 'full' },
+      { path: 'sub-county-quality-assurance', component: SubCountyQualityAssurance },
+      { path: 'inspected-schools', component: InspectedSchools },
+      { path: 'pending-inspections', component: PendingInspections },
+    ]
+  },
+  { path: 'sub-county-quality-assurance', redirectTo: 'scqaso/sub-county-quality-assurance', pathMatch: 'full' },
   { path: 'super-admin', component: SuperAdmin,  canActivate: [adminGuard],  data: {  allowedRoles: 'Admin' }  },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' }

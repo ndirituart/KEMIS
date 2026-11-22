@@ -105,7 +105,14 @@
 .logout-btn { background: none; border: none; font-size: 1.2rem; color: #333; cursor: pointer; margin-left: 10px; }
 
 /* PAGE BODY */
-.content-body { padding: 1rem 2rem 2rem; max-width: 1500px; }
+
+.content-body {
+  padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
 .page-title h1 { font-size: 2rem; font-weight: 800; margin: 0 0 0.2rem 0; color: #1a1a1a; }
 .page-title p { color: #555; margin: 0 0 1.5rem 0; font-size: 1rem; }
 

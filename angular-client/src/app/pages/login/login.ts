@@ -91,13 +91,9 @@ export class Login {
       next: (res) => {
         this.isLoading = false;
         
-        // Console log to see why role based routing fails
-        console.log("FULL BACKEND RESPONSE:", res); 
-
         localStorage.setItem('token', res.token);
         localStorage.setItem('userRole', res.role);
         localStorage.setItem('userId', res.userId);
-        localStorage.setItem('institutionId', res.institutionId);  //incase of successful login
         
         // Save institutionId safely
         if (res.institutionId !== null && res.institutionId !== undefined) {
@@ -133,7 +129,7 @@ export class Login {
           this.router.navigate(['/sub-county-education']);
         } 
         else if (role === 'Sub-County Quality Assurance and Standards Officer (SCQASO)') {
-          this.router.navigate(['/sub-county-quality-assurance']);
+          this.router.navigate(['/scqaso']);
         } 
         else if (role === 'IT Officer' || role === 'Teacher' || role === 'Deputy Principal') {
           this.router.navigate(['/school-dashboard']);

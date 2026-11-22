@@ -14,6 +14,7 @@ import { NotificationService } from '../../services/notifications.service';
 })
 export class InstitutionOnboardedPerClusterSubCounty implements OnInit {
   private http = inject(HttpClient);
+  private profileCounty = '';
   private cdr = inject(ChangeDetectorRef);
   private notification = inject(NotificationService);
 
@@ -26,7 +27,7 @@ export class InstitutionOnboardedPerClusterSubCounty implements OnInit {
 
   // --- Filter Model ---
   filter = {
-    institutionLevel: 'Primary School',
+    institutionLevel: 'All',
     cluster: 'All',
     fromDate: '',
     toDate: '',
@@ -47,6 +48,7 @@ export class InstitutionOnboardedPerClusterSubCounty implements OnInit {
     // 1. Fetch SCDE Profile to get their SubCounty
     this.http.get<any>('http://localhost:5215/api/sub-county-education/profile').subscribe({
       next: (profile) => {
+        this.profileCounty = profile.county;
         this.scdeSubCounty = profile.subCounty;
         this.filter.subCounty = profile.subCounty;
 
@@ -56,17 +58,13 @@ export class InstitutionOnboardedPerClusterSubCounty implements OnInit {
       error: (err) => {
         console.error('Failed to load SCDE profile', err);
         this.notification.showError('Failed to load profile');
-        // Fallback for testing
-        this.scdeSubCounty = 'Embakasi';
-        this.filter.subCounty = 'Embakasi';
-        this.fetchAllSchools('Embakasi');
       }
     });
   }
 
   fetchAllSchools(subCountyName: string) {
     // Should only be status = "Approved"
-    this.http.get<any>(`http://localhost:5215/api/sub-county-education/institutions?subCounty=${subCountyName}&status=Approved`).subscribe({
+    this.http.get<any>('http://localhost:5215/api/sub-county-education/institutions', { params: { county: this.profileCounty, subCounty: subCountyName, status: 'approved' } }).subscribe({
       next: (res) => {
         this.allInstitutions = res.schools || [];
         this.institutions = [...this.allInstitutions];

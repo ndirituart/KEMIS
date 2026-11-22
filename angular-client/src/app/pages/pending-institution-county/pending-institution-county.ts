@@ -21,24 +21,18 @@ export class PendingInstitutionCounty implements OnInit {
 
 
   // --- Filters ---
-  subCounties = [
-    'All',
-    "Dagoretti North Sub County", "Dagoretti South Sub County", "Embakasi Central Sub Count",
-    "Embakasi Sub County", "Embakasi North Sub County", "Embakasi South Sub County",
-    "Embakasi West Sub County", "Kamukunji Sub County", "Kasarani Sub County", "Kibra Sub County",
-    "Lang'ata Sub County", "Makadara Sub County", "Mathare Sub County", "Roysambu Sub County",
-    "Ruaraka Sub County", "Starehe Sub County", "Westlands Sub County"
-  ];
+  county = '';
+  subCounties = ['All'];
 
   statusList = [
-    'Select', 'Pending', 'Approved', 'Rejected',
-    'SCDE Recommended', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended'
+    'All', 'Pending', 'Approved', 'Rejected',
+    'SCDE Recommended', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended', 'SCDE Rejects'
   ];
 
   filter = {
     onboardingType: 'New Onboarding',
     subCounty: 'All',
-    status: 'Pending'
+    status: ''
   };
 
   tableSearch = '';
@@ -48,49 +42,47 @@ export class PendingInstitutionCounty implements OnInit {
   institutions: any[] = [];
 
   ngOnInit() {
-    this.fetchPendingSchools();
-  }
-
-    // Change this to take a status parameter from the dropdown button
-  fetchPendingSchools(status: string = 'pending') {
-    this.http.get<any>(`http://localhost:5215/api/county-education/institutions?county=Nairobi&status=${status}`).subscribe({
-      next: (res) => {
-        this.notification.showSuccess('Schools fetched successfully!');
-        this.allInstitutions = res.schools || [];
-        this.institutions = [...this.allInstitutions];
-        this.cdr.detectChanges();
+    this.http.get<{ county: string }>('http://localhost:5215/api/county-education/profile').subscribe({
+      next: ({ county }) => {
+        this.county = county;
+        this.fetchPendingSchools();
       },
-      error: (err) => console.error('Failed to fetch schools', err)
+      error: (err) => this.notification.showError('Failed to load county profile.', err)
     });
   }
 
+    fetchPendingSchools(status: string = this.filter.status) {
+    if (!this.county) return;
+
+    //Changed so as to view other statuses too
+    const statusParam = (status === 'Select' || !status) ? 'All' : status;
+
+    this.http.get<any>('http://localhost:5215/api/county-education/institutions', {
+      params: { county: this.county, status: statusParam }
+    }).subscribe({
+      next: (res) => {
+        this.notification.showSuccess('Schools fetched successfully!');
+        this.allInstitutions = res.schools || [];
+
+        // Dynamically populate the Sub-County dropdown based on the fetched schools
+        const uniqueSubCounties = [...new Set(this.allInstitutions.map(school => school.subCounty).filter(Boolean))];
+        this.subCounties = ['All', ...uniqueSubCounties];
+
+        // Apply the Sub-County filter locally
+        this.institutions = this.filter.subCounty === 'All'
+          ? this.allInstitutions
+          : this.allInstitutions.filter(school => school.subCounty === this.filter.subCounty);
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to fetch schools', err);
+        this.notification.showError('Failed to fetch schools.');
+      }
+    });
+  }
   onSearch() {
-    let statusParam = this.filter.status;
-
-    // If they select 'Select', we want to fetch ALL schools
-    if (statusParam === 'Select') {
-      statusParam = 'All';
-    } else if (statusParam === 'Pending') {
-      statusParam = 'Pending';
-    } else if (statusParam === 'Assigned SCDE') {
-      statusParam = 'Assigned SCDE';
-    } else if (statusParam === 'Assigned SCQASO') {
-      statusParam = 'Assigned SCQASO';
-    } else if (statusParam === 'SCQASO Recommended') {
-      statusParam = 'SCQASO Recommended';
-    } else if (statusParam === 'SCDE Recommended') {
-      statusParam = 'SCDE Recommended';
-    } else if (statusParam === 'Approved') {
-      statusParam = 'Approved';
-    } else if (statusParam === 'Rejected') {
-      statusParam = 'Rejected';
-    }
-
-    // Fetch the new data
-    this.fetchPendingSchools(statusParam);
-
-    // 2. (Optional) If you still want to filter by Sub-County locally
-    // You don't need to do anything here because fetchPendingSchools already updates the UI.
+    this.fetchPendingSchools();
   }
 
 

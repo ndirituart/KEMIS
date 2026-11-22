@@ -15,28 +15,20 @@ public class InstitutionWorkflowService
 
    //A. DASHBOARD METHODS
 
-    //1.  Get CDE Profile (Returns the CountyEducation model with the User loaded)
-    public async Task<CountyEducation> GetCdeProfileAsync(int userId, CancellationToken ct)
-    {
-        var cdeMapping = await _context.CountyEducations
-            .Include(c => c.User) // Loads the UserId after login
-            .FirstOrDefaultAsync(c => c.userId == userId && c.isActive, ct);
-
-        if (cdeMapping == null) 
-            throw new Exception("CDE profile not found.");
-
-        return cdeMapping;
-    }
+   //1. Get CDE Profile
+    public Task<CountyEducation?> GetCdeProfileAsync(int userId, CancellationToken ct) =>
+        _context.CountyEducations.FirstOrDefaultAsync(c => c.userId == userId && c.isActive, ct);
 
     // 2. Get Schools by County
         public async Task<object> GetSchoolsByCountyAsync(string county, string? status, CancellationToken ct)
     {
-        var query = _context.BasicEducations.Where(s => s.county == county);
+        var normalizedCounty = county.Trim().ToLowerInvariant();
+        var query = _context.BasicEducations.Where(s => s.county.Trim().ToLower() == normalizedCounty);
 
-        // If the user selects a specific status (e.g., "Pending" or "Assigned SCDE"), filter by it
-        if (!string.IsNullOrEmpty(status) && status != "All" && status != "Select")
+        var normalizedStatus = status?.Trim().ToLowerInvariant();
+        if (!string.IsNullOrEmpty(normalizedStatus) && normalizedStatus != "all" && normalizedStatus != "select")
         {
-            query = query.Where(s => s.status == status);
+            query = query.Where(s => s.status.Trim().ToLower() == normalizedStatus);
         }
 
         var schools = await query.ToListAsync(ct);
@@ -50,6 +42,7 @@ public class InstitutionWorkflowService
                 s.institutionName,
                 s.status,
                 s.subCounty,
+                s.institutionLevel,
                 s.totalLearners,
                 s.createdAt,
                 s.certificateNumber,
@@ -59,37 +52,28 @@ public class InstitutionWorkflowService
         };
     }
 
-    public async Task<SubCountyEducation> GetScdeProfileAsync(int userId, CancellationToken ct)
-    {
-        var scdeMapping = await _context.SubCountyEducation
-            .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
-
-        if (scdeMapping == null) 
-            throw new Exception("SCDE profile not found for this user.");
-
-        return scdeMapping;
-    }
+    public Task<SubCountyEducation?> GetScdeProfileAsync(int userId, CancellationToken ct) =>
+        _context.SubCountyEducation.FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
 
     // 3. Get SCDE Dashboard Stats
-    public async Task<object> GetScdeDashboardStatsAsync(int userId, CancellationToken ct)
+    public async Task<object?> GetScdeDashboardStatsAsync(int userId, CancellationToken ct)
     {
-        var scde = await _context.SubCountyEducation
-            .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
-
-        if (scde == null) 
-            return new { error = "SCDE not found" };
+        var scde = await GetScdeProfileAsync(userId, ct);
+        if (scde == null) return null;
 
         var subCounty = scde.subCounty;
-
-        var schools = await _context.BasicEducations
-            .Where(s => s.subCounty == subCounty)
-            .ToListAsync(ct);
+        var normalizedSubCounty = subCounty.Trim().ToLowerInvariant();
+        var normalizedCounty = scde.county.Trim().ToLowerInvariant();
+        var schoolsInSubCounty = _context.BasicEducations.Where(s =>
+            s.subCounty.Trim().ToLower() == normalizedSubCounty &&
+            s.county.Trim().ToLower() == normalizedCounty);
+        var schools = await schoolsInSubCounty.ToListAsync(ct);
 
         var pendingSCDE = schools.Count(s => s.status == "Pending" || s.status == "pending");
         var recommended = schools.Count(s => s.status == "SCDE Recommended" || s.status == "SCQASO Recommended");
         
         var assigned = await _context.InstitutionAssignments
-            .CountAsync(a => a.status == "pending" && _context.BasicEducations.Any(s => s.institutionId == a.institutionId && s.subCounty == subCounty), ct);
+            .CountAsync(a => a.status == "pending" && schoolsInSubCounty.Any(s => s.institutionId == a.institutionId), ct);
 
         return new
         {
@@ -106,20 +90,23 @@ public class InstitutionWorkflowService
     }
 
     // 4. Get schools by Sub-County (For SCDEs)
-        public async Task<object> GetSchoolsBySubCountyAsync(string subCounty, string? status, CancellationToken ct)
+        public async Task<object> GetSchoolsBySubCountyAsync(string subCounty, string? status, CancellationToken ct, string? county = null)
     {
-        var query = _context.BasicEducations
-            .Where(s => s.subCounty.ToLower().Contains(subCounty.ToLower()));
+        var normalizedSubCounty = subCounty.Trim().ToLowerInvariant();
+        var normalizedCounty = county?.Trim().ToLowerInvariant();
+        var query = string.IsNullOrEmpty(normalizedCounty)
+            ? _context.BasicEducations.Where(s => s.subCounty.Trim().ToLower().Contains(normalizedSubCounty))
+            : _context.BasicEducations.Where(s => s.county.Trim().ToLower() == normalizedCounty &&
+                s.subCounty.Trim().ToLower() == normalizedSubCounty);
 
-        if (string.IsNullOrEmpty(status) || status == "Select" || status == "All")
+        var normalizedStatus = status?.Trim().ToLowerInvariant();
+        if (string.IsNullOrEmpty(normalizedStatus) || normalizedStatus == "select" || normalizedStatus == "all")
         {
-           
-            query = query.Where(s => s.status.ToLower() != "approved");
+            query = query.Where(s => s.status.Trim().ToLower() != "approved");
         }
         else
         {
-
-            query = query.Where(s => s.status.ToLower() == status.ToLower());
+            query = query.Where(s => s.status.Trim().ToLower() == normalizedStatus);
         }
 
         var schools = await query.ToListAsync(ct);
@@ -162,7 +149,70 @@ public class InstitutionWorkflowService
             }).ToList()
         };
     }
-            //FETCHING SCHOOLS
+
+
+    public const string ScqasoRole = "Sub-County Quality Assurance and Standards Officer (SCQASO)";
+
+    public Task<User?> GetScqasoProfileAsync(int userId, CancellationToken ct) =>
+        _context.Users.AsNoTracking().FirstOrDefaultAsync(user =>
+            user.userId == userId && user.role == ScqasoRole &&
+            user.status == "active" && user.deletedAt == null &&
+            user.county.Trim() != "" && user.subCounty.Trim() != "", ct);
+
+    private IQueryable<BasicEducation> GetScqasoAreaSchools(User profile)
+    {
+        var county = profile.county.Trim().ToLowerInvariant();
+        var subCounty = profile.subCounty.Trim().ToLowerInvariant();
+        return _context.BasicEducations.AsNoTracking().Where(s =>
+            s.county.Trim().ToLower() == county && s.subCounty.Trim().ToLower() == subCounty);
+    }
+
+    public async Task<object> GetScqasoDashboardStatsAsync(User profile, CancellationToken ct)
+    {
+        var statuses = await GetScqasoAreaSchools(profile).Select(s => s.status).ToListAsync(ct);
+
+        return new
+        {
+            countyName = profile.county,
+            subCountyName = profile.subCounty,
+            stats = new
+            {
+                inspectionsDone = statuses.Count(status =>
+                    string.Equals(status?.Trim(), "Approved", StringComparison.OrdinalIgnoreCase)),
+                schedulePending = statuses.Count(status => status == "SCQASO Recommended"),
+                underEvaluation = statuses.Count(status => status == "Assigned SCQASO"),
+                recPending = statuses.Count(status => status == "SCDE Recommended"),
+                sendBack = statuses.Count(status => status == "SCDE Rejects")
+            }
+        };
+    }
+
+    public async Task<object> GetScqasoSchoolsAsync(User profile, bool approved, CancellationToken ct)
+    {
+        var schools = await GetScqasoAreaSchools(profile)
+            .Where(s => ((s.status ?? "").Trim().ToLower() == "approved") == approved)
+            .OrderBy(s => s.institutionName)
+            .ThenBy(s => s.institutionId)
+            .Select(s => new
+            {
+                s.institutionId,
+                s.certificateNumber,
+                s.institutionName,
+                s.mobileNo,
+                s.institutionType,
+                s.institutionLevel,
+                s.createdAt,
+                s.status,
+                s.constituency,
+                s.emailId
+            })
+            .ToListAsync(ct);
+
+        return new { subCounty = profile.subCounty, schools };
+    }
+
+
+ //FETCHING SCHOOLS
 
     // 1. Get School Details
     public async Task<InstitutionDetail> GetDetailAsync(int id, int userId, CancellationToken ct)
