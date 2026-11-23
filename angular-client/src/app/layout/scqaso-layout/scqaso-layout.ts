@@ -17,7 +17,7 @@ export class ScqasoLayout implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   dashboardData = {
-    countyName: '',
+    subCountyName: '',
     userRole: 'SCQASO'
   };
 
@@ -27,7 +27,7 @@ export class ScqasoLayout implements OnInit {
   ngOnInit() {
     this.http.get<any>('http://localhost:5215/api/sub-county-quality-assurance/profile').subscribe({
       next: (profile) => {
-        this.dashboardData.countyName = profile.county;
+        this.dashboardData.subCountyName = profile.subCounty;
         this.cdr.markForCheck();
       },
       error: (err) => console.error(err)

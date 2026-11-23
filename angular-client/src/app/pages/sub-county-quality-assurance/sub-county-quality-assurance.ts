@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
+
 @Component({
   selector: 'app-sub-county-quality-assurance',
   standalone: true,
@@ -11,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './sub-county-quality-assurance.html',
   styleUrl: './sub-county-quality-assurance.css',
 })
+
 export class SubCountyQualityAssurance implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
@@ -29,7 +31,7 @@ export class SubCountyQualityAssurance implements OnInit {
       sendBack: 0
     },
     institutionTypes: {
-      primary: { count: 1, percentage: 100 }
+      primary: { count: 0, percentage: 100 }
     }
 
   };
@@ -75,6 +77,7 @@ export class SubCountyQualityAssurance implements OnInit {
   }
 
   logout() {
+    localStorage.clear();
     localStorage.clear();
     this.router.navigate(['/login']);
   }
