@@ -15,7 +15,7 @@ public class Report
     public string institutionName { get; set; } = string.Empty;  
     public string summary { get; set; } = string.Empty;  
     public string recommendation { get; set; } = string.Empty;  
-    public string status { get; set; } = "submitted";  
+    public string status { get; set; } = "CDE Recommended";  
     public string createdAt { get; set; } = DateTime.UtcNow.ToString("o");  
     public string? updatedAt { get; set; }
 }

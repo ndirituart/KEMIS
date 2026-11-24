@@ -1,0 +1,38 @@
+/* Default Badge Style */
+.badge-status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-block;
+}
+
+/* 1. Pending (Yellow/Warning) */
+.badge-pending {
+  background-color: #ffc107; /* --kemis-warning */
+  color: #333;
+}
+
+/* 2. Assigned (Blue/Info) */
+.badge-assigned {
+  background-color: #3fbeeb; /* --kemis-primary */
+  color: #fff;
+}
+
+/* 3. Recommended (Dark Blue) */
+.badge-recommended {
+  background-color: #1e40af; /* --kemis-blue */
+  color: #fff;
+}
+
+/* 4. Rejected (Red/Danger) */
+.badge-rejected {
+  background-color: #dc143c; /* --kemis-red */
+  color: #fff;
+}
+
+/* 5. Under Review (Green) */
+.badge-review {
+  background-color: #28a745; /* --kemis-success */
+  color: #fff;
+}

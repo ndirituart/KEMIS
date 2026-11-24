@@ -13,7 +13,7 @@ public class InstitutionDecision
     public int institutionId { get; set; }  
     public int userId { get; set; } // The SCDE who made the initial decision  
     public bool isApproved { get; set; }  
-    public string remarks { get; set; } = string.Empty;  
+    public string remarks { get; set; } = string.Empty;  //Change to comments
     public string? rejectionReason { get; set; }   
     public string decisionType { get; set; } = string.Empty; // "SCDE recommendation" or "CDE Final"  
     public string createdAt { get; set; } = DateTime.UtcNow.ToString("o");  

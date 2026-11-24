@@ -266,7 +266,7 @@ public class InstitutionWorkflowService
             institutionName = school.institutionName,
             county = school.county,
             subCounty = school.subCounty,
-            status = "pending",
+            status = "Assigned SCDE",
             hasReport = false,
             createdDate = DateTime.UtcNow.ToString("o")
         };
@@ -292,7 +292,7 @@ public class InstitutionWorkflowService
             institutionId = id,
             assigneeId = req.assigneeId, // SCQASO
             assignerId = userId,         // SCDE
-            status = "pending",
+            status = "Assigned CQASO",
             hasReport = false,
             assignedAt = DateTime.UtcNow.ToString("o")
         };
@@ -303,7 +303,53 @@ public class InstitutionWorkflowService
     }
 
 
-    // 4. Add a Comment (Done by SCQASO)
+    // 4.  Get Pending Inspections (Assigned to this SCQASO)
+    public async Task<object> GetPendingInspectionsAsync(int userId, CancellationToken ct)
+    {
+        // Get the SCQASO's subcounty
+        var scqaso = await _context.SubCountyQualityAssurances
+            .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
+            
+        if (scqaso == null) return new { error = "SCQASO not found" };
+
+        // Get schools assigned to SCQASO (Status = Assigned SCQASO)
+        var schools = await _context.BasicEducations
+            .Where(s => s.subCounty == scqaso.subCounty && s.status == "Assigned SCQASO")
+            .Select(s => new {
+                s.institutionId, s.institutionName, s.emailId, s.mobileNo, 
+                s.createdAt, s.certificateNumber, s.institutionType, 
+                s.institutionLevel, s.status
+            })
+            .ToListAsync(ct);
+
+        return new { schools };
+    }
+
+    // 2. Submit Recommendation (Updates status and comments)
+    public async Task<IActionResult> SubmitInspectionAsync(int userId, SubmitInspectionRequest req, CancellationToken ct)
+    {
+        var school = await _context.BasicEducations.FindAsync(req.institutionId);
+        if (school == null) return new BadRequestObjectResult("School not found");
+
+        // Save the comment
+        var comment = new InstitutionComment
+        {
+            institutionId = req.institutionId,
+            userId = userId, // SCQASO
+            commentText = req.comment,
+            createdAt = DateTime.UtcNow.ToString("o")
+        };
+        _context.InstitutionComments.Add(comment);
+
+        // Update the status
+        school.status = "SCQASO Recommended";
+        school.updatedAt = DateTime.UtcNow.ToString("o");
+
+        await _context.SaveChangesAsync(ct);
+        return new OkObjectResult(new { message = "Recommendation submitted successfully" });
+    }
+
+        // Add a Comment (Used by CDE/SCDE/SCQASO)
     public async Task<InstitutionDetail> AddCommentAsync(int id, int userId, CommentRequest req, CancellationToken ct)
     {
         var comment = new InstitutionComment

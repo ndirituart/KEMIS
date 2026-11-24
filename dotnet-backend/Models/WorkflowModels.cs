@@ -12,3 +12,4 @@ public class AssignRequest { public int assigneeId { get; set; } }
 public class CommentRequest { public string comment { get; set; } = string.Empty; }
 public class DecisionRequest{ public bool isApproved { get; set; } public string remarks { get; set; } = string.Empty; public string? rejectionReason { get; set; } }
 public enum AssignmentRole { SCDE, SCQASO }
+public class SubmitInspectionRequest {public int institutionId { get; set; } public string comment { get; set; } = string.Empty;}

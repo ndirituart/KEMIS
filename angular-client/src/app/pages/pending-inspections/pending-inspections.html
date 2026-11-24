@@ -1,1 +1,228 @@
-<app-inspected-schools [pending]="true"></app-inspected-schools>
+<div class="page-container">
+  <div class="page-header">
+    <h2 class="text-primary">Institution Evaluation & Inspection</h2>
+  </div>
+
+  <div class="table-section">
+    <div class="table-search-row">
+      <input type="text" class="form-control search-input" placeholder="Search" [(ngModel)]="tableSearch">
+    </div>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Institution Name</th>
+            <th>Email Id</th>
+            <th>Mobile Number</th>
+            <th>Date of Onboarding</th>
+            <th>Onboarding Type</th>
+            <th>Onboarding Form</th>
+            <th>Inspection Date</th>
+            <th>Upload Inspection Report</th>
+            <th>Sendback Comments</th>
+            <th>Submit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let school of schools | search: tableSearch">
+            <td>{{ school.institutionName }}</td>
+            <td>{{ school.emailId }}</td>
+            <td>{{ school.mobileNo }}</td>
+            <td>{{ school.createdAt | date:'dd-MM-yyyy' }}</td>
+            <td>New Onboarding</td>
+
+            <td><button class="btn btn-sm btn-outline-danger" (click)="openDetailsModal(school)">View</button></td>
+            <td>{{ school.inspectionDate || '-' }}</td>
+            <td><button class="btn btn-sm btn-outline-danger" (click)="openUploadModal(school)">View</button></td>
+            <td><button class="btn btn-sm btn-outline-danger" (click)="openCommentModal(school)">View</button></td>
+            <td>
+              <!-- Dynamic badge colors based on status -->
+              <span class="badge-status" [ngClass]="{
+                'badge-pending': school.status === 'Pending' || school.status === 'pending',
+                'badge-assigned': school.status === 'Assigned SCDE' || school.status === 'Assigned SCQASO',
+                'badge-recommended': school.status === 'SCDE Recommended',
+                'badge-rejected': school.status === 'Rejected' || school.status === 'rejected',
+                'badge-review': school.status === 'SCQASO Recommended'
+              }">
+                {{ school.status }}
+              </span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 1: INSTITUTION DETAILS               -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" *ngIf="showDetailsModal">
+    <div class="modal-dialog large-modal">
+
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">Institution Onboarding Details</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModals()">✕</button>
+      </div>
+
+      <div class="modal-body scrollable-body" style="padding: 2rem;">
+
+        <!-- Section 1: Institution Details -->
+        <fieldset class="border p-4 mb-4 rounded" style="border-color: #dee2e6 !important;">
+          <legend class="float-none w-auto px-3 fs-5 fw-bold" style="color: #00b4d8;">Institution Details</legend>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Institute Type :</span>
+              <span class="detail-value">{{ selectedSchool?.institutionType || 'N/A' }}</span>
+            </div>
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Email :</span>
+              <span class="detail-value">{{ selectedSchool?.emailId || 'N/A' }}</span>
+            </div>
+
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Mobile Number :</span>
+              <span class="detail-value">{{ selectedSchool?.mobileNo || 'N/A' }}</span>
+            </div>
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Institution Name :</span>
+              <span class="detail-value">{{ selectedSchool?.institutionName || 'N/A' }}</span>
+            </div>
+
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Head of Institution :</span>
+              <span class="detail-value">{{ selectedSchool?.headOfInstitution || 'N/A' }}</span>
+            </div>
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Postal Code :</span>
+              <span class="detail-value">{{ selectedSchool?.postalCode || 'N/A' }}</span>
+            </div>
+
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">County :</span>
+              <span class="detail-value">{{ selectedSchool?.county || 'N/A' }}</span>
+            </div>
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Sub County :</span>
+              <span class="detail-value">{{ selectedSchool?.subCounty || 'N/A' }}</span>
+            </div>
+
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Constituency :</span>
+              <span class="detail-value">{{ selectedSchool?.constituency || 'N/A' }}</span>
+            </div>
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Institution Location :</span>
+              <span class="detail-value">{{ selectedSchool?.postalAddressInstitution || 'N/A' }}</span>
+            </div>
+
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Application Type :</span>
+              <span class="detail-value">{{ selectedSchool?.applicationType || 'N/A' }}</span>
+            </div>
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Educational Pathway :</span>
+              <span class="detail-value">{{ selectedSchool?.educationalPathway || 'Age Based' }}</span>
+            </div>
+
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Institution Level :</span>
+              <span class="detail-value">{{ selectedSchool?.institutionLevel || 'N/A' }}</span>
+            </div>
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Onboarding Date :</span>
+              <span class="detail-value">{{ selectedSchool?.createdAt | date:'dd-MM-yyyy' }}</span>
+            </div>
+
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Have a Valid Registration Certificate? :</span>
+              <span class="detail-value">{{ selectedSchool?.certificateValid ? 'YES' : 'NO' }}</span>
+            </div>
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Number of Boys Learners :</span>
+              <!-- Assuming you have a field for this, else hardcoded for now -->
+              <span class="detail-value">0</span>
+            </div>
+
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Number of Girls Learners :</span>
+              <span class="detail-value">0</span>
+            </div>
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Total Number of Learners :</span>
+              <span class="detail-value">{{ selectedSchool?.totalLearners || 0 }}</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Section 2: Other Details -->
+        <fieldset class="border p-4 rounded" style="border-color: #dee2e6 !important;">
+          <legend class="float-none w-auto px-3 fs-5 fw-bold" style="color: #00b4d8;">Other Details</legend>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">Accommodation Type :</span>
+              <span class="detail-value">{{ selectedSchool?.accomodationType || 'N/A' }}</span>
+            </div>
+            <div class="col-md-6">
+              <span class="detail-label fw-bold text-dark">School Categories :</span>
+              <span class="detail-value">{{ selectedSchool?.schoolCategory || 'N/A' }}</span>
+            </div>
+          </div>
+        </fieldset>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="closeModals()">Close</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL 2: UPLOAD -->
+  <div class="modal-backdrop" *ngIf="showUploadModal">
+    <div class="modal-dialog small-modal">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">Upload Inspection Report</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModals()"></button>
+      </div>
+      <div class="modal-body">
+        <input type="file" class="form-control mb-3" (change)="onFileSelected($event)" accept=".pdf,image/*">
+        <input type="date" class="form-control" [(ngModel)]="uploadData.date">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="closeModals()">Close</button>
+        <button class="btn btn-primary" (click)="submitReport()">Upload</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: COMMENTS -->
+  <div class="modal-backdrop" *ngIf="showCommentModal">
+    <div class="modal-dialog small-modal">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">Sendback Comments</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModals()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label text-muted">Supervisor (SCDE) Comment:</label>
+          <div class="p-2 border rounded bg-light">{{ supervisorComments }}</div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Your Recommendation:</label>
+          <textarea class="form-control" rows="3" [(ngModel)]="commentData.text" placeholder="Enter recommendation..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="closeModals()">Close</button>
+        <button class="btn btn-primary" (click)="submitRecommendation()">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <app-inspected-schools [pending]="true"></app-inspected-schools> -->
