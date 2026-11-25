@@ -26,3 +26,4 @@ CREATE TABLE IF NOT EXISTS "InstitutionComments" (
 
 -- Indexes for fast lookups
 CREATE INDEX IF NOT EXISTS "IX_Comments_Institution" ON "InstitutionComments" ("institutionId");
+

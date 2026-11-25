@@ -47,6 +47,7 @@ public class BasicEducation
     public string? deletedAt { get; set; }
     public int? userId { get; set; } //linking each institution to a user later on
     public int? supervisorId { get; set; } //linking each institution to a supervisor later on (SCDE/CDE/SCQASO)
+    public int? assigneeId { get; set; }
     public string? rejectionReason { get; set; } // Reason for rejection if status is denied
     public string? cluster { get; set; } // Cluster name for the institution eg [Cluster 1, Cluster 2, Cluster 3 or Private]
 }

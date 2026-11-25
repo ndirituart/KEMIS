@@ -11,6 +11,7 @@ public class Report
     [Key]
     public int reportId { get; set; }  
     public int institutionId { get; set; }
+    public int? inspectionCommentId { get; set; }
     public int scdeId { get; set; }   // Who wrote this report?
     public string institutionName { get; set; } = string.Empty;  
     public string summary { get; set; } = string.Empty;  

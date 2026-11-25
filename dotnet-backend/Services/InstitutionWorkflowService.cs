@@ -8,9 +8,14 @@ public class InstitutionWorkflowService
 {
     private readonly ApplicationDbContext _context;
 
-    public InstitutionWorkflowService(ApplicationDbContext context)
+    private readonly string _reportFolder;
+    private readonly bool _practiceMode;
+
+    public InstitutionWorkflowService(ApplicationDbContext context, IWebHostEnvironment environment)
     {
         _context = context;
+        _practiceMode = environment.IsDevelopment();
+        _reportFolder = Path.Combine(environment.ContentRootPath, "App_Data", "inspection-reports");
     }
 
    //A. DASHBOARD METHODS
@@ -70,7 +75,7 @@ public class InstitutionWorkflowService
         var schools = await schoolsInSubCounty.ToListAsync(ct);
 
         var pendingSCDE = schools.Count(s => s.status == "Pending" || s.status == "pending");
-        var recommended = schools.Count(s => s.status == "SCDE Recommended" || s.status == "SCQASO Recommended");
+        var recommended = schools.Count(s => s.status == "SCDE Approved" || s.status == "SCQASO Recommended");
         
         var assigned = await _context.InstitutionAssignments
             .CountAsync(a => a.status == "pending" && schoolsInSubCounty.Any(s => s.institutionId == a.institutionId), ct);
@@ -111,21 +116,11 @@ public class InstitutionWorkflowService
 
         var schools = await query.ToListAsync(ct);
 
-        // Fetch assignments to map the SCQASO ID
-        var schoolIds = schools.Select(s => s.institutionId).ToList();
-        var assignments = await _context.InstitutionAssignments
-            .Where(a => schoolIds.Contains(a.institutionId))
-            .OrderByDescending(a => a.assignmentId)
-            .ToListAsync(ct);
-
         return new
         {
             subCounty = subCounty,
             schools = schools.Select(s => 
             {
-                // Find the latest SCQASO assignment
-                var latestAssignment = assignments.FirstOrDefault(a => a.institutionId == s.institutionId);
-                
                 return new
                 {
                     s.institutionId,
@@ -135,7 +130,7 @@ public class InstitutionWorkflowService
                     s.subCounty,
                     s.status,
                     s.supervisorId, // SCDE
-                    assigneeId = latestAssignment?.assigneeId, // SCQASO
+                    s.assigneeId, // SCQASO
                     s.institutionType,
                     s.institutionLevel,
                     s.totalLearners,
@@ -178,11 +173,11 @@ public class InstitutionWorkflowService
             stats = new
             {
                 inspectionsDone = statuses.Count(status =>
-                    string.Equals(status?.Trim(), "Approved", StringComparison.OrdinalIgnoreCase)),
-                schedulePending = statuses.Count(status => status == "SCQASO Recommended"),
-                underEvaluation = statuses.Count(status => status == "Assigned SCQASO"),
-                recPending = statuses.Count(status => status == "SCDE Recommended"),
-                sendBack = statuses.Count(status => status == "SCDE Rejects")
+                    string.Equals(status?.Trim(), "Approved", StringComparison.OrdinalIgnoreCase)),//completed
+                schedulePending = statuses.Count(status => status == "Assigned SCQASO"),//yet to be inspected
+                underEvaluation = statuses.Count(status => status == "SCQASO Recommended"), //inspected and approved
+                recPending = statuses.Count(status => status == "Pending"),
+                sendBack = statuses.Count(status => status == "SCDE Rejected")
             }
         };
     }
@@ -255,6 +250,7 @@ public class InstitutionWorkflowService
         // Update BasicEducation table, created a separate row to track the assignee though SupervisorId
         school.status = "Assigned SCDE";
         school.supervisorId = req.assigneeId; // SCDE becomes supervisor
+        school.assigneeId = null;
         school.updatedAt = DateTime.UtcNow.ToString("o");
 
         //Save to AssignedSchools table
@@ -277,76 +273,276 @@ public class InstitutionWorkflowService
     }
 
     //3. Assign SCQASO (Called by SCDE)
-    public async Task<InstitutionDetail> AssignScqasoAsync(int id, int userId, AssignRequest req, CancellationToken ct)
+    public async Task<IActionResult> AssignScqasoAsync(int id, int userId, AssignRequest req, CancellationToken ct)
     {
-        var school = await _context.BasicEducations.FindAsync(id);
-        if (school == null) throw new Exception("School not found");
+        var school = await _context.BasicEducations.FindAsync(new object[] { id }, ct);
+        if (school == null) return new NotFoundResult();
+        if (!await CanViewSchoolAsync(school, userId, false, ct) ||
+            (school.supervisorId != null && school.supervisorId != userId))
+            return new ForbidResult();
+        if (school.status is not ("Assigned SCDE" or "Assigned SCQASO" or "SCDE Rejected"))
+            return new ConflictObjectResult("This school is not awaiting an inspection assignment.");
 
-        // Update BasicEducation. Again another separate row from supervisorId called assineeId
+        var officer = await GetScqasoProfileAsync(req.assigneeId, ct);
+        if (officer == null || !SameArea(officer.county, school.county) || !SameArea(officer.subCounty, school.subCounty))
+            return new BadRequestObjectResult("Choose an active inspection officer in the school's county and sub-county.");
+
+        var now = DateTime.UtcNow.ToString("o");
+        school.supervisorId ??= userId;
+        school.assigneeId = officer.userId;
         school.status = "Assigned SCQASO";
-        school.updatedAt = DateTime.UtcNow.ToString("o");
+        school.updatedAt = now;
 
-        // 2. Save to InstitutionAssignments table
-        var assignment = new InstitutionAssignment
+        _context.InstitutionAssignments.Add(new InstitutionAssignment
         {
             institutionId = id,
-            assigneeId = req.assigneeId, // SCQASO
-            assignerId = userId,         // SCDE
-            status = "Assigned CQASO",
+            assigneeId = officer.userId,
+            assignerId = userId,
+            status = school.status,
             hasReport = false,
-            assignedAt = DateTime.UtcNow.ToString("o")
-        };
-        _context.InstitutionAssignments.Add(assignment);
-
-        await _context.SaveChangesAsync(ct);
-        return await GetDetailAsync(id, userId, ct);
+            assignedAt = now
+        });
+        return await SaveTransitionAsync(ct);
     }
 
+    internal IQueryable<InstitutionAssignment> InspectionAssignments =>
+        _context.InstitutionAssignments.Where(a =>
+            _context.Users.Any(u => u.userId == a.assigneeId && u.role == ScqasoRole));
 
-    // 4.  Get Pending Inspections (Assigned to this SCQASO)
+    private IQueryable<InstitutionAssignment> Assignments(int id) =>
+        InspectionAssignments.Where(a => a.institutionId == id).OrderByDescending(a => a.assignmentId);
+
+    private IQueryable<InstitutionComment> Inspections(int id) =>
+        _context.InstitutionComments.Where(c => c.institutionId == id && c.reportFileName != null)
+            .OrderByDescending(c => c.commentId);
+
     public async Task<object> GetPendingInspectionsAsync(int userId, CancellationToken ct)
     {
-        // Get the SCQASO's subcounty
-        var scqaso = await _context.SubCountyQualityAssurances
-            .FirstOrDefaultAsync(s => s.userId == userId && s.isActive, ct);
-            
-        if (scqaso == null) return new { error = "SCQASO not found" };
+        var profile = await GetScqasoProfileAsync(userId, ct);
+        if (profile == null) return new { schools = Array.Empty<object>() };
 
-        // Get schools assigned to SCQASO (Status = Assigned SCQASO)
-        var schools = await _context.BasicEducations
-            .Where(s => s.subCounty == scqaso.subCounty && s.status == "Assigned SCQASO")
-            .Select(s => new {
-                s.institutionId, s.institutionName, s.emailId, s.mobileNo, 
-                s.createdAt, s.certificateNumber, s.institutionType, 
-                s.institutionLevel, s.status
-            })
-            .ToListAsync(ct);
-
+        var query = _practiceMode ? _context.BasicEducations.AsNoTracking() : GetScqasoAreaSchools(profile);
+        var schools = await query
+            .Where(s => (s.status ?? "").Trim().ToLower() != "approved")
+            .OrderByDescending(s => s.institutionId)
+            .Select(s => new
+            {
+                s.institutionId, s.institutionName, s.emailId, s.mobileNo, s.createdAt,
+                s.certificateNumber, s.institutionType, s.institutionLevel, s.status,
+                inspectionDate = _context.InstitutionComments
+                    .Where(c => c.institutionId == s.institutionId && c.reportFileName != null)
+                    .OrderByDescending(c => c.commentId).Select(c => c.inspectionDate).FirstOrDefault(),
+                canSubmit = (s.assigneeId == null || s.assigneeId == userId) &&
+                    !InspectionAssignments.Where(a => a.institutionId == s.institutionId)
+                        .OrderByDescending(a => a.assignmentId).Take(1).Any(a => a.assigneeId != userId) &&
+                    ((_practiceMode && s.status != "SCQASO Recommended") ||
+                        s.status == "Assigned SCQASO" || s.status == "SCDE Rejected" ||
+                        (s.status == "SCQASO Recommended" && !_context.InstitutionComments.Any(c =>
+                            c.institutionId == s.institutionId && c.reportFileName != null)))
+            }).ToListAsync(ct);
         return new { schools };
     }
 
-    // 2. Submit Recommendation (Updates status and comments)
     public async Task<IActionResult> SubmitInspectionAsync(int userId, SubmitInspectionRequest req, CancellationToken ct)
     {
-        var school = await _context.BasicEducations.FindAsync(req.institutionId);
-        if (school == null) return new BadRequestObjectResult("School not found");
+        if (string.IsNullOrWhiteSpace(req.comment) || req.file is null || req.file.Length == 0)
+            return new BadRequestObjectResult("An inspection comment and report file are required.");
+        if (req.file.Length > 10 * 1024 * 1024)
+            return new BadRequestObjectResult("The report must be 10 MB or smaller.");
+        if (req.inspectionDate != null && !DateOnly.TryParseExact(req.inspectionDate, "yyyy-MM-dd", out _))
+            return new BadRequestObjectResult("Enter a valid inspection date.");
 
-        // Save the comment
-        var comment = new InstitutionComment
+        var extension = Path.GetExtension(req.file.FileName).ToLowerInvariant();
+        byte[]? signature = extension switch
+        {
+            ".pdf" => "%PDF-"u8.ToArray(),
+            ".jpg" or ".jpeg" => new byte[] { 255, 216, 255 },
+            ".png" => new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 },
+            _ => null
+        };
+        if (signature == null)
+            return new BadRequestObjectResult("Upload a PDF, JPG or PNG report.");
+
+        var school = await _context.BasicEducations.FindAsync(new object[] { req.institutionId }, ct);
+        if (school == null) return new NotFoundResult();
+        var assignment = await Assignments(req.institutionId).FirstOrDefaultAsync(ct);
+        var profile = await GetScqasoProfileAsync(userId, ct);
+        if (profile == null ||
+            (!_practiceMode && (!SameArea(profile.county, school.county) || !SameArea(profile.subCounty, school.subCounty))) ||
+            (school.assigneeId != null && school.assigneeId != userId) ||
+            (assignment != null && assignment.assigneeId != userId))
+            return new ForbidResult();
+        var missingLegacyReport = school.status == "SCQASO Recommended" &&
+            !await Inspections(req.institutionId).AnyAsync(ct);
+        if (string.Equals(school.status?.Trim(), "Approved", StringComparison.OrdinalIgnoreCase) ||
+            (!_practiceMode && school.status is not ("Assigned SCQASO" or "SCDE Rejected") && !missingLegacyReport) ||
+            (school.status == "SCQASO Recommended" && !missingLegacyReport))
+            return new ConflictObjectResult("This school is no longer awaiting inspection.");
+
+        await using var input = req.file.OpenReadStream();
+        var header = new byte[signature.Length];
+        if (await input.ReadAtLeastAsync(header, header.Length, false, ct) != header.Length ||
+            !header.AsSpan().SequenceEqual(signature))
+            return new BadRequestObjectResult("The report contents do not match the file extension.");
+
+        var now = DateTime.UtcNow.ToString("o");
+        var fileName = $"{Guid.NewGuid():N}{extension}";
+        Directory.CreateDirectory(_reportFolder);
+        var path = Path.Combine(_reportFolder, fileName);
+        try
+        {
+            await using (var output = new FileStream(path, FileMode.CreateNew, FileAccess.Write))
+            {
+                await output.WriteAsync(header, ct);
+                await input.CopyToAsync(output, ct);
+            }
+
+            _context.InstitutionComments.Add(new InstitutionComment
+            {
+                institutionId = req.institutionId,
+                userId = userId,
+                commentText = req.comment.Trim(),
+                reportFileName = fileName,
+                inspectionDate = req.inspectionDate,
+                createdAt = now
+            });
+            if (assignment == null)
+            {
+                assignment = new InstitutionAssignment
+                {
+                    institutionId = school.institutionId,
+                    assigneeId = userId,
+                    assignerId = school.supervisorId ?? userId,
+                    assignedAt = now
+                };
+                _context.InstitutionAssignments.Add(assignment);
+            }
+
+            school.assigneeId ??= userId;
+            school.status = assignment.status = "SCQASO Recommended";
+            school.updatedAt = assignment.updatedAt = now;
+            assignment.hasReport = true;
+            var result = await SaveTransitionAsync(ct);
+            if (result is ConflictObjectResult) File.Delete(path);
+            return result;
+        }
+        catch
+        {
+            File.Delete(path);
+            throw;
+        }
+    }
+
+    public async Task<IActionResult> ReviewInspectionAsync(int userId, SubmitReportRequest req, CancellationToken ct)
+    {
+        if (req.isApproved is not bool approved)
+            return new BadRequestObjectResult("Choose whether to approve or reject the inspection.");
+        var reason = req.rejectionReason?.Trim();
+        if (!approved && string.IsNullOrEmpty(reason))
+            return new BadRequestObjectResult("A rejection reason is required.");
+
+        var school = await _context.BasicEducations.FindAsync(new object[] { req.institutionId }, ct);
+        if (school == null) return new NotFoundResult();
+        if (school.supervisorId != userId || !await CanViewSchoolAsync(school, userId, false, ct))
+            return new ForbidResult();
+        if (school.status != "SCQASO Recommended")
+            return new ConflictObjectResult("This school is no longer awaiting SCDE review.");
+
+        var assignment = await Assignments(req.institutionId).FirstOrDefaultAsync(ct);
+        var inspection = await Inspections(req.institutionId).FirstOrDefaultAsync(ct);
+        if (inspection == null || assignment == null || assignment.assigneeId != inspection.userId)
+            return new ConflictObjectResult("The assigned officer must submit a report first.");
+
+        var now = DateTime.UtcNow.ToString("o");
+        var status = approved ? "SCDE Approved" : "SCDE Rejected";
+        _context.Reports.Add(new Report
         {
             institutionId = req.institutionId,
-            userId = userId, // SCQASO
-            commentText = req.comment,
-            createdAt = DateTime.UtcNow.ToString("o")
+            institutionName = school.institutionName,
+            scdeId = userId,
+            inspectionCommentId = inspection.commentId,
+            summary = approved ? req.summary.Trim() : reason!,
+            recommendation = approved ? "Approve" : "Reject",
+            status = status,
+            createdAt = now
+        });
+        school.status = assignment.status = status;
+        school.updatedAt = assignment.updatedAt = now;
+        if (!approved)
+        {
+            _context.InstitutionComments.Add(new InstitutionComment
+            {
+                institutionId = req.institutionId,
+                userId = userId,
+                commentText = reason!,
+                createdAt = now
+            });
+        }
+        return await SaveTransitionAsync(ct);
+    }
+
+    private async Task<IActionResult> SaveTransitionAsync(CancellationToken ct)
+    {
+        try
+        {
+            await _context.SaveChangesAsync(ct);
+            return new OkResult();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return new ConflictObjectResult("The school status changed. Refresh and try again.");
+        }
+    }
+
+    public async Task<IActionResult> GetDirectorDetailAsync(int id, int userId, bool countyDirector, CancellationToken ct)
+    {
+        var school = await _context.BasicEducations.FindAsync(new object[] { id }, ct);
+        if (school == null) return new NotFoundResult();
+        if (!await CanViewSchoolAsync(school, userId, countyDirector, ct)) return new ForbidResult();
+
+        var canReview = countyDirector || school.supervisorId == userId;
+        var inspection = canReview ? await Inspections(id)
+            .Select(c => new { c.commentId, c.commentText, c.inspectionDate }).FirstOrDefaultAsync(ct) : null;
+        var review = inspection == null ? null : await _context.Reports.AsNoTracking()
+            .Where(r => r.institutionId == id && r.inspectionCommentId == inspection.commentId)
+            .OrderByDescending(r => r.reportId).FirstOrDefaultAsync(ct);
+        return new OkObjectResult(new { school, school.status, inspection, review, canReview });
+    }
+
+    private async Task<bool> CanViewSchoolAsync(BasicEducation school, int userId, bool countyDirector, CancellationToken ct)
+    {
+        if (countyDirector)
+        {
+            var profile = await GetCdeProfileAsync(userId, ct);
+            return profile != null && SameArea(profile.county, school.county);
+        }
+        var scde = await GetScdeProfileAsync(userId, ct);
+        return scde != null && SameArea(scde.county, school.county) && SameArea(scde.subCounty, school.subCounty);
+    }
+
+    private static bool SameArea(string first, string second) =>
+        string.Equals(first.Trim(), second.Trim(), StringComparison.OrdinalIgnoreCase);
+
+    public async Task<IActionResult> GetInspectionFileAsync(int id, int commentId, int userId, bool countyDirector, CancellationToken ct)
+    {
+        var school = await _context.BasicEducations.FindAsync(new object[] { id }, ct);
+        if (school == null) return new NotFoundResult();
+        if (!await CanViewSchoolAsync(school, userId, countyDirector, ct) ||
+            (!countyDirector && school.supervisorId != userId)) return new ForbidResult();
+
+        var fileName = await Inspections(id).Where(c => c.commentId == commentId)
+            .Select(c => c.reportFileName).FirstOrDefaultAsync(ct);
+        if (fileName == null || fileName != Path.GetFileName(fileName)) return new NotFoundResult();
+
+        var path = Path.Combine(_reportFolder, fileName);
+        if (!File.Exists(path)) return new NotFoundObjectResult("Inspection report file could not be found.");
+        var mimeType = Path.GetExtension(fileName) switch
+        {
+            ".pdf" => "application/pdf",
+            ".png" => "image/png",
+            _ => "image/jpeg"
         };
-        _context.InstitutionComments.Add(comment);
-
-        // Update the status
-        school.status = "SCQASO Recommended";
-        school.updatedAt = DateTime.UtcNow.ToString("o");
-
-        await _context.SaveChangesAsync(ct);
-        return new OkObjectResult(new { message = "Recommendation submitted successfully" });
+        return new PhysicalFileResult(path, mimeType) { EnableRangeProcessing = true };
     }
 
         // Add a Comment (Used by CDE/SCDE/SCQASO)
@@ -366,29 +562,36 @@ public class InstitutionWorkflowService
     }
 
     // 5.  Make the final decision (CDE)
-    public async Task<InstitutionDetail> FinalDecisionAsync(int id, int userId, DecisionRequest req, CancellationToken ct)
+    public async Task<IActionResult> FinalDecisionAsync(int id, int userId, DecisionRequest req, CancellationToken ct)
     {
-        var school = await _context.BasicEducations.FindAsync(id);
-        if (school == null) throw new Exception("School not found");
+        if (req.isApproved is not bool approved)
+            return new BadRequestObjectResult("Choose whether to approve or reject the institution.");
+        var reason = req.rejectionReason?.Trim();
+        if (!approved && string.IsNullOrEmpty(reason))
+            return new BadRequestObjectResult("A rejection reason is required.");
 
-        school.status = req.isApproved ? "approved" : "rejected";
-        if (!req.isApproved) school.rejectionReason = req.rejectionReason ?? req.remarks;
-        school.updatedAt = DateTime.UtcNow.ToString("o");
+        var school = await _context.BasicEducations.FindAsync(new object[] { id }, ct);
+        if (school == null) return new NotFoundResult();
+        if (!await CanViewSchoolAsync(school, userId, true, ct)) return new ForbidResult();
+        if (school.status != "SCDE Approved" ||
+            !await _context.Reports.AnyAsync(r => r.institutionId == id && r.status == "SCDE Approved" &&
+                r.inspectionCommentId != null, ct))
+            return new ConflictObjectResult("The SCDE must approve the inspection before the final decision.");
 
-        var decision = new InstitutionDecision
+        var now = DateTime.UtcNow.ToString("o");
+        school.status = approved ? "Approved" : "Rejected";
+        school.rejectionReason = approved ? null : reason;
+        school.updatedAt = now;
+        _context.InstitutionDecisions.Add(new InstitutionDecision
         {
             institutionId = id,
             userId = userId,
-            isApproved = req.isApproved,
+            isApproved = approved,
             remarks = req.remarks,
-            rejectionReason = req.rejectionReason,
+            rejectionReason = school.rejectionReason,
             decisionType = "CDE Final",
-            createdAt = DateTime.UtcNow.ToString("o")
-        };
-        _context.InstitutionDecisions.Add(decision);
-
-        await _context.SaveChangesAsync(ct);
-
-        return await GetDetailAsync(id, userId, ct);
+            createdAt = now
+        });
+        return await SaveTransitionAsync(ct);
     }
 }

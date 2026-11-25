@@ -36,7 +36,9 @@ public class ApplicationDbContext : DbContext
 
         // Table names in the database
         modelBuilder.Entity<User>().ToTable("Users");
-        modelBuilder.Entity<BasicEducation>().ToTable("BasicEducation");
+        var schools = modelBuilder.Entity<BasicEducation>().ToTable("BasicEducation");
+        schools.Property(s => s.status).IsConcurrencyToken();
+        schools.Property(s => s.updatedAt).IsConcurrencyToken();
         
 
 

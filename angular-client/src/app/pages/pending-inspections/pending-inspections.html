@@ -21,7 +21,7 @@
             <th>Inspection Date</th>
             <th>Upload Inspection Report</th>
             <th>Sendback Comments</th>
-            <th>Submit</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -34,15 +34,15 @@
 
             <td><button class="btn btn-sm btn-outline-danger" (click)="openDetailsModal(school)">View</button></td>
             <td>{{ school.inspectionDate || '-' }}</td>
-            <td><button class="btn btn-sm btn-outline-danger" (click)="openUploadModal(school)">View</button></td>
+            <td><button class="btn btn-sm btn-outline-danger" [disabled]="!school.canSubmit" (click)="openUploadModal(school)">Submit inspection</button></td>
             <td><button class="btn btn-sm btn-outline-danger" (click)="openCommentModal(school)">View</button></td>
             <td>
               <!-- Dynamic badge colors based on status -->
               <span class="badge-status" [ngClass]="{
                 'badge-pending': school.status === 'Pending' || school.status === 'pending',
                 'badge-assigned': school.status === 'Assigned SCDE' || school.status === 'Assigned SCQASO',
-                'badge-recommended': school.status === 'SCDE Recommended',
-                'badge-rejected': school.status === 'Rejected' || school.status === 'rejected',
+                'badge-recommended': school.status === 'SCDE Approved',
+                'badge-rejected': school.status === 'SCDE Rejected' || school.status === 'Rejected' || school.status === 'rejected',
                 'badge-review': school.status === 'SCQASO Recommended'
               }">
                 {{ school.status }}
@@ -190,12 +190,15 @@
         <button type="button" class="btn-close btn-close-white" (click)="closeModals()"></button>
       </div>
       <div class="modal-body">
-        <input type="file" class="form-control mb-3" (change)="onFileSelected($event)" accept=".pdf,image/*">
-        <input type="date" class="form-control" [(ngModel)]="uploadData.date">
+        <input type="file" class="form-control mb-3" (change)="onFileSelected($event)" accept=".pdf,.jpg,.jpeg,.png" aria-label="Inspection report">
+        <label for="inspection-date" class="form-label">Inspection date</label>
+        <input id="inspection-date" type="date" class="form-control mb-3" [(ngModel)]="uploadData.date">
+        <label for="inspection-comment" class="form-label">Inspection comment</label>
+        <textarea id="inspection-comment" class="form-control" rows="3" [(ngModel)]="commentData.text" required></textarea>
       </div>
       <div class="modal-footer">
         <button class="btn btn-danger" (click)="closeModals()">Close</button>
-        <button class="btn btn-primary" (click)="submitReport()">Upload</button>
+        <button class="btn btn-primary" [disabled]="submitting" (click)="submitReport()">Submit inspection</button>
       </div>
     </div>
   </div>
@@ -212,14 +215,9 @@
           <label class="form-label text-muted">Supervisor (SCDE) Comment:</label>
           <div class="p-2 border rounded bg-light">{{ supervisorComments }}</div>
         </div>
-        <div class="mb-3">
-          <label class="form-label fw-bold">Your Recommendation:</label>
-          <textarea class="form-control" rows="3" [(ngModel)]="commentData.text" placeholder="Enter recommendation..."></textarea>
-        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-danger" (click)="closeModals()">Close</button>
-        <button class="btn btn-primary" (click)="submitRecommendation()">Submit</button>
       </div>
     </div>
   </div>

@@ -18,7 +18,6 @@ export class PendingInspections implements OnInit {
   private notification = inject(NotificationService);
 
   // --- Table & Filter State ---
-  filter = { status: 'Assigned SCQASO' };
   tableSearch = '';
   schools: any[] = [];
 
@@ -30,6 +29,7 @@ export class PendingInspections implements OnInit {
   selectedSchool: any = null;
 
   // --- Upload Form ---
+  submitting = false;
   uploadData = { file: null as File | null, date: '' };
 
   // --- Comment Form ---
@@ -41,7 +41,6 @@ export class PendingInspections implements OnInit {
   }
 
   fetchPendingInspections() {
-    // Fetch schools assigned to this SCQASO
     this.http.get<any>('http://localhost:5215/api/sub-county-quality-assurance/pending-inspections').subscribe({
       next: (res) => {
         this.schools = res.schools || [];
@@ -63,6 +62,7 @@ export class PendingInspections implements OnInit {
   openUploadModal(school: any) {
     this.selectedSchool = school;
     this.uploadData = { file: null, date: new Date().toISOString().split('T')[0] };
+    this.commentData.text = '';
     this.showUploadModal = true;
   }
 
@@ -88,50 +88,47 @@ export class PendingInspections implements OnInit {
   // --- File Upload Logic ---
   onFileSelected(event: any) {
     const file = event.target.files[0];
-    if (file) {
-      this.uploadData.file = file;
-    }
+    this.uploadData.file = file ?? null;
   }
 
+  //submit report PDF and comment both at once
   submitReport() {
-    if (!this.uploadData.file) {
-      this.notification.showError('Please select a file to upload.');
+    if (this.submitting || !this.selectedSchool?.canSubmit) return;
+
+    const file = this.uploadData.file;
+    if (!file) {
+      this.notification.showError('Please attach an inspection report.');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('institutionId', this.selectedSchool.institutionId.toString());
-    formData.append('inspectionDate', this.uploadData.date);
-    formData.append('file', this.uploadData.file);
-
-    this.http.post('http://localhost:5215/api/sub-county-quality-assurance/upload-report', formData).subscribe({
-      next: () => {
-        this.notification.showSuccess('Report uploaded successfully!');
-        this.closeModals();
-      },
-      error: () => this.notification.showError('Upload failed.')
-    });
-  }
-
-  // --- Comment & Status Update Logic ---
-  submitRecommendation() {
     if (!this.commentData.text.trim()) {
       this.notification.showError('Please enter a recommendation.');
       return;
     }
 
-    const payload = {
-      institutionId: this.selectedSchool.institutionId,
-      comment: this.commentData.text
-    };
+    // Build the FormData payload
+    const formData = new FormData();
+    formData.append('institutionId', this.selectedSchool.institutionId.toString());
+    formData.append('comment', this.commentData.text);
+    if (this.uploadData.date) {
+      formData.append('inspectionDate', this.uploadData.date);
+    }
+    formData.append('file', file, file.name);
 
-    this.http.post('http://localhost:5215/api/sub-county-quality-assurance/submit-inspection', payload).subscribe({
+    this.submitting = true;
+    this.http.post('http://localhost:5215/api/sub-county-quality-assurance/submit-inspection', formData).subscribe({
       next: () => {
-        this.notification.showSuccess('Recommendation submitted to SCDE!');
+        this.submitting = false;
+        this.notification.showSuccess('Inspection submitted to SCDE!');
         this.closeModals();
-        this.fetchPendingInspections(); // Refresh table (school will disappear as it's now recommended)
+        this.fetchPendingInspections();
       },
-      error: () => this.notification.showError('Submission failed.')
+      error: (err) => {
+        this.submitting = false;
+        const message = typeof err.error === 'string' ? err.error : err.error?.message;
+        this.notification.showError(message || 'Submission failed.');
+        this.cdr.detectChanges();
+      }
     });
   }
 }

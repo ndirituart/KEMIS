@@ -26,7 +26,7 @@ export class PendingInstitutionCounty implements OnInit {
 
   statusList = [
     'All', 'Pending', 'Approved', 'Rejected',
-    'SCDE Recommended', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended', 'SCDE Rejects'
+    'SCDE Approved', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended', 'SCDE Rejected'
   ];
 
   filter = {
@@ -96,6 +96,11 @@ export class PendingInstitutionCounty implements OnInit {
   scdeList: any[] = [];
 
   activeViewTab = 'form';
+  inspection: { commentId: number; commentText: string; inspectionDate?: string } | null = null;
+  review: { status: string; summary: string } | null = null;
+  canDecide = false;
+  deciding = false;
+  rejectionReason = '';
 
   // View and fetches live
   viewData: any = {
@@ -103,11 +108,7 @@ export class PendingInstitutionCounty implements OnInit {
     onboardingDate: '', applicationType: '', educationalPathway: '', institutionLevel: '',
     hasCert: '', certNo: '', sneBoys: 0, sneGirls: 0, totalLearners: 0, coordinates: '',
     county: '', subCounty: '', constituency: '', postalCode: '', schoolCategory: '', postalLocation: '',
-    scdeComments: 'No SCDE comments available.',
-    scqasoComments: 'No SCQASO comments available.',
-    cqasoComments: 'No CQASO comments available.',
-    scqasoReport: 'QASO_Inspection_Report.pdf',
-    cqasoReport: 'CQASO_Inspection_Report.pdf'
+
   };
 
   // --- Actions ---
@@ -132,12 +133,21 @@ export class PendingInstitutionCounty implements OnInit {
 
   openViewModal(inst: any) {
     this.selectedInstitution = inst;
-    this.activeViewTab = 'form';
+    this.activeViewTab = inst.status === 'SCDE Approved' ? 'reports' : 'form';
+    this.inspection = null;
+    this.review = null;
+    this.canDecide = false;
+    this.rejectionReason = '';
     this.showViewModal = true;
 
     // Fetch school details dynamically based on institutionId
     this.http.get<any>(`http://localhost:5215/api/county-education/institutions/${inst.institutionId}`).subscribe({
-      next: (res) => {
+      next: (detail) => {
+        if (!this.showViewModal || this.selectedInstitution?.institutionId !== inst.institutionId) return;
+        const res = detail.school;
+        this.inspection = detail.inspection;
+        this.review = detail.review;
+        this.canDecide = detail.canReview && detail.status === 'SCDE Approved' && !!detail.inspection;
         // Map the backend response to viewData
         this.viewData = {
           ...this.viewData,
@@ -192,13 +202,49 @@ export class PendingInstitutionCounty implements OnInit {
     });
   }
 
-  approveSchool() {
-    this.notification.showSuccess('School approved successfully!');
-    this.closeModals();
+  openInspectionReport() {
+    if (!this.inspection || !this.selectedInstitution) return;
+    const url = `http://localhost:5215/api/county-education/institutions/${this.selectedInstitution.institutionId}/inspection-report/${this.inspection.commentId}`;
+    const tab = window.open('about:blank', '_blank');
+    if (!tab) {
+      this.notification.showError('Allow pop-ups to view the inspection report.');
+      return;
+    }
+    tab.opener = null;
+    this.http.get(url, { responseType: 'blob' }).subscribe({
+      next: (file) => {
+        const objectUrl = URL.createObjectURL(file);
+        tab.location.replace(objectUrl);
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+      },
+      error: () => {
+        tab.close();
+        this.notification.showError('Failed to open the inspection report.');
+      }
+    });
   }
 
-  rejectSchool() {
-    this.notification.showSuccess('School rejected  successful!');
-    this.closeModals();
+  submitDecision(isApproved: boolean) {
+    if (!this.canDecide || this.deciding || !this.selectedInstitution) return;
+    const rejectionReason = this.rejectionReason.trim();
+    if (!isApproved && !rejectionReason) {
+      this.notification.showError('Enter a reason for rejecting the inspection.');
+      return;
+    }
+
+    this.deciding = true;
+    this.http.post(`http://localhost:5215/api/county-education/institutions/${this.selectedInstitution.institutionId}/final-decision`, { isApproved, rejectionReason }).subscribe({
+      next: () => {
+        this.deciding = false;
+        this.notification.showSuccess(isApproved ? 'Institution approved.' : 'Institution rejected.');
+        this.closeModals();
+        this.fetchPendingSchools();
+      },
+      error: (err) => {
+        this.deciding = false;
+        this.notification.showError(typeof err.error === 'string' ? err.error : 'Failed to save the decision.');
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

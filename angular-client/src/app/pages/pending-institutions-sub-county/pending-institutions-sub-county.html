@@ -59,17 +59,17 @@
                 'badge-pending': inst.status === 'Pending' || inst.status === 'pending',
                 'badge-assigned': inst.status === 'Assigned SCDE' || inst.status === 'Assigned SCQASO',
                 'badge-recommended': inst.status === 'SCDE Recommended',
-                'badge-rejected': inst.status === 'Rejected' || inst.status === 'rejected',
+                'badge-rejected': inst.status === 'SCDE Rejected' || inst.status === 'Rejected' || inst.status === 'rejected',
                 'badge-review': inst.status === 'SCQASO Recommended'
               }">
                 {{ inst.status }}
               </span>
             </td>
             <td>{{ inst.supervisorId || 'Logged in SCDE' }}</td>
-            <td>{{ inst.assigneeId || 'None' }}</td>
+            <td>{{ inst.assigneeId || (inst.status === 'Assigned SCQASO' ? 'Needs officer assignment' : 'None') }}</td>
             <td>
               <!-- Changed to openAssignSCQASOModal -->
-              <button class="btn-outline-gray" (click)="openAssignSCQASOModal(inst)">Assign</button>
+              <button class="btn-outline-gray" [disabled]="!['Assigned SCDE', 'Assigned SCQASO', 'SCDE Rejected'].includes(inst.status)" (click)="openAssignSCQASOModal(inst)">Assign</button>
             </td>
             <td>
               <button class="btn-outline-red" (click)="openViewModal(inst)">
@@ -135,30 +135,40 @@
 
       <!-- TAB 1: FORM (Unchanged) -->
       <div *ngIf="activeViewTab === 'form'" class="tab-content">
-        <!-- ... (Keep your existing form fields here) ... -->
+        <dl>
+          <dt>Institution</dt><dd>{{ viewData.institutionName }}</dd>
+          <dt>Head of institution</dt><dd>{{ viewData.headOfInstitution }}</dd>
+          <dt>Institution level</dt><dd>{{ viewData.institutionLevel }}</dd>
+          <dt>Sub-county</dt><dd>{{ viewData.subCounty }}</dd>
+          <dt>Learners</dt><dd>{{ viewData.totalLearners }}</dd>
+        </dl>
       </div>
 
-      <!-- TAB 2: COMMENTS & REPORTS -->
       <div *ngIf="activeViewTab === 'reports'" class="tab-content">
-         <!-- ... (Keep your existing report fields here) ... -->
-      </div>
-
-      <!-- TAB 3: ACTIONS (RECOMMEND/DISAPPROVE) -->
-      <div *ngIf="activeViewTab === 'actions'" class="tab-content text-center mt-5">
-        <h4 class="mb-4">SCDE Recommendation</h4>
-        <p class="text-muted mb-5">By recommending this school, you are sending it to the CDE for final approval. Disapproving will reject it.</p>
-
-        <div class="d-flex justify-content-center gap-4">
-          <!-- Changed to Recommend / Disapprove -->
-          <button class="btn btn-success btn-lg px-5" (click)="recommendSchool()">
-            <i class="bi bi-check-circle me-2"></i> Recommend
-          </button>
-          <button class="btn btn-danger btn-lg px-5" (click)="disapproveSchool()">
-            <i class="bi bi-x-circle me-2"></i> Disapprove
-          </button>
+        <ng-container *ngIf="inspection; else noInspection">
+          <h6>Inspection officer comment</h6>
+          <p class="text-break" style="white-space: pre-wrap">{{ inspection.commentText }}</p>
+          <p *ngIf="inspection.inspectionDate">Inspection date {{ inspection.inspectionDate }}</p>
+          <button type="button" class="btn btn-outline-info" (click)="openInspectionReport()">View inspection report</button>
+        </ng-container>
+        <ng-template #noInspection><p>No inspection report is available.</p></ng-template>
+        <div *ngIf="review" class="mt-3">
+          <h6>Sub-county review</h6>
+          <p>{{ review.status }}</p>
+          <p *ngIf="review.summary" class="text-break">{{ review.summary }}</p>
         </div>
       </div>
-
+      <div *ngIf="activeViewTab === 'actions'" class="tab-content">
+        <ng-container *ngIf="canDecide; else awaitingReview">
+          <label for="rejection-reason" class="form-label">Reason (required when rejecting)</label>
+          <textarea id="rejection-reason" class="form-control mb-3" rows="3" [(ngModel)]="rejectionReason"></textarea>
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-success" [disabled]="deciding" (click)="submitDecision(true)">Approve and send to county</button>
+            <button type="button" class="btn btn-danger" [disabled]="deciding" (click)="submitDecision(false)">Reject and return to officer</button>
+          </div>
+        </ng-container>
+        <ng-template #awaitingReview><p>The assigned sub-county director can decide after the inspection is submitted.</p></ng-template>
+      </div>
     </div>
 
     <!-- Footer -->

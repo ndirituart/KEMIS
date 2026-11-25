@@ -14,6 +14,8 @@ public class InstitutionComment
     public int userId { get; set; } // Who originally wrote it  eg SCQASO or SCDE
     public string commentText { get; set; } = string.Empty;   
     public string createdAt { get; set; } = DateTime.UtcNow.ToString("o");   
+    public string? reportFileName { get; set; }
+    public string? inspectionDate { get; set; }
     public string? updatedAt { get; set; } 
     public int? updatedBy { get; set; } //Who updated the comment eg SCDE or CDE
 }

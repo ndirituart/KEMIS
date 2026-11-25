@@ -47,11 +47,13 @@ public class CountyEducationController : ControllerBase
 
     // Get School Details by ID
     [HttpGet("institutions/{id:int}")]
-    public Task<InstitutionDetail> Detail(int id, CancellationToken ct) =>
-        _workflow.GetDetailAsync(id, userId, ct);
+    public Task<IActionResult> Detail(int id, CancellationToken ct) =>
+        _workflow.GetDirectorDetailAsync(id, userId, true, ct);
 
+    [HttpGet("institutions/{id:int}/inspection-report/{commentId:int}")]
+    public Task<IActionResult> InspectionReport(int id, int commentId, CancellationToken ct) =>
+        _workflow.GetInspectionFileAsync(id, commentId, userId, true, ct);
 
-    // ==========================================
     // 3. ASSIGNEES & WORKFLOW ENDPOINTS
     // ==========================================
 
@@ -72,6 +74,6 @@ public class CountyEducationController : ControllerBase
 
     // Make a decision (Approve/Reject)
     [HttpPost("institutions/{id:int}/final-decision")]
-    public Task<InstitutionDetail> FinalDecision(int id, [FromBody] DecisionRequest req, CancellationToken ct) =>
+    public Task<IActionResult> FinalDecision(int id, [FromBody] DecisionRequest req, CancellationToken ct) =>
         _workflow.FinalDecisionAsync(id, userId, req, ct);
 }

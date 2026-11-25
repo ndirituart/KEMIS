@@ -51,7 +51,7 @@ public class SubCountyEducationController : ControllerBase
     [HttpGet("assigned-schools")]
     public async Task<IActionResult> GetAssignedSchools()
     {
-        var schools = await _context.InstitutionAssignments
+        var schools = await _context.AssignedSchools
             .Where(a => a.assigneeId == userId)
             .Join(_context.BasicEducations,
                 a => a.institutionId,
@@ -62,8 +62,8 @@ public class SubCountyEducationController : ControllerBase
                     s.institutionName,
                     s.county,
                     s.subCounty,
-                    a.status,
-                    a.hasReport
+                    s.status,
+                    hasReport = _context.InstitutionAssignments.Any(i => i.institutionId == s.institutionId && i.hasReport)
                 })
             .ToListAsync();
 
@@ -71,62 +71,39 @@ public class SubCountyEducationController : ControllerBase
     }
 
     // 3. Assign a school to a SCQASO
-       [HttpGet("scqasos")]
+    [HttpGet("scqasos")]
     public async Task<IActionResult> GetScqasos(CancellationToken ct)
     {
-        var scde = await _context.SubCountyEducation.FirstOrDefaultAsync(s => s.userId == userId, ct);
+        var scde = await _workflow.GetScdeProfileAsync(userId, ct);
         if (scde == null) return NotFound("SCDE not found.");
 
-        // To make it case-insensitive and forgiving
+        var county = scde.county.Trim().ToLowerInvariant();
+        var subCounty = scde.subCounty.Trim().ToLowerInvariant();
         var scqasos = await _context.Users
-            .Where(u => u.role == "Sub-County Quality Assurance and Standards Officer (SCQASO)" 
-                     && u.subCounty.ToLower().Contains(scde.subCounty.ToLower()) // Case insensitive
-                     && u.status == "active")
+            .Where(u => u.role == InstitutionWorkflowService.ScqasoRole && u.status == "active" &&
+                u.deletedAt == null && u.county.Trim().ToLower() == county && u.subCounty.Trim().ToLower() == subCounty)
+            .OrderBy(u => u.fullName)
             .Select(u => new { u.userId, u.fullName, u.role })
-            .ToListAsync();
+            .ToListAsync(ct);
 
         return Ok(scqasos);
     }
 
-    // 4. Assign a SCQASO
-        [HttpPost("institutions/{id:int}/assign-scqaso")]
-    public Task<InstitutionDetail> AssignSCQASO(int id, [FromBody] AssignRequest req, CancellationToken ct) =>
+    [HttpPost("institutions/{id:int}/assign-scqaso")]
+    public Task<IActionResult> AssignSCQASO(int id, [FromBody] AssignRequest req, CancellationToken ct) =>
         _workflow.AssignScqasoAsync(id, userId, req, ct);
 
+    [HttpGet("institutions/{id:int}")]
+    public Task<IActionResult> Detail(int id, CancellationToken ct) =>
+        _workflow.GetDirectorDetailAsync(id, userId, false, ct);
 
-    // 5.   Submit a report
+    [HttpGet("institutions/{id:int}/inspection-report/{commentId:int}")]
+    public Task<IActionResult> InspectionReport(int id, int commentId, CancellationToken ct) =>
+        _workflow.GetInspectionFileAsync(id, commentId, userId, false, ct);
+
     [HttpPost("reports")]
-    public async Task<IActionResult> SubmitReport([FromBody] SubmitReportRequest request)
-    {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        var school = await _context.BasicEducations.FindAsync(request.institutionId);
-        if (school == null) return NotFound("School not found.");
-
-        var report = new Report
-        {
-            scdeId = userId,
-            institutionId = request.institutionId,
-            institutionName = school.institutionName,
-            summary = request.summary,
-            recommendation = request.recommendation,
-            status = "submitted",
-            createdAt = DateTime.UtcNow.ToString("o")
-        };
-
-        _context.Reports.Add(report);
-        
-        var assignment = await _context.InstitutionAssignments
-            .FirstOrDefaultAsync(a => a.institutionId == request.institutionId && a.assigneeId == userId);
-        if (assignment != null) assignment.hasReport = true;
-
-        school.status = "recommendation_pending"; 
-        school.updatedAt = DateTime.UtcNow.ToString("o");
-
-        await _context.SaveChangesAsync();
-
-        return Ok(new { message = "Report submitted successfully to the CDE." });
-    }
+    public Task<IActionResult> SubmitReport([FromBody] SubmitReportRequest request, CancellationToken ct) =>
+        _workflow.ReviewInspectionAsync(userId, request, ct);
 
     // 4. Fetch all reports previously submitted by this SCDE
     [HttpGet("reports")]

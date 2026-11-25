@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // I keep forgetting this
 using dotnet_backend.Services;
 using dotnet_backend.Models;
 
@@ -13,12 +12,10 @@ namespace dotnet_backend.Controllers;
 public class ScqasoController : ControllerBase
 {
     private readonly InstitutionWorkflowService _workflow;
-    private readonly ApplicationDbContext _context; 
 
-    public ScqasoController(InstitutionWorkflowService workflow, ApplicationDbContext context) 
+    public ScqasoController(InstitutionWorkflowService workflow)
     {
         _workflow = workflow;
-        _context = context;
     }
 
     private int userId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -45,33 +42,8 @@ public class ScqasoController : ControllerBase
 
     // 5. Submit Recommendation
     [HttpPost("submit-inspection")]
-    public Task<IActionResult> SubmitInspectionAsync ([FromBody] SubmitInspectionRequest req, CancellationToken ct) =>
-        _workflow.SubmitInspectionAsync(userId, req, ct);
-
-    // 6. Get Supervisor (SCDE) Comments
-    [HttpGet("comments/{institutionId}")]
-    public async Task<IActionResult> GetComments(int institutionId)
-    {
-        var comment = await _context.InstitutionComments
-            .Where(c => c.institutionId == institutionId && _context.Users.Any(u => u.userId == c.userId && u.role == "Sub-County Director of Education (SCDE)"))
-            .OrderByDescending(c => c.createdAt)
-            .FirstOrDefaultAsync();
-
-        return Ok(new { commentText = comment?.commentText ?? "No comments available." });
-    }
-
-    // 7. Upload Report
-    [HttpPost("upload-report")]
-    public async Task<IActionResult> UploadReport([FromForm] int institutionId, [FromForm] string inspectionDate)
-    {
-        var school = await _context.BasicEducations.FindAsync(institutionId);
-        if (school != null)
-        {
-            school.updatedAt = DateTime.UtcNow.ToString("o"); 
-            await _context.SaveChangesAsync();
-        }
-        return Ok(new { message = "Report uploaded" });
-    }
+    public Task<IActionResult> SubmitInspection([FromForm] SubmitInspectionRequest request, CancellationToken ct) =>
+        _workflow.SubmitInspectionAsync(userId, request, ct);
 
     private async Task<IActionResult> WithProfileAsync(
         Func<dotnet_backend.Models.User, Task<object>> action, CancellationToken ct)

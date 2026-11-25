@@ -19,7 +19,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   subCounties: string[] = [];
-  statusList = ['All', 'Pending', 'Rejected', 'SCDE Recommended', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended'];
+  statusList = ['All', 'Pending', 'Rejected', 'SCDE Approved', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended', 'SCDE Rejected'];
 
   filter = { onboardingType: 'New Onboarding', subCounty: 'All', status: 'All' };
   tableSearch = '';
@@ -39,6 +39,11 @@ export class PendingInstitutionsSubCounty implements OnInit {
   scqasoList: any[] = [];
 
   activeViewTab = 'form';
+  inspection: { commentId: number; commentText: string; inspectionDate?: string } | null = null;
+  review: { status: string; summary: string } | null = null;
+  canDecide = false;
+  deciding = false;
+  rejectionReason = '';
   viewData: any = {}; // Initialized in the fetch method
 
   ngOnInit() {
@@ -132,7 +137,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
       return;
     }
 
-    const payload = { assigneeId: this.selectedSCQASO };
+    const payload = { assigneeId: Number(this.selectedSCQASO) };
 
     // Changes status to "Assigned SCQASO" and assigns a SCQASO
     this.http.post(`http://localhost:5215/api/sub-county-education/institutions/${this.selectedInstitution.institutionId}/assign-scqaso`, payload).subscribe({
@@ -141,18 +146,27 @@ export class PendingInstitutionsSubCounty implements OnInit {
         this.onSearch();
         this.showAssignScqasoModal = false;
       },
-      error: (err) => this.notification.showError('Failed to assign to SCQASO.')
+      error: (err) => this.notification.showError(typeof err.error === 'string' ? err.error : 'Failed to assign to SCQASO.')
     });
   }
 
   // --- View Logic ---
   openViewModal(inst: any) {
     this.selectedInstitution = inst;
-    this.activeViewTab = 'form';
+    this.activeViewTab = inst.status === 'SCQASO Recommended' ? 'reports' : 'form';
+    this.inspection = null;
+    this.review = null;
+    this.canDecide = false;
+    this.rejectionReason = '';
     this.showViewModal = true;
 
     this.http.get<any>(`http://localhost:5215/api/sub-county-education/institutions/${inst.institutionId}`).subscribe({
-      next: (res) => {
+      next: (detail) => {
+        if (!this.showViewModal || this.selectedInstitution?.institutionId !== inst.institutionId) return;
+        const res = detail.school;
+        this.inspection = detail.inspection;
+        this.review = detail.review;
+        this.canDecide = detail.canReview && detail.status === 'SCQASO Recommended' && !!detail.inspection;
         this.viewData = {
           institutionType: res.institutionType || 'N/A',
           institutionName: res.institutionName || 'N/A',
@@ -179,21 +193,49 @@ export class PendingInstitutionsSubCounty implements OnInit {
     this.showAssignScqasoModal = false;
     this.showViewModal = false;
   }
-  recommendSchool() {
-
-  //TODO: this.http.post(`.../recommend/${id}`, {}).subscribe(...)
-
-    this.notification.showSuccess('School recommended to CDE successfully!');
-    this.closeModals();
-    this.fetchInstitutions(this.filter.status); // Refresh table
+  openInspectionReport() {
+    if (!this.inspection || !this.selectedInstitution) return;
+    const url = `http://localhost:5215/api/sub-county-education/institutions/${this.selectedInstitution.institutionId}/inspection-report/${this.inspection.commentId}`;
+    const tab = window.open('about:blank', '_blank');
+    if (!tab) {
+      this.notification.showError('Allow pop-ups to view the inspection report.');
+      return;
+    }
+    tab.opener = null;
+    this.http.get(url, { responseType: 'blob' }).subscribe({
+      next: (file) => {
+        const objectUrl = URL.createObjectURL(file);
+        tab.location.replace(objectUrl);
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+      },
+      error: () => {
+        tab.close();
+        this.notification.showError('Failed to open the inspection report.');
+      }
+    });
   }
 
+  submitDecision(isApproved: boolean) {
+    if (!this.canDecide || this.deciding || !this.selectedInstitution) return;
+    const rejectionReason = this.rejectionReason.trim();
+    if (!isApproved && !rejectionReason) {
+      this.notification.showError('Enter a reason for rejecting the inspection.');
+      return;
+    }
 
-  disapproveSchool() {
-    // TODO: this.http.post(`.../disapprove/${id}`, {}).subscribe(...)
-
-    this.notification.showSuccess('School disapproved successfully!');
-    this.closeModals();
-    this.fetchInstitutions(this.filter.status); // Refresh table
+    this.deciding = true;
+    this.http.post(`http://localhost:5215/api/sub-county-education/reports`, { institutionId: this.selectedInstitution.institutionId, isApproved, rejectionReason }).subscribe({
+      next: () => {
+        this.deciding = false;
+        this.notification.showSuccess(isApproved ? 'Inspection approved and sent to the county director.' : 'Inspection returned to the officer.');
+        this.closeModals();
+        this.onSearch();
+      },
+      error: (err) => {
+        this.deciding = false;
+        this.notification.showError(typeof err.error === 'string' ? err.error : 'Failed to save the decision.');
+        this.cdr.detectChanges();
+      }
+    });
   }
 }
