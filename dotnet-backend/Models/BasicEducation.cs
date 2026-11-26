@@ -40,7 +40,7 @@ public class BasicEducation
     public string? schoolCategory { get; set; }
 
     public bool isActive { get; set; } = true;
-    [AllowedValues("pending", "approved", "denied", "inactive", ErrorMessage = "Invalid status.")]
+    [AllowedValues("Pending", "Approved", "Rejected", "SCDE Approved", "Assigned SCDE", "Assigned SCQASO", "SCQASO Recommended", "SCDE Rejected", "SCDE Recommended", "SCDE Rejected", ErrorMessage = "Invalid status.")]
     public string status { get; set; } = "pending"; //default is pending until approved
     public string createdAt { get; set; } = string.Empty; //Changed from DateTime.UtcNow.ToString("o");
     public string? updatedAt { get; set; }

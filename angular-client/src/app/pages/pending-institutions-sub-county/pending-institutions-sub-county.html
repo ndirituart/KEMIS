@@ -58,7 +58,7 @@
               <span class="badge-status" [ngClass]="{
                 'badge-pending': inst.status === 'Pending' || inst.status === 'pending',
                 'badge-assigned': inst.status === 'Assigned SCDE' || inst.status === 'Assigned SCQASO',
-                'badge-recommended': inst.status === 'Approved' || inst.status === 'SCDE Approved',
+                'badge-recommended': inst.status === 'Approved' || inst.status === 'SCDE Approved' || inst.status === 'SCDE Recommended',
                 'badge-rejected': inst.status === 'SCDE Rejected' || inst.status === 'Rejected' || inst.status === 'rejected',
                 'badge-review': inst.status === 'SCQASO Recommended'
               }">
@@ -135,33 +135,36 @@
 
       <div *ngIf="activeViewTab === 'form'" class="tab-content">
         <div *ngIf="viewData as school">
-          <fieldset class="border p-3 rounded mb-3">
-            <legend class="float-none w-auto px-2 fs-5">Institution Details</legend>
-            <dl class="row mb-0">
-              <dt class="col-sm-6">Institution type</dt><dd class="col-sm-6">{{ school.institutionType || 'N/A' }}</dd>
-              <dt class="col-sm-6">Institution name</dt><dd class="col-sm-6">{{ school.institutionName }}</dd>
-              <dt class="col-sm-6">Institution level</dt><dd class="col-sm-6">{{ school.institutionLevel || 'N/A' }}</dd>
-              <dt class="col-sm-6">Certificate number</dt><dd class="col-sm-6">{{ school.certificateNumber || 'N/A' }}</dd>
-              <dt class="col-sm-6">Head of institution</dt><dd class="col-sm-6">{{ school.headOfInstitution || 'N/A' }}</dd>
-              <dt class="col-sm-6">Email</dt><dd class="col-sm-6">{{ school.emailId || 'N/A' }}</dd>
-              <dt class="col-sm-6">Mobile number</dt><dd class="col-sm-6">{{ school.mobileNo || 'N/A' }}</dd>
-              <dt class="col-sm-6">Postal code</dt><dd class="col-sm-6">{{ school.postalAddressHoi || 'N/A' }}</dd>
-              <dt class="col-sm-6">County</dt><dd class="col-sm-6">{{ school.county || 'N/A' }}</dd>
-              <dt class="col-sm-6">Sub-county</dt><dd class="col-sm-6">{{ school.subCounty || 'N/A' }}</dd>
-              <dt class="col-sm-6">Constituency</dt><dd class="col-sm-6">{{ school.constituency || 'N/A' }}</dd>
-              <dt class="col-sm-6">Institution location</dt><dd class="col-sm-6">{{ school.postalAddressInstitution || 'N/A' }}</dd>
-              <dt class="col-sm-6">Application type</dt><dd class="col-sm-6">{{ school.applicationType || 'N/A' }}</dd>
-              <dt class="col-sm-6">Onboarding date</dt><dd class="col-sm-6">{{ (school.createdAt | date:'dd-MM-yyyy') || 'N/A' }}</dd>
-              <dt class="col-sm-6">Total learners</dt><dd class="col-sm-6">{{ school.totalLearners || 0 }}</dd>
+
+          <fieldset>
+            <legend>Institution Details</legend>
+            <dl class="row">
+              <dt>Institution type</dt><dd>{{ school.institutionType || 'N/A' }}</dd>
+              <dt>Institution name</dt><dd>{{ school.institutionName }}</dd>
+              <dt>Institution level</dt><dd>{{ school.institutionLevel || 'N/A' }}</dd>
+              <dt>Certificate number</dt><dd>{{ school.certificateNumber || 'N/A' }}</dd>
+              <dt>Head of institution</dt><dd>{{ school.headOfInstitution || 'N/A' }}</dd>
+              <dt>Email</dt><dd>{{ school.emailId || 'N/A' }}</dd>
+              <dt>Mobile number</dt><dd>{{ school.mobileNo || 'N/A' }}</dd>
+              <dt>Postal code</dt><dd>{{ school.postalAddressHoi || 'N/A' }}</dd>
+              <dt>County</dt><dd>{{ school.county || 'N/A' }}</dd>
+              <dt>Sub-county</dt><dd>{{ school.subCounty || 'N/A' }}</dd>
+              <dt>Constituency</dt><dd>{{ school.constituency || 'N/A' }}</dd>
+              <dt>Institution location</dt><dd>{{ school.postalAddressInstitution || 'N/A' }}</dd>
+              <dt>Application type</dt><dd>{{ school.applicationType || 'N/A' }}</dd>
+              <dt>Onboarding date</dt><dd>{{ (school.createdAt | date:'dd-MM-yyyy') || 'N/A' }}</dd>
+              <dt>Total learners</dt><dd>{{ school.totalLearners || 0 }}</dd>
             </dl>
           </fieldset>
-          <fieldset class="border p-3 rounded">
-            <legend class="float-none w-auto px-2 fs-5">Other Details</legend>
-            <dl class="row mb-0">
-              <dt class="col-sm-6">Accommodation type</dt><dd class="col-sm-6">{{ school.accomodationType || 'N/A' }}</dd>
-              <dt class="col-sm-6">School category</dt><dd class="col-sm-6">{{ school.schoolCategory || 'N/A' }}</dd>
+
+          <fieldset>
+            <legend>Other Details</legend>
+            <dl class="row">
+              <dt>Accommodation type</dt><dd>{{ school.accomodationType || 'N/A' }}</dd>
+              <dt>School category</dt><dd>{{ school.schoolCategory || 'N/A' }}</dd>
             </dl>
           </fieldset>
+
         </div>
       </div>
 
@@ -170,7 +173,7 @@
           <h6>Inspection officer comment</h6>
           <p class="text-break" style="white-space: pre-wrap">{{ inspection.commentText }}</p>
           <p *ngIf="inspection.inspectionDate">Inspection date {{ inspection.inspectionDate }}</p>
-          <button type="button" class="btn btn-outline-info" (click)="openInspectionReport()">View inspection report</button>
+          <button type="button" class="btn-view-inspection-report" (click)="openInspectionReport()">View inspection report</button>
         </ng-container>
         <ng-template #noInspection><p>No inspection report is available.</p></ng-template>
         <div *ngIf="review" class="mt-3">
@@ -181,17 +184,18 @@
       </div>
       <div *ngIf="activeViewTab === 'actions'" class="tab-content">
         <ng-container *ngIf="canDecide; else awaitingReview">
-          <div *ngIf="!showingRejectionForm" class="d-flex flex-wrap gap-2">
-            <button type="button" class="btn btn-success" [disabled]="deciding" (click)="submitDecision(true)">Approve</button>
-            <button type="button" class="btn btn-danger" [disabled]="deciding" (click)="showingRejectionForm = true">Reject</button>
+          <div *ngIf="pendingDecision === null" class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn-success" [disabled]="deciding" (click)="pendingDecision = true">Approve</button>
+            <span></span>
+            <button type="button" class="btn-danger" [disabled]="deciding" (click)="pendingDecision = false">Reject</button>
           </div>
-          <form *ngIf="showingRejectionForm" (ngSubmit)="submitDecision(false)">
-            <label for="rejection-reason" class="form-label">Rejection reason</label>
-            <textarea id="rejection-reason" name="rejectionReason" class="form-control mb-3" rows="3"
-              [(ngModel)]="rejectionReason" [readonly]="deciding" required></textarea>
+          <form *ngIf="pendingDecision !== null" (ngSubmit)="submitDecision()">
+            <label for="decision-summary" class="form-label">{{ pendingDecision ? 'Approval summary' : 'Rejection reason' }}</label>
+            <textarea id="decision-summary" name="decisionSummary" class="form-control mb-3" rows="3"
+              [(ngModel)]="decisionSummary" [readonly]="deciding" required></textarea>
             <div class="d-flex flex-wrap gap-2">
-              <button type="submit" class="btn btn-danger" [disabled]="deciding || !rejectionReason.trim()">Confirm rejection</button>
-              <button type="button" class="btn btn-outline-secondary" [disabled]="deciding" (click)="showingRejectionForm = false">Cancel</button>
+              <button type="submit" class="btn" [ngClass]="pendingDecision ? 'btn-success' : 'btn-danger'" [disabled]="deciding || !decisionSummary.trim()">{{ pendingDecision ? 'Confirm approval' : 'Confirm rejection' }}</button>
+              <button type="button" class="btn btn-outline-secondary" [disabled]="deciding" (click)="pendingDecision = null; decisionSummary = ''">Cancel</button>
             </div>
           </form>
         </ng-container>

@@ -1,0 +1,310 @@
+/* ==========================================
+   BASE LAYOUT & TABLES
+   ========================================== */
+.page-container {
+  padding: 2rem;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
+}
+
+.page-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #00b4d8;
+  margin: 0;
+}
+
+.table-section {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.table-search-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  width: 300px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.custom-table thead {
+  background-color: #00b4d8;
+  color: white;
+}
+
+.custom-table th {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-right: 1px solid rgba(255,255,255,0.2);
+}
+
+.custom-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  font-size: 0.9rem;
+  color: #333;
+  vertical-align: middle;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* ==========================================
+   BADGES (Your snippet + additions)
+   ========================================== */
+.badge-status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-block;
+}
+
+.badge-pending {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.badge-assigned {
+  background-color: #3fbeeb;
+  color: #fff;
+}
+
+.badge-recommended {
+  background-color: #1e40af;
+  color: #fff;
+}
+
+.badge-rejected {
+  background-color: #dc143c;
+  color: #fff;
+}
+
+.badge-review {
+  background-color: #28a745;
+  color: #fff;
+}
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+.btn-outline-danger {
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  background: transparent;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #00b4d8;
+  border: none;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #008fa8;
+}
+
+.btn-danger {
+  background-color: #dc143c;
+  border: none;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ==========================================
+   MODAL TABS
+   ========================================== */
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0 1.5rem;
+  background: #fff;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-size: 0.95rem;
+  color: #6c757d;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: #00b4d8;
+  background-color: #f8f9fa;
+}
+
+.tab-btn.active {
+  color: #00b4d8;
+  border-bottom: 3px solid #00b4d8;
+  font-weight: 700;
+}
+
+/* ==========================================
+   ACTION BUTTONS (Approve / Reject)
+   ========================================== */
+.btn-success, .btn-danger {
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Approve Button */
+.btn-success {
+  background: linear-gradient(135deg, #28a745 0%, #198754 100%);
+  color: white;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #34ce57 0%, #28a745 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* Reject Button */
+.btn-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #e4606d 0%, #dc3545 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* Close Button in Footer */
+.modal-footer .btn-danger {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+.modal-footer .btn-danger:hover {
+  transform: none;
+  background: #bd2130;
+}
+/* ==========================================
+   FORM ELEMENTS (Inside Modals)
+   ========================================== */
+.form-label {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-control, .form-select {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #00b4d8;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 180, 216, 0.25);
+}
+
+textarea.form-control {
+  resize: vertical;
+}
+
+/* ==========================================
+   DETAILS MODAL SPECIFIC
+   ========================================== */
+.institution-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.detail-item {
+  margin-bottom: 0.5rem;
+}
+
+.detail-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 600;
+  display: block;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Utility for buttons */
+.btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}

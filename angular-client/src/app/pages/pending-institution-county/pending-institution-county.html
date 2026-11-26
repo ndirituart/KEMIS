@@ -142,7 +142,7 @@
                       <span class="badge-status" [ngClass]="{
                         'badge-pending': inst.status === 'Pending' || inst.status === 'pending',
                         'badge-assigned': inst.status === 'Assigned SCDE' || inst.status === 'Assigned SCQASO',
-                        'badge-recommended': inst.status === 'SCDE Approved'|| inst.status === 'SCQASO Recommended',
+                        'badge-recommended': inst.status === 'SCDE Recommended' || inst.status === 'SCDE Approved' || inst.status === 'SCQASO Recommended',
                         'badge-rejected': inst.status === 'SCDE Rejected' || inst.status === 'Rejected' || inst.status === 'rejected',
                         'badge-review': inst.status ==='Approved'
                       }">

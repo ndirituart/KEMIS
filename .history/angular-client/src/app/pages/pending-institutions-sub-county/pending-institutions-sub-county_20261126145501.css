@@ -1,0 +1,314 @@
+/* ==========================================
+   BASE LAYOUT & TABLES
+   ========================================== */
+.page-container {
+  padding: 2rem;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
+}
+
+.page-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #00b4d8;
+  margin: 0;
+}
+
+/* ==========================================
+   FILTERS
+   ========================================== */
+.filter-section {
+  margin-bottom: 2rem;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.radio-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.filter-section .form-select {
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* ==========================================
+   TABLE
+   ========================================== */
+.table-section {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.table-search-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  width: 300px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.custom-table thead {
+  background-color: #00b4d8;
+  color: white;
+}
+
+.custom-table th {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  border-right: 1px solid rgba(255,255,255,0.2);
+}
+
+.custom-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #eee;
+  border-right: 1px solid #eee;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+/* ==========================================
+   BADGES
+   ========================================== */
+.badge-status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-block;
+}
+
+.badge-pending { background-color: #ffc107; color: #333; }
+.badge-assigned { background-color: #3fbeeb; color: #fff; }
+.badge-recommended { background-color: #1e40af; color: #fff; }
+.badge-rejected { background-color: #dc143c; color: #fff; }
+.badge-review { background-color: #28a745; color: #fff; }
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+.btn-outline-gray {
+  background: transparent;
+  border: 1px solid #ccc;
+  color: #555;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: 0.2s;
+}
+
+.btn-outline-gray:hover:not(:disabled) { background: #f8f9fa; }
+.btn-outline-gray:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-outline-red {
+  background: #fff;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: 0.2s;
+}
+
+.btn-outline-red:hover { background: #dc3545; color: #fff; }
+
+.btn-danger {
+  background-color: #dc143c;
+  border: none;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-view-inspection-report
+{ padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-block;
+  background-color: #3fbeeb; color: #fff; }
+
+/* ==========================================
+   MODALS & TABS
+   ========================================== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.modal-dialog {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.small-modal { max-width: 500px; }
+.large-modal { max-width: 800px; }
+
+.modal-header {
+  background-color: #00b4d8;
+  color: white;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h5 { margin: 0; font-size: 1.1rem; font-weight: 600; }
+.btn-close-white {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0 1.5rem;
+  background: #fff;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-size: 0.95rem;
+  color: #6c757d;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover { color: #00b4d8; background-color: #f8f9fa; }
+.tab-btn.active { color: #00b4d8; border-bottom: 3px solid #00b4d8; font-weight: 700; }
+
+.modal-body.scrollable-body {
+  padding: 1.5rem 2rem;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ==========================================
+   DETAILS MODAL SPECIFIC (Fields & Lists)
+   ========================================== */
+fieldset {
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: #ffffff;
+}
+
+legend {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #00b4d8;
+  padding: 0 10px;
+  width: auto;
+}
+
+dl.row {
+  margin-bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+dl.row dt {
+  font-weight: 600;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+dl.row dd {
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* ==========================================
+   FORM ELEMENTS
+   ========================================== */
+.form-label {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-weight: 600;
+}
+
+.form-control, .form-select {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #00b4d8;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 180, 216, 0.25);
+}
+
+textarea.form-control { resize: vertical; }

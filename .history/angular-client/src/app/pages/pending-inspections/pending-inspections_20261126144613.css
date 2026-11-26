@@ -1,0 +1,329 @@
+/* ==========================================
+   BASE LAYOUT & TABLES
+   ========================================== */
+.page-container {
+  padding: 2rem;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: #f4f7f9;
+  min-height: 100vh;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 1rem;
+}
+
+.page-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e3a8a; /* Dark blue */
+  margin: 0;
+}
+
+.table-section {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.table-search-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  width: 300px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.custom-table thead {
+  background-color: #00b4d8;
+  color: white;
+}
+
+.custom-table th {
+  padding: 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-right: 1px solid rgba(255,255,255,0.2);
+}
+
+.custom-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  font-size: 0.9rem;
+  color: #333;
+  vertical-align: middle;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #f1f8fa;
+}
+
+/* ==========================================
+   BADGES
+   ========================================== */
+.badge-status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-block;
+  text-align: center;
+}
+
+.badge-pending { background-color: #ffc107; color: #333; }
+.badge-assigned { background-color: #3fbeeb; color: #fff; }
+.badge-recommended { background-color: #1e40af; color: #fff; }
+.badge-rejected { background-color: #dc143c; color: #fff; }
+.badge-review { background-color: #28a745; color: #fff; }
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+.btn-outline-danger {
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  background: transparent;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-outline-danger:hover:not([disabled]) {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-outline-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #ccc;
+  color: #888;
+}
+
+.btn-primary {
+  background-color: #00b4d8;
+  border: none;
+  color: white;
+  padding: 0.6rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #008fa8;
+}
+
+.btn-danger {
+  background-color: #dc143c;
+  border: none;
+  color: white;
+  padding: 0.6rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ==========================================
+   MODAL TABS & HEADER
+   ========================================== */
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0 1.5rem;
+  background: #fff;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-size: 0.95rem;
+  color: #6c757d;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: #00b4d8;
+  background-color: #f8f9fa;
+}
+
+.tab-btn.active {
+  color: #00b4d8;
+  border-bottom: 3px solid #00b4d8;
+}
+
+/* ==========================================
+   MODALS
+   ========================================== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.modal-dialog {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.small-modal { max-width: 500px; }
+.large-modal { max-width: 850px; }
+
+.modal-header {
+  background-color: #00b4d8;
+  color: white;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h5 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.btn-close-white {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eee;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+/* ==========================================
+   FORM ELEMENTS & FIELDSETS
+   ========================================== */
+.form-label {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.form-control, .form-select {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 0.7rem;
+  font-size: 0.95rem;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  border-color: #00b4d8;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 180, 216, 0.25);
+}
+
+textarea.form-control {
+  resize: vertical;
+}
+
+/* Fieldsets for the Details Modal */
+fieldset.custom-fieldset {
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: #ffffff;
+}
+
+fieldset.custom-fieldset legend {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #00b4d8;
+  padding: 0 10px;
+  width: auto;
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+/* CSS Grid for the Details fields */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem 2rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: #1a1a1a;
+  font-weight: 500;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.3rem;
+}

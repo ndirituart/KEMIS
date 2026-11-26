@@ -26,7 +26,7 @@ export class PendingInstitutionCounty implements OnInit {
 
   statusList = [
     'All', 'Pending', 'Approved', 'Rejected',
-    'SCDE Approved', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended', 'SCDE Rejected'
+    'SCDE Recommended', 'SCDE Approved', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended', 'SCDE Rejected'
   ];
 
   filter = {
@@ -133,7 +133,7 @@ export class PendingInstitutionCounty implements OnInit {
 
   openViewModal(inst: any) {
     this.selectedInstitution = inst;
-    this.activeViewTab = inst.status === 'SCDE Approved' ? 'reports' : 'form';
+    this.activeViewTab = ['SCDE Recommended', 'SCDE Approved'].includes(inst.status) ? 'reports' : 'form';
     this.inspection = null;
     this.review = null;
     this.canDecide = false;
@@ -147,7 +147,7 @@ export class PendingInstitutionCounty implements OnInit {
         const res = detail.school;
         this.inspection = detail.inspection;
         this.review = detail.review;
-        this.canDecide = detail.canReview && detail.status === 'SCDE Approved' && !!detail.inspection;
+        this.canDecide = detail.canReview && ['SCDE Recommended', 'SCDE Approved'].includes(detail.status) && !!detail.inspection;
         // Map the backend response to viewData
         this.viewData = {
           ...this.viewData,

@@ -20,7 +20,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   subCounties: string[] = [];
-  statusList = ['All', 'Pending', 'Approved', 'Rejected', 'SCDE Approved', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended', 'SCDE Rejected'];
+  statusList = ['All', 'Pending', 'Approved', 'Rejected', 'SCDE Approved', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended', 'SCDE Rejected', 'SCDE Recommended'];
 
   filter = { onboardingType: 'New Onboarding', subCounty: 'All', status: 'All' };
   tableSearch = '';
@@ -44,8 +44,8 @@ export class PendingInstitutionsSubCounty implements OnInit {
   review: { status: string; summary: string } | null = null;
   canDecide = false;
   deciding = false;
-  showingRejectionForm = false;
-  rejectionReason = '';
+  pendingDecision: boolean | null = null;
+  decisionSummary = '';
   viewData: School | null = null;
 
   ngOnInit() {
@@ -160,8 +160,8 @@ export class PendingInstitutionsSubCounty implements OnInit {
     this.review = null;
     this.viewData = null;
     this.canDecide = false;
-    this.showingRejectionForm = false;
-    this.rejectionReason = '';
+    this.pendingDecision = null;
+    this.decisionSummary = '';
     this.showViewModal = true;
 
     this.http.get<any>(`http://localhost:5215/api/sub-county-education/institutions/${inst.institutionId}`).subscribe({
@@ -205,20 +205,22 @@ export class PendingInstitutionsSubCounty implements OnInit {
     });
   }
 
-  submitDecision(isApproved: boolean) {
+  submitDecision() {
+    const isApproved = this.pendingDecision;
+    if (isApproved === null) return;
     if (!this.canDecide || this.deciding || !this.selectedInstitution) return;
-    const rejectionReason = this.rejectionReason.trim();
-    if (!isApproved && !rejectionReason) {
-      this.notification.showError('Enter a reason for rejecting the inspection.');
+    const decisionSummary = this.decisionSummary.trim();
+    if (!decisionSummary) {
+      this.notification.showError('Enter a summary for the decision.');
       return;
     }
 
     this.deciding = true;
-    this.http.post(`http://localhost:5215/api/sub-county-education/reports`, { institutionId: this.selectedInstitution.institutionId, isApproved, rejectionReason }).subscribe({
+    this.http.post(`http://localhost:5215/api/sub-county-education/reports`, { institutionId: this.selectedInstitution.institutionId, isApproved, summary: decisionSummary }).subscribe({
       next: () => {
         this.deciding = false;
-        this.selectedInstitution.status = isApproved ? 'Approved' : 'Rejected';
-        this.notification.showSuccess(isApproved ? 'Institution approved.' : 'Institution rejected.');
+        this.selectedInstitution.status = isApproved ? 'SCDE Recommended' : 'SCDE Rejected';
+        this.notification.showSuccess(isApproved ? 'Institution recommended for county review.' : 'Institution sent back for revision.');
         this.closeModals();
         this.onSearch();
       },

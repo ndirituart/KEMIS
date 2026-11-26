@@ -1,0 +1,211 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <h2>Institution Approval in Sub County</h2>
+  </div>
+
+  <!-- Top Filters -->
+  <div class="filter-section">
+    <div class="radio-row">
+      <label class="fw-bold me-3">Select Onboarding Type:</label>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="onboardingType" id="newOnboarding" value="New Onboarding" [(ngModel)]="filter.onboardingType">
+        <label class="form-check-label" for="newOnboarding">New Onboarding</label>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <label class="form-label fw-bold">Status:</label>
+        <select class="form-select" [(ngModel)]="filter.status" (ngModelChange)="fetchInstitutions($event)">
+          <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-section">
+    <div class="table-search-row">
+      <input type="text" class="form-control search-input" placeholder="Search" [(ngModel)]="tableSearch">
+    </div>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Institution Id</th>
+            <th>Cert No.</th>
+            <th>Institution Name</th>
+            <th>Date of Onboarding</th>
+            <th>Subcounty</th>
+            <th>Status</th>
+            <th>Assigned SCDE</th>
+            <th>Assigned SCQASO</th>
+            <th>Assign SCQASO</th> <!-- Renamed to Assign -->
+            <th>View Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inst of institutions | search: tableSearch; let i = index">
+            <td>{{ inst.institutionId }}</td>
+            <td>{{ inst.certificateNumber }}</td>
+            <td>{{ inst.institutionName }}</td>
+            <td>{{ inst.createdAt | date:'dd-MM-yyyy' }}</td>
+            <td>{{ inst.subCounty }}</td>
+            <td>
+              <!-- Dynamic badge colors based on status -->
+              <span class="badge-status" [ngClass]="{
+                'badge-pending': inst.status === 'Pending' || inst.status === 'pending',
+                'badge-assigned': inst.status === 'Assigned SCDE' || inst.status === 'Assigned SCQASO',
+                'badge-recommended': inst.status === 'Approved' || inst.status === 'SCDE Approved',
+                'badge-rejected': inst.status === 'SCDE Rejected' || inst.status === 'Rejected' || inst.status === 'rejected',
+                'badge-review': inst.status === 'SCQASO Recommended'
+              }">
+                {{ inst.status }}
+              </span>
+            </td>
+            <td>{{ inst.supervisorId || 'Logged in SCDE' }}</td>
+            <td>{{ inst.assigneeId || (inst.status === 'Assigned SCQASO' ? 'Needs officer assignment' : 'None') }}</td>
+            <td>
+              <!-- Changed to openAssignSCQASOModal -->
+              <button class="btn-outline-gray" [disabled]="!['Assigned SCDE', 'Assigned SCQASO', 'SCDE Rejected'].includes(inst.status)" (click)="openAssignSCQASOModal(inst)">Assign</button>
+            </td>
+            <td>
+              <button class="btn-outline-red" (click)="openViewModal(inst)">
+                <i class="bi bi-eye-fill text-danger me-1"></i> View
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================================== -->
+<!-- MODAL 1: ASSIGN SCQASO                     -->
+<!-- ========================================== -->
+<div class="modal-backdrop" *ngIf="showAssignScqasoModal">
+  <div class="modal-dialog small-modal">
+    <div class="modal-header bg-info text-white">
+      <h5 class="modal-title">Assign SCQASO</h5>
+      <button type="button" class="btn-close btn-close-white" (click)="showAssignScqasoModal = false"></button>
+    </div>
+    <div class="modal-body">
+      <label class="form-label fw-bold text-muted">Select SCQASO</label>
+      <select class="form-select" [(ngModel)]="selectedSCQASO">
+        <option value="" disabled selected>Select an SCQASO...</option>
+        <option *ngFor="let scqaso of scqasoList" [value]="scqaso.userId">{{ scqaso.fullName }}</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" (click)="showAssignScqasoModal = false">Close</button>
+      <button class="btn btn-outline-danger" (click)="submitSCQASOAssignment()">Submit</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================================== -->
+<!-- MODAL 2: VIEW INSTITUTION DETAILS          -->
+<!-- ========================================== -->
+<div class="modal-backdrop" *ngIf="showViewModal">
+  <div class="modal-dialog large-modal">
+
+    <!-- Header -->
+    <div class="modal-header bg-info text-white align-items-center">
+      <h5 class="modal-title">
+        Institution - <strong>{{ selectedInstitution?.institutionName }}</strong>
+        <span class="badge bg-warning text-dark ms-3">SCDE REVIEW</span>
+      </h5>
+      <button type="button" class="btn-close btn-close-white" (click)="closeModals()"></button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="modal-tabs">
+      <button class="tab-btn" [class.active]="activeViewTab === 'form'" (click)="activeViewTab = 'form'">Institution Onboarding Form</button>
+      <button class="tab-btn" [class.active]="activeViewTab === 'reports'" (click)="activeViewTab = 'reports'">Comments & Reports</button>
+      <button class="tab-btn" [class.active]="activeViewTab === 'actions'" (click)="activeViewTab = 'actions'">Actions</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body scrollable-body">
+
+      <div *ngIf="activeViewTab === 'form'" class="tab-content">
+        <div *ngIf="viewData as school">
+
+          <fieldset>
+            <legend>Institution Details</legend>
+            <dl class="row">
+              <dt>Institution type</dt><dd>{{ school.institutionType || 'N/A' }}</dd>
+              <dt>Institution name</dt><dd>{{ school.institutionName }}</dd>
+              <dt>Institution level</dt><dd>{{ school.institutionLevel || 'N/A' }}</dd>
+              <dt>Certificate number</dt><dd>{{ school.certificateNumber || 'N/A' }}</dd>
+              <dt>Head of institution</dt><dd>{{ school.headOfInstitution || 'N/A' }}</dd>
+              <dt>Email</dt><dd>{{ school.emailId || 'N/A' }}</dd>
+              <dt>Mobile number</dt><dd>{{ school.mobileNo || 'N/A' }}</dd>
+              <dt>Postal code</dt><dd>{{ school.postalAddressHoi || 'N/A' }}</dd>
+              <dt>County</dt><dd>{{ school.county || 'N/A' }}</dd>
+              <dt>Sub-county</dt><dd>{{ school.subCounty || 'N/A' }}</dd>
+              <dt>Constituency</dt><dd>{{ school.constituency || 'N/A' }}</dd>
+              <dt>Institution location</dt><dd>{{ school.postalAddressInstitution || 'N/A' }}</dd>
+              <dt>Application type</dt><dd>{{ school.applicationType || 'N/A' }}</dd>
+              <dt>Onboarding date</dt><dd>{{ (school.createdAt | date:'dd-MM-yyyy') || 'N/A' }}</dd>
+              <dt>Total learners</dt><dd>{{ school.totalLearners || 0 }}</dd>
+            </dl>
+          </fieldset>
+
+          <fieldset>
+            <legend>Other Details</legend>
+            <dl class="row">
+              <dt>Accommodation type</dt><dd>{{ school.accomodationType || 'N/A' }}</dd>
+              <dt>School category</dt><dd>{{ school.schoolCategory || 'N/A' }}</dd>
+            </dl>
+          </fieldset>
+
+        </div>
+      </div>
+
+      <div *ngIf="activeViewTab === 'reports'" class="tab-content">
+        <ng-container *ngIf="inspection; else noInspection">
+          <h6>Inspection officer comment</h6>
+          <p class="text-break" style="white-space: pre-wrap">{{ inspection.commentText }}</p>
+          <p *ngIf="inspection.inspectionDate">Inspection date {{ inspection.inspectionDate }}</p>
+          <button type="button" class="btn btn-view-inspection-report" (click)="openInspectionReport()">View inspection report</button>
+        </ng-container>
+        <ng-template #noInspection><p>No inspection report is available.</p></ng-template>
+        <div *ngIf="review" class="mt-3">
+          <h6>Sub-county review</h6>
+          <p>{{ review.status }}</p>
+          <p *ngIf="review.summary" class="text-break">{{ review.summary }}</p>
+        </div>
+      </div>
+      <div *ngIf="activeViewTab === 'actions'" class="tab-content">
+        <ng-container *ngIf="canDecide; else awaitingReview">
+          <div *ngIf="!showingRejectionForm" class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-success" [disabled]="deciding" (click)="submitDecision(true)">Approve</button>
+            <button type="button" class="btn btn-danger" [disabled]="deciding" (click)="showingRejectionForm = true">Reject</button>
+          </div>
+          <form *ngIf="showingRejectionForm" (ngSubmit)="submitDecision(false)">
+            <label for="rejection-reason" class="form-label">Rejection reason</label>
+            <textarea id="rejection-reason" name="rejectionReason" class="form-control mb-3" rows="3"
+              [(ngModel)]="rejectionReason" [readonly]="deciding" required></textarea>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="submit" class="btn btn-danger" [disabled]="deciding || !rejectionReason.trim()">Confirm rejection</button>
+              <button type="button" class="btn btn-outline-secondary" [disabled]="deciding" (click)="showingRejectionForm = false">Cancel</button>
+            </div>
+          </form>
+        </ng-container>
+        <ng-template #awaitingReview><p>Current status: {{ viewData?.status || selectedInstitution?.status }}</p></ng-template>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button class="btn btn-danger" (click)="closeModals()">Close</button>
+    </div>
+
+  </div>
+</div>
