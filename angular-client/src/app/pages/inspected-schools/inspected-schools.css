@@ -25,3 +25,18 @@
 .custom-table th { padding: 0.8rem 1rem; text-align: left; font-size: 0.85rem; border-right: 1px solid rgba(255,255,255,0.2); }
 .custom-table td { padding: 0.8rem 1rem; border-bottom: 1px solid #eee; border-right: 1px solid #eee; font-size: 0.9rem; color: #333; }
 .custom-table tbody tr:hover { background-color: #f1f8fa; }
+
+/* Approved/Review Badge */
+/* Default Badge Style */
+.badge-status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-block;
+}
+
+.badge-review {
+  background-color: #28a745; /* --kemis-success */
+  color: #fff;
+}

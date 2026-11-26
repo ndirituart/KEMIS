@@ -55,20 +55,17 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
+    <!-- ========================================== -->
   <!-- MODAL 1: INSTITUTION DETAILS               -->
   <!-- ========================================== -->
   <div class="modal-backdrop" *ngIf="showDetailsModal">
     <div class="modal-dialog large-modal">
-
       <div class="modal-header bg-info text-white">
-        <h5 class="modal-title">Institution Onboarding Details</h5>
+        <h5 class="modal-title">Institution Details - {{ selectedSchool?.institutionName }}</h5>
         <button type="button" class="btn-close btn-close-white" (click)="closeModals()">✕</button>
       </div>
-
       <div class="modal-body scrollable-body" style="padding: 2rem;">
 
-        <!-- Section 1: Institution Details -->
         <fieldset class="border p-4 mb-4 rounded" style="border-color: #dee2e6 !important;">
           <legend class="float-none w-auto px-3 fs-5 fw-bold" style="color: #00b4d8;">Institution Details</legend>
 
@@ -97,7 +94,8 @@
             </div>
             <div class="col-md-6">
               <span class="detail-label fw-bold text-dark">Postal Code :</span>
-              <span class="detail-value">{{ selectedSchool?.postalCode || 'N/A' }}</span>
+              <!-- We don't have a direct postal code field, using HOI address as fallback -->
+              <span class="detail-value">{{ selectedSchool?.postalAddressHoi || 'N/A' }}</span>
             </div>
 
             <div class="col-md-6">
@@ -123,33 +121,10 @@
               <span class="detail-value">{{ selectedSchool?.applicationType || 'N/A' }}</span>
             </div>
             <div class="col-md-6">
-              <span class="detail-label fw-bold text-dark">Educational Pathway :</span>
-              <span class="detail-value">{{ selectedSchool?.educationalPathway || 'Age Based' }}</span>
-            </div>
-
-            <div class="col-md-6">
-              <span class="detail-label fw-bold text-dark">Institution Level :</span>
-              <span class="detail-value">{{ selectedSchool?.institutionLevel || 'N/A' }}</span>
-            </div>
-            <div class="col-md-6">
               <span class="detail-label fw-bold text-dark">Onboarding Date :</span>
               <span class="detail-value">{{ selectedSchool?.createdAt | date:'dd-MM-yyyy' }}</span>
             </div>
 
-            <div class="col-md-6">
-              <span class="detail-label fw-bold text-dark">Have a Valid Registration Certificate? :</span>
-              <span class="detail-value">{{ selectedSchool?.certificateValid ? 'YES' : 'NO' }}</span>
-            </div>
-            <div class="col-md-6">
-              <span class="detail-label fw-bold text-dark">Number of Boys Learners :</span>
-              <!-- Assuming you have a field for this, else hardcoded for now -->
-              <span class="detail-value">0</span>
-            </div>
-
-            <div class="col-md-6">
-              <span class="detail-label fw-bold text-dark">Number of Girls Learners :</span>
-              <span class="detail-value">0</span>
-            </div>
             <div class="col-md-6">
               <span class="detail-label fw-bold text-dark">Total Number of Learners :</span>
               <span class="detail-value">{{ selectedSchool?.totalLearners || 0 }}</span>
@@ -178,7 +153,6 @@
       <div class="modal-footer">
         <button class="btn btn-danger" (click)="closeModals()">Close</button>
       </div>
-
     </div>
   </div>
 

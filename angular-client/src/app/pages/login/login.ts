@@ -90,11 +90,11 @@ export class Login {
     this.http.post<any>(`${this.apiUrl}/Login`, payload).subscribe({
       next: (res) => {
         this.isLoading = false;
-        
+
         localStorage.setItem('token', res.token);
         localStorage.setItem('userRole', res.role);
         localStorage.setItem('userId', res.userId);
-        
+
         // Save institutionId safely
         if (res.institutionId !== null && res.institutionId !== undefined) {
           localStorage.setItem('institutionId', res.institutionId.toString());
@@ -112,25 +112,25 @@ export class Login {
 
         if (role === 'Admin') {
           this.router.navigate(['/super-admin']);
-        } 
+        }
         else if (role === 'Head of Institution (HOI)') {
           if (res.institutionId) {
             console.log("HOI detected with school. Going to dashboard.");
-            this.router.navigate(['/head-of-institution']); 
+            this.router.navigate(['/head-of-institution']);
           } else {
             console.log("HOI detected WITHOUT school. Going to onboarding.");
-            this.router.navigate(['/institution-onboarding']); 
+            this.router.navigate(['/institution-onboarding']);
           }
-        } 
+        }
         else if (role === 'County Director of Education (CDE)') {
           this.router.navigate(['/county-education']);
-        } 
+        }
         else if (role === 'Sub-County Director of Education (SCDE)') {
-          this.router.navigate(['/sub-county-education']);
-        } 
+          this.router.navigate(['/scde']);
+        }
         else if (role === 'Sub-County Quality Assurance and Standards Officer (SCQASO)') {
           this.router.navigate(['/scqaso']);
-        } 
+        }
         else if (role === 'IT Officer' || role === 'Teacher' || role === 'Deputy Principal') {
           this.router.navigate(['/school-dashboard']);
         }

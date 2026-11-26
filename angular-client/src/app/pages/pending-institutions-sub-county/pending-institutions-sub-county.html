@@ -17,7 +17,7 @@
     <div class="row mt-4">
       <div class="col-md-6">
         <label class="form-label fw-bold">Status:</label>
-        <select class="form-select" [(ngModel)]="filter.status">
+        <select class="form-select" [(ngModel)]="filter.status" (ngModelChange)="fetchInstitutions($event)">
           <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
         </select>
       </div>
@@ -58,7 +58,7 @@
               <span class="badge-status" [ngClass]="{
                 'badge-pending': inst.status === 'Pending' || inst.status === 'pending',
                 'badge-assigned': inst.status === 'Assigned SCDE' || inst.status === 'Assigned SCQASO',
-                'badge-recommended': inst.status === 'SCDE Recommended',
+                'badge-recommended': inst.status === 'Approved' || inst.status === 'SCDE Approved',
                 'badge-rejected': inst.status === 'SCDE Rejected' || inst.status === 'Rejected' || inst.status === 'rejected',
                 'badge-review': inst.status === 'SCQASO Recommended'
               }">
@@ -133,15 +133,36 @@
     <!-- Modal Body -->
     <div class="modal-body scrollable-body">
 
-      <!-- TAB 1: FORM (Unchanged) -->
       <div *ngIf="activeViewTab === 'form'" class="tab-content">
-        <dl>
-          <dt>Institution</dt><dd>{{ viewData.institutionName }}</dd>
-          <dt>Head of institution</dt><dd>{{ viewData.headOfInstitution }}</dd>
-          <dt>Institution level</dt><dd>{{ viewData.institutionLevel }}</dd>
-          <dt>Sub-county</dt><dd>{{ viewData.subCounty }}</dd>
-          <dt>Learners</dt><dd>{{ viewData.totalLearners }}</dd>
-        </dl>
+        <div *ngIf="viewData as school">
+          <fieldset class="border p-3 rounded mb-3">
+            <legend class="float-none w-auto px-2 fs-5">Institution Details</legend>
+            <dl class="row mb-0">
+              <dt class="col-sm-6">Institution type</dt><dd class="col-sm-6">{{ school.institutionType || 'N/A' }}</dd>
+              <dt class="col-sm-6">Institution name</dt><dd class="col-sm-6">{{ school.institutionName }}</dd>
+              <dt class="col-sm-6">Institution level</dt><dd class="col-sm-6">{{ school.institutionLevel || 'N/A' }}</dd>
+              <dt class="col-sm-6">Certificate number</dt><dd class="col-sm-6">{{ school.certificateNumber || 'N/A' }}</dd>
+              <dt class="col-sm-6">Head of institution</dt><dd class="col-sm-6">{{ school.headOfInstitution || 'N/A' }}</dd>
+              <dt class="col-sm-6">Email</dt><dd class="col-sm-6">{{ school.emailId || 'N/A' }}</dd>
+              <dt class="col-sm-6">Mobile number</dt><dd class="col-sm-6">{{ school.mobileNo || 'N/A' }}</dd>
+              <dt class="col-sm-6">Postal code</dt><dd class="col-sm-6">{{ school.postalAddressHoi || 'N/A' }}</dd>
+              <dt class="col-sm-6">County</dt><dd class="col-sm-6">{{ school.county || 'N/A' }}</dd>
+              <dt class="col-sm-6">Sub-county</dt><dd class="col-sm-6">{{ school.subCounty || 'N/A' }}</dd>
+              <dt class="col-sm-6">Constituency</dt><dd class="col-sm-6">{{ school.constituency || 'N/A' }}</dd>
+              <dt class="col-sm-6">Institution location</dt><dd class="col-sm-6">{{ school.postalAddressInstitution || 'N/A' }}</dd>
+              <dt class="col-sm-6">Application type</dt><dd class="col-sm-6">{{ school.applicationType || 'N/A' }}</dd>
+              <dt class="col-sm-6">Onboarding date</dt><dd class="col-sm-6">{{ (school.createdAt | date:'dd-MM-yyyy') || 'N/A' }}</dd>
+              <dt class="col-sm-6">Total learners</dt><dd class="col-sm-6">{{ school.totalLearners || 0 }}</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="border p-3 rounded">
+            <legend class="float-none w-auto px-2 fs-5">Other Details</legend>
+            <dl class="row mb-0">
+              <dt class="col-sm-6">Accommodation type</dt><dd class="col-sm-6">{{ school.accomodationType || 'N/A' }}</dd>
+              <dt class="col-sm-6">School category</dt><dd class="col-sm-6">{{ school.schoolCategory || 'N/A' }}</dd>
+            </dl>
+          </fieldset>
+        </div>
       </div>
 
       <div *ngIf="activeViewTab === 'reports'" class="tab-content">
@@ -160,14 +181,21 @@
       </div>
       <div *ngIf="activeViewTab === 'actions'" class="tab-content">
         <ng-container *ngIf="canDecide; else awaitingReview">
-          <label for="rejection-reason" class="form-label">Reason (required when rejecting)</label>
-          <textarea id="rejection-reason" class="form-control mb-3" rows="3" [(ngModel)]="rejectionReason"></textarea>
-          <div class="d-flex flex-wrap gap-2">
-            <button type="button" class="btn btn-success" [disabled]="deciding" (click)="submitDecision(true)">Approve and send to county</button>
-            <button type="button" class="btn btn-danger" [disabled]="deciding" (click)="submitDecision(false)">Reject and return to officer</button>
+          <div *ngIf="!showingRejectionForm" class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-success" [disabled]="deciding" (click)="submitDecision(true)">Approve</button>
+            <button type="button" class="btn btn-danger" [disabled]="deciding" (click)="showingRejectionForm = true">Reject</button>
           </div>
+          <form *ngIf="showingRejectionForm" (ngSubmit)="submitDecision(false)">
+            <label for="rejection-reason" class="form-label">Rejection reason</label>
+            <textarea id="rejection-reason" name="rejectionReason" class="form-control mb-3" rows="3"
+              [(ngModel)]="rejectionReason" [readonly]="deciding" required></textarea>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="submit" class="btn btn-danger" [disabled]="deciding || !rejectionReason.trim()">Confirm rejection</button>
+              <button type="button" class="btn btn-outline-secondary" [disabled]="deciding" (click)="showingRejectionForm = false">Cancel</button>
+            </div>
+          </form>
         </ng-container>
-        <ng-template #awaitingReview><p>The assigned sub-county director can decide after the inspection is submitted.</p></ng-template>
+        <ng-template #awaitingReview><p>Current status: {{ viewData?.status || selectedInstitution?.status }}</p></ng-template>
       </div>
     </div>
 

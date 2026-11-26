@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { SearchPipe } from '../../pipes/search.pipe';
 import { NotificationService } from '../../services/notifications.service';
+import type { School } from '../pending-inspections/pending-inspections';
 
 @Component({
   selector: 'app-pending-institutions-sub-county',
@@ -19,7 +20,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   subCounties: string[] = [];
-  statusList = ['All', 'Pending', 'Rejected', 'SCDE Approved', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended', 'SCDE Rejected'];
+  statusList = ['All', 'Pending', 'Approved', 'Rejected', 'SCDE Approved', 'Assigned SCDE', 'Assigned SCQASO', 'SCQASO Recommended', 'SCDE Rejected'];
 
   filter = { onboardingType: 'New Onboarding', subCounty: 'All', status: 'All' };
   tableSearch = '';
@@ -43,8 +44,9 @@ export class PendingInstitutionsSubCounty implements OnInit {
   review: { status: string; summary: string } | null = null;
   canDecide = false;
   deciding = false;
+  showingRejectionForm = false;
   rejectionReason = '';
-  viewData: any = {}; // Initialized in the fetch method
+  viewData: School | null = null;
 
   ngOnInit() {
 
@@ -156,32 +158,19 @@ export class PendingInstitutionsSubCounty implements OnInit {
     this.activeViewTab = inst.status === 'SCQASO Recommended' ? 'reports' : 'form';
     this.inspection = null;
     this.review = null;
+    this.viewData = null;
     this.canDecide = false;
+    this.showingRejectionForm = false;
     this.rejectionReason = '';
     this.showViewModal = true;
 
     this.http.get<any>(`http://localhost:5215/api/sub-county-education/institutions/${inst.institutionId}`).subscribe({
       next: (detail) => {
         if (!this.showViewModal || this.selectedInstitution?.institutionId !== inst.institutionId) return;
-        const res = detail.school;
         this.inspection = detail.inspection;
         this.review = detail.review;
         this.canDecide = detail.canReview && detail.status === 'SCQASO Recommended' && !!detail.inspection;
-        this.viewData = {
-          institutionType: res.institutionType || 'N/A',
-          institutionName: res.institutionName || 'N/A',
-          headOfInstitution: res.headOfInstitution || 'N/A',
-          email: res.emailId || 'N/A',
-          mobileNo: res.mobileNo || 'N/A',
-          onboardingDate: res.createdAt || 'N/A',
-          institutionLevel: res.institutionLevel || 'N/A',
-          certNo: res.certificateNumber || 'N/A',
-          totalLearners: res.totalLearners || 0,
-          county: res.county || 'N/A',
-          subCounty: res.subCounty || 'N/A',
-          constituency: res.constituency || 'N/A',
-          schoolCategory: res.schoolCategory || 'N/A'
-        };
+        this.viewData = detail.school;
         this.cdr.detectChanges();
       },
       error: (err) => this.notification.showError('Failed to fetch details')
@@ -189,6 +178,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
   }
 
   closeModals() {
+    if (this.deciding) return;
     this.showAssignModal = false;
     this.showAssignScqasoModal = false;
     this.showViewModal = false;
@@ -227,7 +217,8 @@ export class PendingInstitutionsSubCounty implements OnInit {
     this.http.post(`http://localhost:5215/api/sub-county-education/reports`, { institutionId: this.selectedInstitution.institutionId, isApproved, rejectionReason }).subscribe({
       next: () => {
         this.deciding = false;
-        this.notification.showSuccess(isApproved ? 'Inspection approved and sent to the county director.' : 'Inspection returned to the officer.');
+        this.selectedInstitution.status = isApproved ? 'Approved' : 'Rejected';
+        this.notification.showSuccess(isApproved ? 'Institution approved.' : 'Institution rejected.');
         this.closeModals();
         this.onSearch();
       },

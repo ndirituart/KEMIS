@@ -1,0 +1,86 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2>{{ pending() ? 'Pending Inspections' : 'List of Inspected Schools' }}</h2>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-section">
+    <div class="filter-grid">
+      <div class="filter-group">
+        <label>Institution Level</label>
+        <select class="form-select" [(ngModel)]="filter.institutionLevel">
+          <option *ngFor="let level of institutionLevels" [value]="level">{{ level }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>From</label>
+        <input type="date" class="form-control" [(ngModel)]="filter.fromDate">
+      </div>
+
+      <div class="filter-group">
+        <label>To</label>
+        <input type="date" class="form-control" [(ngModel)]="filter.toDate">
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-download" (click)="onDownload()">
+        Download <i class="bi bi-caret-down-fill ms-1"></i>
+      </button>
+      <button class="btn-search" (click)="onSearch()">Search</button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-section">
+    <div class="table-search-row">
+      <input type="text" class="form-control search-input" placeholder="Search" [(ngModel)]="tableSearch">
+    </div>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>S. No</th>
+            <th>Institution Certificate Number</th>
+            <th>Institution Name</th>
+            <th>Institution Telephone Number/Landline</th>
+            <th>Institution Type</th>
+            <th>Institution Level</th>
+            <th>Created Date</th>
+            <th>Status</th>
+            <th>Constituency</th>
+            <th>Institution Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let school of schools | search: tableSearch; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ school.certificateNumber }}</td>
+            <td>{{ school.institutionName }}</td>
+            <td>{{ school.mobileNo }}</td>
+            <td>{{ school.institutionType }}</td>
+            <td>{{ school.institutionLevel }}</td>
+            <td>{{ school.createdAt | date:'dd-MM-yyyy' }}</td>
+           <td>
+                      <!-- Dynamic badge colors based on status -->
+                      <span class="badge-status" [ngClass]="{
+
+                        'badge-review': school.status ==='Approved'
+                      }">
+                        {{ school.status }}
+                      </span>
+                  </td>
+            <td>{{ school.constituency }}</td>
+            <td>{{ school.emailId }}</td>
+          </tr>
+          <!-- Empty state -->
+          <tr *ngIf="schools.length === 0">
+            <td colspan="10" class="text-center py-4">{{ pending() ? 'No pending inspections found.' : 'No inspected schools found.' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

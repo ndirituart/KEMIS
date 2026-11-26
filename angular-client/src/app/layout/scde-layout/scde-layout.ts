@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
+
 
 
 @Component({
   selector: 'app-scde-layout',
-  imports: [ RouterOutlet,CommonModule, FormsModule],
+  imports: [ RouterOutlet, RouterLink,  CommonModule, FormsModule],
   templateUrl: './scde-layout.html',
   styleUrl: './scde-layout.css',
 })
@@ -41,7 +41,7 @@ export class ScdeLayout {
     selectedLevel = 'Primary School';
     selectedSubCounty = '';
 
-    constructor(private router: Router) {}
+    private router = inject(Router);
 
     navigateTo(route: string) {
       this.router.navigate([route]);

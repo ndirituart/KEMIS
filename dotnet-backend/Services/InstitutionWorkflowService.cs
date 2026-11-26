@@ -9,6 +9,7 @@ public class InstitutionWorkflowService
     private readonly ApplicationDbContext _context;
 
     private readonly string _reportFolder;
+    private readonly string _legacyReportFolder;
     private readonly bool _practiceMode;
 
     public InstitutionWorkflowService(ApplicationDbContext context, IWebHostEnvironment environment)
@@ -16,6 +17,7 @@ public class InstitutionWorkflowService
         _context = context;
         _practiceMode = environment.IsDevelopment();
         _reportFolder = Path.Combine(environment.ContentRootPath, "App_Data", "inspection-reports");
+        _legacyReportFolder = Path.Combine(environment.WebRootPath ?? Path.Combine(environment.ContentRootPath, "wwwroot"), "uploads");
     }
 
    //A. DASHBOARD METHODS
@@ -316,37 +318,57 @@ public class InstitutionWorkflowService
         _context.InstitutionComments.Where(c => c.institutionId == id && c.reportFileName != null)
             .OrderByDescending(c => c.commentId);
 
-    public async Task<object> GetPendingInspectionsAsync(int userId, CancellationToken ct)
+        public async Task<object> GetPendingInspectionsAsync(int userId, CancellationToken ct)
     {
+        // 1. Get the SCQASO's profile to find their subcounty
         var profile = await GetScqasoProfileAsync(userId, ct);
         if (profile == null) return new { schools = Array.Empty<object>() };
 
-        var query = _practiceMode ? _context.BasicEducations.AsNoTracking() : GetScqasoAreaSchools(profile);
-        var schools = await query
+        // 2. Query directly from BasicEducations for that subcounty
+        // We use .ToLower().Contains() to avoid issues with "Embakasi" vs "Embakasi East Sub County"
+        var schools = await _context.BasicEducations
+            .Where(s => s.subCounty.ToLower().Contains(profile.subCounty.ToLower()))
+            // 3. Filter out the approved schools
             .Where(s => (s.status ?? "").Trim().ToLower() != "approved")
             .OrderByDescending(s => s.institutionId)
             .Select(s => new
             {
-                s.institutionId, s.institutionName, s.emailId, s.mobileNo, s.createdAt,
-                s.certificateNumber, s.institutionType, s.institutionLevel, s.status,
+                s.institutionId, 
+                s.institutionName, 
+                s.emailId, 
+                s.mobileNo, 
+                s.createdAt,
+                s.certificateNumber, 
+                s.institutionType, 
+                s.institutionLevel, 
+                s.status,
+                s.headOfInstitution,
+                s.postalAddressHoi,
+                s.county,
+                s.subCounty,
+                s.constituency,
+                s.postalAddressInstitution,
+                s.applicationType,
+                s.accomodationType,
+                s.schoolCategory,
+                // Get inspection date from the latest comment with a report
                 inspectionDate = _context.InstitutionComments
                     .Where(c => c.institutionId == s.institutionId && c.reportFileName != null)
-                    .OrderByDescending(c => c.commentId).Select(c => c.inspectionDate).FirstOrDefault(),
-                canSubmit = (s.assigneeId == null || s.assigneeId == userId) &&
-                    !InspectionAssignments.Where(a => a.institutionId == s.institutionId)
-                        .OrderByDescending(a => a.assignmentId).Take(1).Any(a => a.assigneeId != userId) &&
-                    ((_practiceMode && s.status != "SCQASO Recommended") ||
-                        s.status == "Assigned SCQASO" || s.status == "SCDE Rejected" ||
-                        (s.status == "SCQASO Recommended" && !_context.InstitutionComments.Any(c =>
-                            c.institutionId == s.institutionId && c.reportFileName != null)))
-            }).ToListAsync(ct);
+                    .OrderByDescending(c => c.commentId)
+                    .Select(c => c.inspectionDate)
+                    .FirstOrDefault(),
+                // A final rejection cannot be reopened by submitting another inspection.
+                canSubmit = (s.status ?? "").Trim().ToLower() != "rejected"
+            })
+            .ToListAsync(ct);
+
         return new { schools };
     }
 
     public async Task<IActionResult> SubmitInspectionAsync(int userId, SubmitInspectionRequest req, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(req.comment) || req.file is null || req.file.Length == 0)
-            return new BadRequestObjectResult("An inspection comment and report file are required.");
+            return new BadRequestObjectResult("An inspection comment an d report file are required.");
         if (req.file.Length > 10 * 1024 * 1024)
             return new BadRequestObjectResult("The report must be 10 MB or smaller.");
         if (req.inspectionDate != null && !DateOnly.TryParseExact(req.inspectionDate, "yyyy-MM-dd", out _))
@@ -375,6 +397,7 @@ public class InstitutionWorkflowService
         var missingLegacyReport = school.status == "SCQASO Recommended" &&
             !await Inspections(req.institutionId).AnyAsync(ct);
         if (string.Equals(school.status?.Trim(), "Approved", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(school.status?.Trim(), "Rejected", StringComparison.OrdinalIgnoreCase) ||
             (!_practiceMode && school.status is not ("Assigned SCQASO" or "SCDE Rejected") && !missingLegacyReport) ||
             (school.status == "SCQASO Recommended" && !missingLegacyReport))
             return new ConflictObjectResult("This school is no longer awaiting inspection.");
@@ -454,30 +477,21 @@ public class InstitutionWorkflowService
             return new ConflictObjectResult("The assigned officer must submit a report first.");
 
         var now = DateTime.UtcNow.ToString("o");
-        var status = approved ? "SCDE Approved" : "SCDE Rejected";
+        var status = approved ? "Approved" : "Rejected";
         _context.Reports.Add(new Report
         {
             institutionId = req.institutionId,
             institutionName = school.institutionName,
             scdeId = userId,
             inspectionCommentId = inspection.commentId,
-            summary = approved ? req.summary.Trim() : reason!,
+            summary = approved ? req.summary?.Trim() ?? string.Empty : reason!,
             recommendation = approved ? "Approve" : "Reject",
             status = status,
             createdAt = now
         });
         school.status = assignment.status = status;
         school.updatedAt = assignment.updatedAt = now;
-        if (!approved)
-        {
-            _context.InstitutionComments.Add(new InstitutionComment
-            {
-                institutionId = req.institutionId,
-                userId = userId,
-                commentText = reason!,
-                createdAt = now
-            });
-        }
+        school.rejectionReason = approved ? null : reason;
         return await SaveTransitionAsync(ct);
     }
 
@@ -535,8 +549,10 @@ public class InstitutionWorkflowService
         if (fileName == null || fileName != Path.GetFileName(fileName)) return new NotFoundResult();
 
         var path = Path.Combine(_reportFolder, fileName);
+        if (!File.Exists(path))
+            path = Path.Combine(_legacyReportFolder, fileName);
         if (!File.Exists(path)) return new NotFoundObjectResult("Inspection report file could not be found.");
-        var mimeType = Path.GetExtension(fileName) switch
+        var mimeType = Path.GetExtension(fileName).ToLowerInvariant() switch
         {
             ".pdf" => "application/pdf",
             ".png" => "image/png",

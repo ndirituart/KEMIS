@@ -5,12 +5,36 @@ import { HttpClient } from '@angular/common/http';
 import { SearchPipe } from '../../pipes/search.pipe';
 import { NotificationService } from '../../services/notifications.service';
 
+//Declarring the school and all variables
+export interface School {
+  institutionId: number;
+  institutionName: string;
+  emailId: string;
+  mobileNo: string;
+  createdAt: string;
+  certificateNumber: string;
+  institutionType: string;
+  institutionLevel: string;
+  status: string;
+  headOfInstitution: string;
+  postalAddressHoi: string;
+  county: string;
+  subCounty: string;
+  constituency: string;
+  postalAddressInstitution: string;
+  applicationType: string;
+  accomodationType: string;
+  schoolCategory: string;
+  totalLearners: number;
+  inspectionDate?: string;
+  canSubmit?: boolean;
+}
 @Component({
   selector: 'app-pending-inspections',
   standalone: true,
   imports: [CommonModule, FormsModule, SearchPipe],
   templateUrl: './pending-inspections.html',
-  styleUrl: './pending-inspections.css',
+  styleUrl: './pending-inspections.css'
 })
 export class PendingInspections implements OnInit {
   private http = inject(HttpClient);
@@ -26,7 +50,7 @@ export class PendingInspections implements OnInit {
   showUploadModal = false;
   showCommentModal = false;
 
-  selectedSchool: any = null;
+  selectedSchool: School | null = null; //changed from any
 
   // --- Upload Form ---
   submitting = false;
@@ -54,8 +78,9 @@ export class PendingInspections implements OnInit {
   }
 
   // --- Modal Actions ---
-  openDetailsModal(school: any) {
+  openDetailsModal(school: School) {
     this.selectedSchool = school;
+    console.log('Selected School Details:', this.selectedSchool); //Check console
     this.showDetailsModal = true;
   }
 

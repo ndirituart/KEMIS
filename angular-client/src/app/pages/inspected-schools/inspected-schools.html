@@ -63,7 +63,12 @@
             <td>{{ school.institutionType }}</td>
             <td>{{ school.institutionLevel }}</td>
             <td>{{ school.createdAt | date:'dd-MM-yyyy' }}</td>
-            <td>{{ school.status }}</td>
+            <td>
+                <!-- Dynamic badge colors based on status -->
+                <span class="badge-status" [ngClass]="{ 'badge-review': school.status ==='Approved' }">
+                  {{ school.status }}
+                </span>
+            </td>
             <td>{{ school.constituency }}</td>
             <td>{{ school.emailId }}</td>
           </tr>
