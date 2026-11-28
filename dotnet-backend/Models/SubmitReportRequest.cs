@@ -6,5 +6,6 @@ public class SubmitReportRequest
     public int institutionId { get; set; }
     public string summary { get; set; } = string.Empty;
     public bool? isApproved { get; set; }
+    public bool reconsiderRejection { get; set; }
     public string? rejectionReason { get; set; }
 }

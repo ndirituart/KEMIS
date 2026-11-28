@@ -100,6 +100,7 @@ export class PendingInstitutionCounty implements OnInit {
   review: { status: string; summary: string } | null = null;
   canDecide = false;
   deciding = false;
+  showingRejectionForm = false;
   rejectionReason = '';
 
   // View and fetches live
@@ -137,7 +138,7 @@ export class PendingInstitutionCounty implements OnInit {
     this.inspection = null;
     this.review = null;
     this.canDecide = false;
-    this.rejectionReason = '';
+    this.cancelRejection();
     this.showViewModal = true;
 
     // Fetch school details dynamically based on institutionId
@@ -173,6 +174,7 @@ export class PendingInstitutionCounty implements OnInit {
   }
 
   closeModals() {
+    if (this.deciding) return;
     this.showAssignModal = false;
     this.showViewModal = false;
     this.selectedInstitution = null;
@@ -224,9 +226,14 @@ export class PendingInstitutionCounty implements OnInit {
     });
   }
 
+  cancelRejection() {
+    this.showingRejectionForm = false;
+    this.rejectionReason = '';
+  }
+
   submitDecision(isApproved: boolean) {
     if (!this.canDecide || this.deciding || !this.selectedInstitution) return;
-    const rejectionReason = this.rejectionReason.trim();
+    const rejectionReason = isApproved ? '' : this.rejectionReason.trim();
     if (!isApproved && !rejectionReason) {
       this.notification.showError('Enter a reason for rejecting the inspection.');
       return;

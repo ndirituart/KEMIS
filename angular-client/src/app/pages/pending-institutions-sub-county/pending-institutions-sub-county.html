@@ -183,11 +183,10 @@
         </div>
       </div>
       <div *ngIf="activeViewTab === 'actions'" class="tab-content">
-        <ng-container *ngIf="canDecide; else awaitingReview">
+        <ng-container *ngIf="canDecide || canReverseRejection; else awaitingReview">
           <div *ngIf="pendingDecision === null" class="d-flex flex-wrap gap-2">
-            <button type="button" class="btn-success" [disabled]="deciding" (click)="pendingDecision = true">Approve</button>
-            <span></span>
-            <button type="button" class="btn-danger" [disabled]="deciding" (click)="pendingDecision = false">Reject</button>
+            <button type="button" class="btn-success" [disabled]="deciding" (click)="pendingDecision = true">{{ canReverseRejection ? 'Approve after rejection' : 'Approve' }}</button>
+            <button *ngIf="canDecide" type="button" class="btn-danger" [disabled]="deciding" (click)="pendingDecision = false">Reject</button>
           </div>
           <form *ngIf="pendingDecision !== null" (ngSubmit)="submitDecision()">
             <label for="decision-summary" class="form-label">{{ pendingDecision ? 'Approval summary' : 'Rejection reason' }}</label>

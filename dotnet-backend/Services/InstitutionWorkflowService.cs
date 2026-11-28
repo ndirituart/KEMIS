@@ -469,13 +469,21 @@ public class InstitutionWorkflowService
         if (school == null) return new NotFoundResult();
         if (!CanScdeReviewSchool(school, userId) || !await CanViewSchoolAsync(school, userId, false, ct))
             return new ForbidResult();
-        if (school.status != "SCQASO Recommended")
-            return new ConflictObjectResult("This school is no longer awaiting SCDE review.");
-
         var assignment = await Assignments(req.institutionId).FirstOrDefaultAsync(ct);
         var inspection = await Inspections(req.institutionId).FirstOrDefaultAsync(ct);
         if (inspection == null || assignment == null || assignment.assigneeId != inspection.userId)
             return new ConflictObjectResult("The assigned officer must submit a report first.");
+
+        if (req.reconsiderRejection)
+        {
+            var review = await LatestReview(req.institutionId, inspection.commentId).FirstOrDefaultAsync(ct);
+            if (!approved || !assignment.hasReport || !await CanReverseScdeRejectionAsync(school, userId, review, ct))
+                return new ConflictObjectResult("This SCDE rejection is no longer eligible for approval. Refresh and try again.");
+        }
+        else if (school.status != "SCQASO Recommended")
+        {
+            return new ConflictObjectResult("This school is no longer awaiting SCDE review.");
+        }
 
         var now = DateTime.UtcNow.ToString("o");
         var status = approved ? "SCDE Recommended" : "SCDE Rejected";
@@ -517,13 +525,39 @@ public class InstitutionWorkflowService
         if (!await CanViewSchoolAsync(school, userId, countyDirector, ct)) return new ForbidResult();
 
         var canReview = countyDirector || CanScdeReviewSchool(school, userId);
-        var inspection = canReview ? await Inspections(id)
-            .Select(c => new { c.commentId, c.commentText, c.inspectionDate }).FirstOrDefaultAsync(ct) : null;
-        var review = inspection == null ? null : await _context.Reports.AsNoTracking()
-            .Where(r => r.institutionId == id && r.inspectionCommentId == inspection.commentId)
-            .OrderByDescending(r => r.reportId).FirstOrDefaultAsync(ct);
-        return new OkObjectResult(new { school, school.status, inspection, review, canReview });
+        var inspectionRecord = canReview ? await Inspections(id).FirstOrDefaultAsync(ct) : null;
+        var inspection = inspectionRecord == null ? null :
+            new { inspectionRecord.commentId, inspectionRecord.commentText, inspectionRecord.inspectionDate };
+        var review = inspection == null ? null : await LatestReview(id, inspection.commentId).FirstOrDefaultAsync(ct);
+        var canSubmitScdeDecision = false;
+        var canReverseScdeRejection = false;
+        if (!countyDirector && inspectionRecord != null)
+        {
+            var assignment = await Assignments(id).FirstOrDefaultAsync(ct);
+            if (assignment != null && assignment.assigneeId == inspectionRecord.userId)
+            {
+                canSubmitScdeDecision = school.status == "SCQASO Recommended";
+                canReverseScdeRejection = assignment.hasReport &&
+                    await CanReverseScdeRejectionAsync(school, userId, review, ct);
+            }
+        }
+        return new OkObjectResult(new
+        {
+            school, school.status, inspection, review, canReview, canSubmitScdeDecision, canReverseScdeRejection
+        });
     }
+
+    private IQueryable<Report> LatestReview(int institutionId, int commentId) =>
+        _context.Reports.AsNoTracking()
+            .Where(r => r.institutionId == institutionId && r.inspectionCommentId == commentId)
+            .OrderByDescending(r => r.reportId);
+
+    private async Task<bool> CanReverseScdeRejectionAsync(BasicEducation school, int userId, Report? review, CancellationToken ct) =>
+        (school.status == "SCDE Rejected" ||
+            string.Equals(school.status?.Trim(), "Rejected", StringComparison.OrdinalIgnoreCase)) &&
+        review != null && review.scdeId == userId && review.recommendation == "Reject" &&
+        !await _context.InstitutionDecisions.AnyAsync(d =>
+            d.institutionId == school.institutionId && d.decisionType == "CDE Final", ct);
 
     private static bool CanScdeReviewSchool(BasicEducation school, int userId) =>
         school.supervisorId == userId ||
@@ -596,7 +630,9 @@ public class InstitutionWorkflowService
         if (school == null) return new NotFoundResult();
         if (!await CanViewSchoolAsync(school, userId, true, ct)) return new ForbidResult();
         if (school.status is not ("SCDE Recommended" or "SCDE Approved") ||
-            !await _context.Reports.AnyAsync(r => r.institutionId == id && (r.status == "SCDE Recommended" || r.status == "SCDE Approved") &&
+            !await _context.Reports.AnyAsync(r => r.institutionId == id &&
+                (r.status == "SCDE Recommended" || r.status == "SCDE Approved" ||
+                 (r.status == "Approved" && r.recommendation == "Approve")) &&
                 r.inspectionCommentId != null, ct))
             return new ConflictObjectResult("The SCDE must approve the inspection before the final decision.");
 

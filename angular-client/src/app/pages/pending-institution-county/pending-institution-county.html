@@ -278,14 +278,26 @@
               </div>
             </div>
             <div *ngIf="activeViewTab === 'actions'" class="tab-content">
-              <ng-container *ngIf="canDecide; else awaitingReview">
-                <label for="rejection-reason" class="form-label">Reason (required when rejecting)</label>
-                <textarea id="rejection-reason" class="form-control mb-3" rows="3" [(ngModel)]="rejectionReason"></textarea>
-                <div class="d-flex flex-wrap gap-2">
-                  <button type="button" class="btn btn-success" [disabled]="deciding" (click)="submitDecision(true)">Approve institution</button>
-                  <button type="button" class="btn btn-danger" [disabled]="deciding" (click)="submitDecision(false)">Reject institution</button>
+              <section *ngIf="canDecide; else awaitingReview" class="county-decision" aria-labelledby="county-decision-title">
+                <h6 id="county-decision-title" class="county-decision-title">Institution decision</h6>
+                <div *ngIf="!showingRejectionForm" class="county-decision-buttons">
+                  <button type="button" class="btn btn-success" [disabled]="deciding" (click)="submitDecision(true)">
+                    <i class="bi bi-check-circle" aria-hidden="true"></i> Approve institution
+                  </button>
+                  <button type="button" class="btn btn-outline-danger" [disabled]="deciding" (click)="showingRejectionForm = true">
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> Reject institution
+                  </button>
                 </div>
-              </ng-container>
+                <form *ngIf="showingRejectionForm" class="county-rejection-form" (ngSubmit)="submitDecision(false)">
+                  <label for="rejection-reason" class="form-label">Reason for rejection</label>
+                  <textarea id="rejection-reason" name="rejectionReason" class="form-control" rows="4"
+                    [(ngModel)]="rejectionReason" [readonly]="deciding" required></textarea>
+                  <div class="county-decision-buttons">
+                    <button type="button" class="btn btn-outline-secondary" [disabled]="deciding" (click)="cancelRejection()">Cancel</button>
+                    <button type="submit" class="btn btn-danger" [disabled]="deciding || !rejectionReason.trim()">Confirm rejection</button>
+                  </div>
+                </form>
+              </section>
               <ng-template #awaitingReview><p>County decisions are available after the sub-county director approves the inspection.</p></ng-template>
             </div>
             </div>

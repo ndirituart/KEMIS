@@ -43,6 +43,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
   inspection: { commentId: number; commentText: string; inspectionDate?: string } | null = null;
   review: { status: string; summary: string } | null = null;
   canDecide = false;
+  canReverseRejection = false;
   deciding = false;
   pendingDecision: boolean | null = null;
   decisionSummary = '';
@@ -160,6 +161,7 @@ export class PendingInstitutionsSubCounty implements OnInit {
     this.review = null;
     this.viewData = null;
     this.canDecide = false;
+    this.canReverseRejection = false;
     this.pendingDecision = null;
     this.decisionSummary = '';
     this.showViewModal = true;
@@ -169,7 +171,9 @@ export class PendingInstitutionsSubCounty implements OnInit {
         if (!this.showViewModal || this.selectedInstitution?.institutionId !== inst.institutionId) return;
         this.inspection = detail.inspection;
         this.review = detail.review;
-        this.canDecide = detail.canReview && detail.status === 'SCQASO Recommended' && !!detail.inspection;
+        this.canDecide = detail.canSubmitScdeDecision;
+        this.canReverseRejection = detail.canReverseScdeRejection;
+        if (this.canReverseRejection && this.activeViewTab === 'form') this.activeViewTab = 'reports';
         this.viewData = detail.school;
         this.cdr.detectChanges();
       },
@@ -208,7 +212,8 @@ export class PendingInstitutionsSubCounty implements OnInit {
   submitDecision() {
     const isApproved = this.pendingDecision;
     if (isApproved === null) return;
-    if (!this.canDecide || this.deciding || !this.selectedInstitution) return;
+    const reconsiderRejection = this.canReverseRejection && isApproved;
+    if ((!this.canDecide && !reconsiderRejection) || this.deciding || !this.selectedInstitution) return;
     const decisionSummary = this.decisionSummary.trim();
     if (!decisionSummary) {
       this.notification.showError('Enter a summary for the decision.');
@@ -216,7 +221,12 @@ export class PendingInstitutionsSubCounty implements OnInit {
     }
 
     this.deciding = true;
-    this.http.post(`http://localhost:5215/api/sub-county-education/reports`, { institutionId: this.selectedInstitution.institutionId, isApproved, summary: decisionSummary }).subscribe({
+    this.http.post('http://localhost:5215/api/sub-county-education/reports', {
+      institutionId: this.selectedInstitution.institutionId,
+      isApproved,
+      summary: decisionSummary,
+      reconsiderRejection
+    }).subscribe({
       next: () => {
         this.deciding = false;
         this.selectedInstitution.status = isApproved ? 'SCDE Recommended' : 'SCDE Rejected';

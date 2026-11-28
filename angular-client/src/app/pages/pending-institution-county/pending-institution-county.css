@@ -112,6 +112,12 @@
   background-color: #f0f8ff;
 }
 
+.main-content {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+}
+
 /* --- Base --- */
 .page-container { padding: 2rem; font-family: system-ui, sans-serif; background: #fff; min-height: 100vh;}
 .page-header { border-bottom: 1px solid #e0e0e0; padding-bottom: 1rem; margin-bottom: 2rem; }
@@ -424,6 +430,89 @@
 .comment-box h6 { margin-bottom: 2px; }
 .report-box h6 { margin-bottom: 2px; }
 
-/* Action Buttons */
-.btn-success { background: #198754; border: none; }
-.btn-danger { background: #dc3545; border: none; }
+/* Approve Button */
+.btn-success {
+  background: linear-gradient(135deg, #28a745 0%, #198754 100%);
+  color: white;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #34ce57 0%, #28a745 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* Reject Button */
+.btn-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #e4606d 0%, #dc3545 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* Close Button in Footer */
+.modal-footer .btn-danger {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+.modal-footer .btn-danger:hover {
+  transform: none;
+  background: #bd2130;
+}
+
+.county-decision {
+  max-width: 44rem;
+  padding: 1.25rem;
+  border: 1px solid #dbe4ec;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.county-decision-title {
+  margin: 0 0 1rem;
+  color: #203548;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.county-decision-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.county-decision-buttons .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 8px;
+}
+
+.county-rejection-form {
+  padding: 1rem;
+  border: 1px solid #ecc5ca;
+  border-radius: 8px;
+  background: #fff6f7;
+}
+
+.county-rejection-form .form-label {
+  color: #872534;
+  font-weight: 600;
+}
+
+.county-rejection-form .form-control {
+  resize: vertical;
+  min-height: 6rem;
+  margin-bottom: 1rem;
+}
+
+.county-rejection-form .county-decision-buttons {
+  justify-content: flex-end;
+}
